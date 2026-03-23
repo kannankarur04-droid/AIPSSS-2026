@@ -1,52 +1,69 @@
 import streamlit as st
 from google import genai
 import time
+import re
 
-# 🔑 API setup
+# 🔑 API
 client = genai.Client(api_key="YOUR_API_KEY")
 
-# 🎨 Page config
+# 🎨 UI
 st.set_page_config(page_title="AIPSSS", layout="wide")
 st.title("🎓 AI Powered Student Support System")
+st.info("⚡ Fast Mode | Free Version | Tamil + English Supported")
 
-# ⚡ Info
-st.info("⚡ Fast Mode: Common questions answered instantly | Free version")
-
-# 🧠 Short prompt
+# 🧠 Prompt
 SYSTEM_PROMPT = "Explain simply with example. Add 2 MCQs."
 
-# 💾 Session memory
+# 💾 Memory
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# 💾 Cache
 if "cache" not in st.session_state:
     st.session_state.cache = {}
 
-# 📚 Offline answers (IMPORTANT 🔥)
+# 📚 Offline DB (expanded 🔥)
 OFFLINE_DB = {
     "what is computer": "A computer is an electronic device that processes data and performs tasks.",
     "what is ai": "Artificial Intelligence is the simulation of human intelligence in machines.",
-    "what is python": "Python is a programming language used for web, AI, and data science.",
-    "what is ram": "RAM is temporary memory used by a computer to store data for quick access.",
-    "what is cpu": "CPU is the brain of the computer that processes instructions.",
-    "what is internet": "The Internet is a global network that connects computers worldwide."
+    "what is python": "Python is a programming language used in AI, web, and data science.",
+    "what is commerce": "Commerce is the activity of buying and selling goods and services.",
+    "what is economics": "Economics studies how money and resources are used.",
+    "what is science": "Science is the study of the natural world.",
+    "what is maths": "Mathematics deals with numbers, quantities, and shapes.",
+    "cpu": "CPU is the brain of the computer.",
+    "ram": "RAM is temporary memory used for fast processing.",
+    "internet": "Internet is a global network connecting computers."
 }
 
-# 📜 Show chat history
+# 🌐 Tamil support keywords
+TAMIL_DB = {
+    "கணினி": "கணினி என்பது தகவல்களை செயலாக்கும் மின்சாதனம்.",
+    "ஏஐ": "ஏஐ என்பது மனித நுண்ணறிவை இயந்திரங்களில் உருவாக்குவது.",
+    "பைதான்": "பைதான் ஒரு நிரலாக்க மொழி."
+}
+
+# 📜 Show chat
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# ⌨️ User input
-prompt = st.chat_input("Ask your educational doubt...")
+# ⌨️ Input
+prompt = st.chat_input("Ask your doubt (English / Tamil)...")
 
-# 🔥 LIMIT CONTROL
+# 🚫 Limit
 if prompt and len(prompt) > 200:
-    st.warning("⚠️ Please ask short question (max 200 characters)")
+    st.warning("⚠️ Ask short questions (max 200 chars)")
     st.stop()
 
-# 🔁 API function
+# ➕ Math solver
+def solve_math(q):
+    try:
+        if re.search(r'[0-9]+\s*[\+\-\*/]\s*[0-9]+', q):
+            return str(eval(q))
+    except:
+        return None
+
+# 🤖 API
 def get_ai_response(user_prompt):
     try:
         response = client.models.generate_content(
@@ -54,41 +71,52 @@ def get_ai_response(user_prompt):
             contents=SYSTEM_PROMPT + "\n\nQ: " + user_prompt
         )
         return response.text if response.text else "No response."
-    except Exception:
-        return "⚠️ Free limit reached"
+    except:
+        return "⚠️ API_LIMIT"
 
-# 🚀 MAIN LOGIC
+# 🚀 MAIN
 if prompt:
 
     user_q = prompt.lower().strip()
 
-    # 👤 Show user message
+    # 👤 Show user
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # 💾 Cache check
+    # 💾 Cache
     if user_q in st.session_state.cache:
         reply = st.session_state.cache[user_q]
 
-    # ⚡ Offline DB
+    # ➕ Math
+    elif solve_math(user_q):
+        reply = f"Answer: {solve_math(user_q)}"
+
+    # 🌐 Tamil
+    elif any(word in prompt for word in TAMIL_DB):
+        for word in TAMIL_DB:
+            if word in prompt:
+                reply = TAMIL_DB[word]
+                break
+
+    # 📚 Offline
     elif user_q in OFFLINE_DB:
         reply = OFFLINE_DB[user_q]
 
-    # 🤖 API call
+    # 🤖 API
     else:
-        time.sleep(4)  # ⏱ delay
+        time.sleep(4)
         with st.spinner("Thinking..."):
             reply = get_ai_response(prompt)
 
     # 🔄 Fallback
     if "⚠️" in reply:
-        reply = "Basic answer: " + OFFLINE_DB.get(user_q, "Please try again after some time.")
+        reply = "⚡ நான் Free Mode-ல் இருக்கேன். Simple questions கேளுங்கள் 😊"
 
-    # 💾 Save cache
+    # 💾 Save
     st.session_state.cache[user_q] = reply
 
-    # 🤖 Show AI response
+    # 🤖 Show
     with st.chat_message("assistant"):
         st.markdown(reply)
 
