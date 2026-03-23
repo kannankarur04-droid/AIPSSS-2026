@@ -14,7 +14,7 @@ st.title("🎓 AI Student Support System (Expert Mode)")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# 📚 Basic Offline DB
+# 📚 Offline DB
 OFFLINE_DB = {
     "what is computer": "A computer is an electronic device that processes data.",
     "what is ai": "Artificial Intelligence is intelligence shown by machines.",
@@ -35,26 +35,28 @@ def extract_math(q):
     match = re.search(r'[0-9]+\s*[\+\-\*/]\s*[0-9]+', q)
     return match.group() if match else None
 
-# 🧠 Expert logic
+# 🧠 Expert logic (FIXED 🔥)
 def expert_answer(q):
     q = q.lower()
 
-    # Subjects
-    if any(w in q for w in ["physics", "force", "energy"]):
-        return "Physics is the study of matter and energy."
+    # 📘 Basic subjects
+    if "physics" in q:
+        return "Physics is the study of matter, energy, and forces."
 
-    if any(w in q for w in ["commerce", "business", "economics"]):
-        return "Commerce deals with buying and selling goods."
+    if "commerce" in q:
+        return "Commerce is buying and selling of goods and services."
 
-    if any(w in q for w in ["biology", "plants", "animals"]):
+    if "biology" in q:
         return "Biology is the study of living organisms."
 
-    if any(w in q for w in ["computer", "software", "hardware"]):
-        return "Computers process data using hardware and software."
+    if "electronics" in q:
+        return "Electronics deals with circuits and electronic devices."
 
-    # Explain AI
-    if "explain" in q and "ai" in q:
-        return """AI uses:
+    # 🧠 Explain mode (topic-based)
+    if "explain" in q:
+
+        if "ai" in q:
+            return """AI uses:
 • Healthcare – Disease detection  
 • Education – Smart learning  
 • Business – Chatbots  
@@ -62,7 +64,27 @@ def expert_answer(q):
 • Security – Fraud detection  
 """
 
-    # Tamil
+        if "radiation" in q:
+            return """Radiation is the emission of energy as waves or particles.
+
+• Travels through space  
+• Can be natural or man-made  
+• Used in medical treatment  
+• Harmful at high levels  
+• Includes X-rays and gamma rays  
+"""
+
+        if "computer" in q:
+            return """Computer is an electronic device.
+
+• Takes input  
+• Processes data  
+• Produces output  
+• Stores information  
+• Used everywhere  
+"""
+
+    # 🌐 Tamil support
     if "கணினி" in q:
         return "கணினி என்பது தகவலை செயலாக்கும் மின்னணு சாதனம்."
 
