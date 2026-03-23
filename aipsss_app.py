@@ -29,8 +29,8 @@ if prompt := st.chat_input("Ask your educational doubt..."):
         message_placeholder = st.empty()
         full_response = ""
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            # ⚡ Streaming response
+            # ⚡ இங்கே 'models/' என்று சேர்த்துள்ளேன்
+            model = genai.GenerativeModel('models/gemini-1.5-flash')
             responses = model.generate_content(SYSTEM_PROMPT + "\n\nQ: " + prompt, stream=True)
             for chunk in responses:
                 full_response += chunk.text
@@ -38,4 +38,4 @@ if prompt := st.chat_input("Ask your educational doubt..."):
             message_placeholder.markdown(full_response)
             st.session_state.messages.append({"role": "assistant", "content": full_response})
         except Exception as e:
-            st.error(f"Error: {e}") # என்ன எர்ரர் என்று துல்லியமாகத் தெரியும்
+            st.error(f"Error: {e}")
