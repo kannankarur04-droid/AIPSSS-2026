@@ -6,40 +6,18 @@ import re
 # 🔑 API
 client = genai.Client(api_key="YOUR_API_KEY")
 
-# 🎨 UI
 st.set_page_config(page_title="AIPSSS", layout="wide")
-st.title("🎓 AI Powered Student Support System")
-st.info("⚡ Fast Mode | Free Version | Tamil + English Supported")
-
-# 🧠 Prompt
-SYSTEM_PROMPT = "Explain simply with example. Add 2 MCQs."
+st.title("🎓 AI Student Support")
 
 # 💾 Memory
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if "cache" not in st.session_state:
-    st.session_state.cache = {}
-
-# 📚 Offline DB (expanded 🔥)
+# 📚 Simple offline DB
 OFFLINE_DB = {
-    "what is computer": "A computer is an electronic device that processes data and performs tasks.",
-    "what is ai": "Artificial Intelligence is the simulation of human intelligence in machines.",
-    "what is python": "Python is a programming language used in AI, web, and data science.",
-    "what is commerce": "Commerce is the activity of buying and selling goods and services.",
-    "what is economics": "Economics studies how money and resources are used.",
-    "what is science": "Science is the study of the natural world.",
-    "what is maths": "Mathematics deals with numbers, quantities, and shapes.",
-    "cpu": "CPU is the brain of the computer.",
-    "ram": "RAM is temporary memory used for fast processing.",
-    "internet": "Internet is a global network connecting computers."
-}
-
-# 🌐 Tamil support keywords
-TAMIL_DB = {
-    "கணினி": "கணினி என்பது தகவல்களை செயலாக்கும் மின்சாதனம்.",
-    "ஏஐ": "ஏஐ என்பது மனித நுண்ணறிவை இயந்திரங்களில் உருவாக்குவது.",
-    "பைதான்": "பைதான் ஒரு நிரலாக்க மொழி."
+    "what is computer": "A computer is an electronic device that processes data.",
+    "what is mcq": "MCQ (Multiple Choice Question) is a question with options where you choose the correct answer.",
+    "what is ai": "AI is intelligence shown by machines.",
 }
 
 # 📜 Show chat
@@ -48,75 +26,59 @@ for msg in st.session_state.messages:
         st.markdown(msg["content"])
 
 # ⌨️ Input
-prompt = st.chat_input("Ask your doubt (English / Tamil)...")
+prompt = st.chat_input("Ask your question...")
 
-# 🚫 Limit
-if prompt and len(prompt) > 200:
-    st.warning("⚠️ Ask short questions (max 200 chars)")
-    st.stop()
-
-# ➕ Math solver
-def solve_math(q):
-    try:
-        if re.search(r'[0-9]+\s*[\+\-\*/]\s*[0-9]+', q):
-            return str(eval(q))
-    except:
-        return None
+# ➕ Math extract
+def extract_math(q):
+    match = re.search(r'[0-9]+\s*[\+\-\*/]\s*[0-9]+', q)
+    if match:
+        return match.group()
+    return None
 
 # 🤖 API
-def get_ai_response(user_prompt):
+def get_ai_response(q):
     try:
         response = client.models.generate_content(
             model="gemini-2.0-flash",
-            contents=SYSTEM_PROMPT + "\n\nQ: " + user_prompt
+            contents=q
         )
-        return response.text if response.text else "No response."
+        return response.text
     except:
-        return "⚠️ API_LIMIT"
+        return None
 
 # 🚀 MAIN
 if prompt:
 
     user_q = prompt.lower().strip()
 
-    # 👤 Show user
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # 💾 Cache
-    if user_q in st.session_state.cache:
-        reply = st.session_state.cache[user_q]
+    reply = None
 
-    # ➕ Math
-    elif solve_math(user_q):
-        reply = f"Answer: {solve_math(user_q)}"
+    # ✅ 1. Math (FIRST priority)
+    math_expr = extract_math(user_q)
+    if math_expr:
+        try:
+            reply = f"Answer: {eval(math_expr)}"
+        except:
+            reply = None
 
-    # 🌐 Tamil
-    elif any(word in prompt for word in TAMIL_DB):
-        for word in TAMIL_DB:
-            if word in prompt:
-                reply = TAMIL_DB[word]
-                break
-
-    # 📚 Offline
+    # ✅ 2. Offline DB
     elif user_q in OFFLINE_DB:
         reply = OFFLINE_DB[user_q]
 
-    # 🤖 API
+    # ✅ 3. API (last)
     else:
-        time.sleep(4)
+        time.sleep(3)
         with st.spinner("Thinking..."):
             reply = get_ai_response(prompt)
 
-    # 🔄 Fallback
-    if "⚠️" in reply:
-        reply = "⚡ நான் Free Mode-ல் இருக்கேன். Simple questions கேளுங்கள் 😊"
+    # ✅ 4. Final fallback
+    if not reply:
+        reply = "⚠️ Please try simple questions like '2+2' or 'what is computer'"
 
-    # 💾 Save
-    st.session_state.cache[user_q] = reply
-
-    # 🤖 Show
     with st.chat_message("assistant"):
         st.markdown(reply)
 
