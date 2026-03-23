@@ -34,7 +34,7 @@ def get_ai_response(q):
     try:
         # gemini-2.0-flash மாடலைப் பயன்படுத்துகிறது
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-1.5-flash",
             contents=SYSTEM_PROMPT + "\n\nQuestion: " + q
         )
         return response.text
