@@ -2,22 +2,23 @@ import streamlit as st
 from google import genai
 import time
 import re
+from gtts import gTTS
+from streamlit_mic_recorder import mic_recorder
 
-# 🔑 API (replace with your key)
+# 🔑 API
 client = genai.Client(api_key="YOUR_API_KEY")
 
-# 🎨 UI
-st.set_page_config(page_title="AIPSSS Stable", layout="wide")
-st.title("🎓 AI Student Support System")
+st.set_page_config(page_title="AIPSSS Voice", layout="wide")
+st.title("🎓 AI Student Support (Voice Enabled)")
 
-# 💾 Chat memory
+# 💾 Memory
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# 📚 Offline DB
+# 📚 Basic DB
 OFFLINE_DB = {
-    "what is computer": "A computer is an electronic device that processes data and performs tasks.",
-    "what is commerce": "Commerce is the activity of buying and selling goods and services.",
+    "what is computer": "A computer is an electronic device that processes data.",
+    "what is commerce": "Commerce is buying and selling of goods and services.",
     "what is ai": "Artificial Intelligence is intelligence shown by machines.",
 }
 
@@ -26,59 +27,48 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# ⌨️ Input
-prompt = st.chat_input("Ask your question...")
+# 🎤 Voice Input
+st.subheader("🎤 Speak your question")
 
-# ➕ Math detect
-def extract_math(q):
-    match = re.search(r'[0-9]+\s*[\+\-\*/]\s*[0-9]+', q)
-    return match.group() if match else None
+audio = mic_recorder(start_prompt="Start Recording", stop_prompt="Stop Recording")
 
-# 🧠 Expert logic
-def expert_answer(q):
-    q = q.lower()
+prompt = None
 
-    # Explain mode FIRST
-    if "explain" in q:
+if audio:
+    st.audio(audio["bytes"])
+    prompt = "Voice input detected (convert externally)"  # placeholder
 
-        if "commerce" in q:
-            return """Commerce is the activity of buying and selling goods and services.
+# ⌨️ Text input
+text_input = st.chat_input("Type your question...")
+if text_input:
+    prompt = text_input
 
-• Connects producers and consumers  
-• Includes trade and business  
-• Helps economic growth  
-• Involves transport and communication  
-• Important for markets  
-"""
-
-        if "ai" in q:
-            return """AI uses:
-• Healthcare – Disease detection  
-• Education – Smart learning  
-• Business – Chatbots  
-• Automation – Robots  
-• Security – Fraud detection  
-"""
-
-    # Short definitions
-    if "computer" in q:
-        return "A computer is an electronic device that processes data."
-
-    if "commerce" in q:
-        return "Commerce is buying and selling of goods and services."
-
+# ➕ Math
+def solve_math(q):
+    q = q.replace(" ", "")
+    if re.match(r'^[0-9+\-*/.]+$', q):
+        try:
+            return str(eval(q))
+        except:
+            return None
     return None
 
-# 🤖 API (UPDATED MODEL ✅)
-def get_ai_response(q):
+# 🤖 AI
+def ai_response(q):
     try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",   # ✅ WORKING MODEL
-            contents="Explain simply:\n\n" + q
+        res = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=q
         )
-        return response.text
-    except Exception as e:
+        return res.text
+    except:
         return None
+
+# 🔊 Text to Voice
+def speak(text):
+    tts = gTTS(text)
+    tts.save("output.mp3")
+    return "output.mp3"
 
 # 🚀 MAIN
 if prompt:
@@ -91,30 +81,29 @@ if prompt:
 
     reply = None
 
-    # 1️⃣ Math
-    math_expr = extract_math(user_q)
-    if math_expr:
-        reply = f"Calculation Result: {math_expr} = {eval(math_expr)}"
+    # Math
+    if solve_math(user_q):
+        reply = f"Answer: {solve_math(user_q)}"
 
-    # 2️⃣ Expert logic
-    elif expert_answer(user_q):
-        reply = expert_answer(user_q)
-
-    # 3️⃣ Offline DB
+    # Offline
     elif user_q in OFFLINE_DB:
         reply = OFFLINE_DB[user_q]
 
-    # 4️⃣ API (only if needed)
+    # AI
     else:
         with st.spinner("Thinking..."):
             time.sleep(2)
-            reply = get_ai_response(prompt)
+            reply = ai_response(prompt)
 
-    # 5️⃣ FINAL fallback (no error shown ❌)
     if not reply:
-        reply = "⚠️ AI temporarily unavailable. Showing basic knowledge only."
+        reply = "⚠️ AI busy. Try again."
 
+    # Show text
     with st.chat_message("assistant"):
         st.markdown(reply)
+
+    # 🔊 Voice output
+    audio_file = speak(reply)
+    st.audio(audio_file)
 
     st.session_state.messages.append({"role": "assistant", "content": reply})
