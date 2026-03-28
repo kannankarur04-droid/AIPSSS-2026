@@ -3,9 +3,8 @@ import google.generativeai as genai
 import time
 import re
 from gtts import gTTS
-import os
 
-# 🔐 API Key Setup (Secrets-ல் இருந்து பாதுகாப்பாக எடுக்கும்படி மாற்றியுள்ளேன்)
+# 🔐 API Key Setup
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
@@ -15,88 +14,49 @@ else:
 st.set_page_config(page_title="AIPSSS Voice", layout="wide", page_icon="🎓")
 st.title("🎓 AI Student Support (Voice Enabled)")
 
-# 💾 Chat Memory
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# 🤖 சரியான மாடலைக் கண்டுபிடிக்கும் பகுதி
+def get_working_model():
+    # உங்கள் ஏபிஐ கீ-க்கு எந்தெந்த மாடல்கள் வேலை செய்யும் என்று பட்டியலிடும்
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    
+    # 1.5 flash இருந்தால் அதை எடு, இல்லையென்றால் முதல் மாடலை எடு
+    for model_name in available_models:
+        if "gemini-1.5-flash" in model_name:
+            return model_name
+    return available_models[0] if available_models else "gemini-pro"
 
-# 📜 பழைய மெசேஜ்களைக் காட்டுதல்
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-# ⌨️ Input Box
-prompt = st.chat_input("Type your question here...")
-
-# ➕ கணக்குகளைச் சரிசெய்யும் பங்க்ஷன்
-def solve_math(q):
-    q_clean = q.replace("=", "").strip()
-    if re.match(r'^[0-9+\-*/.() ]+$', q_clean):
-        try:
-            return str(eval(q_clean))
-        except:
-            return None
-    return None
-
-# 🤖 AI பதில் சொல்லும் பகுதி
+# 🧠 AI பதில் சொல்லும் பகுதி
 def ai_response(q):
-    # முயற்சி 1: gemini-1.5-flash
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        res = model.generate_content(q)
+        working_model_name = get_working_model()
+        model = genai.GenerativeModel(working_model_name)
+        res = model.generate_content("Explain simply: " + q)
         return res.text
-    except Exception:
-        # முயற்சி 2: gemini-1.5-flash-latest (சில நேரங்களில் இது வேலை செய்யும்)
-        try:
-            model = genai.GenerativeModel("gemini-1.5-flash-latest")
-            res = model.generate_content(q)
-            return res.text
-        except Exception:
-            # முயற்சி 3: gemini-pro (பழைய ஆனால் நிலையான மாடல்)
-            try:
-                model = genai.GenerativeModel("gemini-pro")
-                res = model.generate_content(q)
-                return res.text
-            except Exception as e:
-                return f"⚠️ ஏதோ தவறு நடந்துள்ளது: {str(e)}"
+    except Exception as e:
+        return f"⚠️ Error: {str(e)}"
 
 # 🔊 ஆடியோவாக மாற்றும் பகுதி
 def speak(text):
     try:
-        # நீளமான பதில்களைச் சுருக்கி ஆடியோவாக மாற்றுகிறது
-        short_text = text[:200] 
+        short_text = text[:150] # ஆடியோ வேகமாக வர சுருக்கமான டெக்ஸ்ட்
         tts = gTTS(text=short_text, lang='en')
         tts.save("output.mp3")
         return "output.mp3"
-    except Exception as e:
+    except:
         return None
 
 # 🚀 Main Logic
+prompt = st.chat_input("Ask your question here...")
+
 if prompt:
-    user_q = prompt.lower().strip()
-    
-    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    reply = None
-    
-    # 1. கணக்கா என்று பார்த்தல்
-    math_result = solve_math(user_q)
-    
-    if math_result:
-        reply = f"The answer is {math_result}"
-    else:
-        # 2. மற்ற கேள்விகளுக்கு AI பதில்
+    with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             reply = ai_response(prompt)
-
-    with st.chat_message("assistant"):
-        st.markdown(reply)
-        
-        # 3. பதிலை ஆடியோவாக ஒலிக்கச் செய்தல்
-        audio_file = speak(reply)
-        if audio_file:
-            st.audio(audio_file, format="audio/mp3")
-            # பழைய ஆடியோ கோப்புகளை நீக்குதல் (தேவைப்பட்டால்)
-
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+            st.markdown(reply)
+            
+            audio_file = speak(reply)
+            if audio_file:
+                st.audio(audio_file)
