@@ -1,62 +1,66 @@
 import streamlit as st
 import google.generativeai as genai
-import time
-import re
 from gtts import gTTS
+import os
 
-# 🔐 API Key Setup
+# 🔐 ஏபிஐ கீ (Secrets-ல் இருந்து)
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
     st.error("Please set GOOGLE_API_KEY in Streamlit Secrets!")
     st.stop()
 
-st.set_page_config(page_title="AIPSSS Voice", layout="wide", page_icon="🎓")
-st.title("🎓 AI Student Support (Voice Enabled)")
+# 🎨 லோகோ மற்றும் டைட்டில் அமைப்புகள்
+st.set_page_config(page_title="AIPSSS Expert", layout="wide", page_icon="🎓")
 
-# 🤖 சரியான மாடலைக் கண்டுபிடிக்கும் பகுதி
-def get_working_model():
-    # உங்கள் ஏபிஐ கீ-க்கு எந்தெந்த மாடல்கள் வேலை செய்யும் என்று பட்டியலிடும்
-    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-    
-    # 1.5 flash இருந்தால் அதை எடு, இல்லையென்றால் முதல் மாடலை எடு
-    for model_name in available_models:
-        if "gemini-1.5-flash" in model_name:
-            return model_name
-    return available_models[0] if available_models else "gemini-pro"
+# 🔵 வண்ணங்கள் மற்றும் தலைப்பு (எளிமையான முறை)
+st.markdown("<h1 style='text-align: center; color: #0047AB;'>🎓 ஏஐ மாணவர் ஆதரவு அமைப்பு (AIPSSS)</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #555;'>உங்கள் கல்வி சந்தேகங்களை இங்கே கேளுங்கள்</p>", unsafe_allow_html=True)
 
-# 🧠 AI பதில் சொல்லும் பகுதி
+# 💾 மெமரி
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# 🤖 ஏஐ பதில் சொல்லும் பகுதி
 def ai_response(q):
     try:
-        working_model_name = get_working_model()
-        model = genai.GenerativeModel(working_model_name)
-        res = model.generate_content("Explain simply: " + q)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        # பதில் தமிழிலேயே வர கட்டளை
+        res = model.generate_content("Give a simple 3-line answer in Tamil: " + q)
         return res.text
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
-# 🔊 ஆடியோவாக மாற்றும் பகுதி
+# 🔊 தமிழ் ஆடியோ
 def speak(text):
     try:
-        short_text = text[:150] # ஆடியோ வேகமாக வர சுருக்கமான டெக்ஸ்ட்
-        tts = gTTS(text=short_text, lang='en')
+        short_text = text[:150]
+        tts = gTTS(text=short_text, lang='ta')
         tts.save("output.mp3")
         return "output.mp3"
     except:
         return None
 
-# 🚀 Main Logic
-prompt = st.chat_input("Ask your question here...")
+# 🚀 மெயின் லாஜிக்
+prompt = st.chat_input("உங்களுடைய கேள்வியை இங்கே கேட்கவும்...")
 
 if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
+        with st.spinner("சிந்திக்கிறேன்..."):
             reply = ai_response(prompt)
-            st.markdown(reply)
+            # பதில் வரும் பெட்டிக்கு ஒரு நீல நிறம்
+            st.info(reply)
             
             audio_file = speak(reply)
             if audio_file:
                 st.audio(audio_file)
+
+    st.session_state.messages.append({"role": "assistant", "content": reply})
