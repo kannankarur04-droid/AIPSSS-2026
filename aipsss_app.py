@@ -40,13 +40,18 @@ def solve_math(q):
 # 🤖 AI பதில் சொல்லும் பகுதி
 def ai_response(q):
     try:
+        # முதலில் 1.5 flash முயற்சிக்கும்
         model = genai.GenerativeModel("gemini-1.5-flash")
-        # மாணவர்களுக்குப் புரியும்படி எளிய தமிழில் பதில் சொல்லச் சொல்கிறோம்
-        system_instruction = "You are a helpful student assistant. Give simple and clear answers."
-        res = model.generate_content(system_instruction + "\n\nQuestion: " + q)
+        res = model.generate_content(q)
         return res.text
     except Exception as e:
-        return f"⚠️ Error: {str(e)}"
+        try:
+            # அது வேலை செய்யவில்லை என்றால் gemini-pro முயற்சிக்கும்
+            model = genai.GenerativeModel("gemini-pro")
+            res = model.generate_content(q)
+            return res.text
+        except:
+            return f"⚠️ Error: {str(e)}"
 
 # 🔊 ஆடியோவாக மாற்றும் பகுதி
 def speak(text):
