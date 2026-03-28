@@ -36,17 +36,29 @@ def ai_response(q):
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
-# 🔊 ஆடியோவாக மாற்றும் பகுதி
+# 🔊 ஆடியோவாக மாற்றும் பகுதி (இது 38-வது வரியில் தொடங்கும்)
 def speak(text):
     try:
-        short_text = text[:150] # ஆடியோ வேகமாக வர சுருக்கமான டெக்ஸ்ட்
+        short_text = text[:150]
         tts = gTTS(text=short_text, lang='en')
-    text_input = st.chat_input("Ask your question here...")
-   prompt = voice_input if voice_input else text_input
+        tts.save("output.mp3")
+        return "output.mp3"
+    except Exception as e: # 👈 இந்த வரி இங்கே கண்டிப்பாக இருக்க வேண்டும்!
+        return None
+
+voice_input = speech_to_text(
+    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
     language='en-IN', 
     use_container_width=True,
     key='my_mic'
+)
+
+# ⌨️ தட்டச்சு பெட்டி (இது இப்போது சரியாக வேலை செய்யும்)
+text_input = st.chat_input("Ask your question here...")
+
+# மைக் அல்லது டைப்பிங்
+prompt = voice_input if voice_input else text_input
 )
         tts.save("output.mp3")
         return "output.mp3"
