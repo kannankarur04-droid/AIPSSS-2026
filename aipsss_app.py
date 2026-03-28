@@ -39,19 +39,25 @@ def solve_math(q):
 
 # 🤖 AI பதில் சொல்லும் பகுதி
 def ai_response(q):
+    # முயற்சி 1: gemini-1.5-flash
     try:
-        # முதலில் 1.5 flash முயற்சிக்கும்
         model = genai.GenerativeModel("gemini-1.5-flash")
         res = model.generate_content(q)
         return res.text
-    except Exception as e:
+    except Exception:
+        # முயற்சி 2: gemini-1.5-flash-latest (சில நேரங்களில் இது வேலை செய்யும்)
         try:
-            # அது வேலை செய்யவில்லை என்றால் gemini-pro முயற்சிக்கும்
-            model = genai.GenerativeModel("gemini-pro")
+            model = genai.GenerativeModel("gemini-1.5-flash-latest")
             res = model.generate_content(q)
             return res.text
-        except:
-            return f"⚠️ Error: {str(e)}"
+        except Exception:
+            # முயற்சி 3: gemini-pro (பழைய ஆனால் நிலையான மாடல்)
+            try:
+                model = genai.GenerativeModel("gemini-pro")
+                res = model.generate_content(q)
+                return res.text
+            except Exception as e:
+                return f"⚠️ ஏதோ தவறு நடந்துள்ளது: {str(e)}"
 
 # 🔊 ஆடியோவாக மாற்றும் பகுதி
 def speak(text):
