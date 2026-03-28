@@ -3,6 +3,7 @@ import google.generativeai as genai
 import time
 import re
 from gtts import gTTS
+from streamlit_mic_recorder import speech_to_text
 
 # 🔐 API Key Setup
 if "GOOGLE_API_KEY" in st.secrets:
@@ -40,6 +41,13 @@ def speak(text):
     try:
         short_text = text[:150] # ஆடியோ வேகமாக வர சுருக்கமான டெக்ஸ்ட்
         tts = gTTS(text=short_text, lang='en')
+    text_input = st.chat_input("Ask your question here...")
+   prompt = voice_input if voice_input else text_input
+    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+    language='en-IN', 
+    use_container_width=True,
+    key='my_mic'
+)
         tts.save("output.mp3")
         return "output.mp3"
     except:
