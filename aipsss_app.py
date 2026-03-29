@@ -5,7 +5,8 @@ from streamlit_mic_recorder import speech_to_text
 import os
 import re
 
-# --- 🔐 1. API Key Setup ---
+# --- 🔐 1. Groq API Key Setup ---
+# Streamlit Secrets-ல் GROQ_API_KEY இருப்பதை உறுதி செய்யவும்
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
@@ -14,19 +15,15 @@ else:
 
 # --- 🎨 2. UI Configuration ---
 st.set_page_config(page_title="AI Student Support", layout="wide", page_icon="🎓")
-st.title("🎓 AI Powered Student Support System") # தலைப்பு மாற்றப்பட்டுள்ளது
+st.title("🎓 AI Powered Student Support System")
 st.markdown("### *Your Intelligent Bilingual Learning Assistant*")
 st.write("---")
 
-# --- 🧠 3. AI Core Logic ---
+# --- 🧠 3. AI Core Logic (Updated Model Name) ---
 def ai_response(q):
     try:
+        # ⚠️ இங்கே புதிய மாடல் பெயர் சரியாக கொடுக்கப்பட்டுள்ளது
         completion = client.chat.completions.create(
-           # --- 🧠 2. Groq AI Core Logic (Updated Model Name) ---
-def ai_response(q):
-    try:
-        completion = client.chat.completions.create(
-            # இங்கே புதிய மாடல் பெயரை (llama-3.1-8b-instant) கொடுத்துள்ளேன்
             model="llama-3.1-8b-instant", 
             messages=[
                 {
@@ -47,10 +44,11 @@ def ai_response(q):
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
-# --- 🔊 4. Smart Voice Engine ---
+# --- 🔊 4. Smart Voice Engine (Language Detection) ---
 def speak(text):
     try:
         short_text = text[:200] 
+        # தமிழில் எழுத்துக்கள் இருக்கிறதா என்று பார்க்கிறோம்
         is_tamil = bool(re.search(r'[\u0b80-\u0bff]', short_text))
         lang_code = 'ta' if is_tamil else 'en'
         
@@ -60,19 +58,22 @@ def speak(text):
     except:
         return None
 
-# --- 🚀 5. Main Logic ---
+# --- 🚀 5. Main Interaction Logic ---
 st.info("💡 **Tip:** Click the microphone to ask questions in Tamil or English.")
 
+# Voice Input Section
 voice_data = speech_to_text(
     start_prompt="🎤 Click to Ask via Voice",
     stop_prompt="🛑 Stop Recording",
     language='ta-IN', 
     use_container_width=True,
-    key='final_mic'
+    key='final_aipsss_mic'
 )
 
+# Text Input Section
 text_data = st.chat_input("Type your question here...")
 
+# Logic to determine input source
 prompt = voice_data if voice_data else text_data
 is_voice = True if voice_data else False
 
@@ -85,6 +86,7 @@ if prompt:
             reply = ai_response(prompt)
             st.success(reply)
             
+            # மைக் மூலம் கேள்வி கேட்டால் மட்டும் ஆடியோ தானாக ஒலிக்கும்
             if is_voice:
                 audio_path = speak(reply)
                 if audio_path:
