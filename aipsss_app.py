@@ -18,7 +18,7 @@ st.title("🎓 AI Powered Student Support System")
 st.markdown("### *Your Secure & Intelligent Educational Assistant*")
 st.write("---")
 
-# --- 🧠 3. AI Core Logic (Strict Safety & Education Rules) ---
+# --- 🧠 3. AI Core Logic (Short & Direct Safety Response) ---
 def ai_response(q):
     try:
         completion = client.chat.completions.create(
@@ -27,15 +27,12 @@ def ai_response(q):
                 {
                     "role": "system", 
                     "content": """
-                    You are a STRICT PROFESSIONAL EDUCATIONAL ASSISTANT for students.
-                    - PRIMARY RULE: Respond ONLY to educational, scientific, historical, or learning-related queries.
-                    - SAFETY RULE: DO NOT provide information about online games, movies, celebrities, adult content, violence, or illegal activities.
-                    - If a user asks about restricted topics, respond: 'மன்னிக்கவும், நான் ஒரு கல்வி உதவியாளர். கல்வி சார்ந்த கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.' (or English equivalent if query is in English).
-                    - LANGUAGE RULES: 
-                      1. Respond in English ONLY if the query is in English.
-                      2. Respond in Tamil ONLY if the query is in Tamil.
-                    - LINE LIMIT: Strictly follow the line/sentence limit if requested by the user.
-                    - Use 'வணக்கம் கண்ணன்!' only if the user says 'Vanakkam' or 'வணக்கம்'.
+                    You are a STRICT EDUCATIONAL ASSISTANT. 
+                    - RULES:
+                      1. Respond ONLY to educational queries (Science, Math, History, etc.).
+                      2. If the user asks about movies, politics, games, or celebrities, respond ONLY with: 'மன்னிக்கவும், நான் ஒரு கல்வி உதவியாளர். கல்வி சார்ந்த கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'
+                      3. Do not give any extra advice or explanations for restricted topics.
+                      4. Follow language and line limit rules strictly.
                     """
                 },
                 {"role": "user", "content": q}
