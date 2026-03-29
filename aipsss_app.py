@@ -22,7 +22,12 @@ st.write("---")
 def ai_response(q):
     try:
         completion = client.chat.completions.create(
-            model="llama3-8b-8192",
+           # --- 🧠 2. Groq AI Core Logic (Updated Model Name) ---
+def ai_response(q):
+    try:
+        completion = client.chat.completions.create(
+            # இங்கே புதிய மாடல் பெயரை (llama-3.1-8b-instant) கொடுத்துள்ளேன்
+            model="llama-3.1-8b-instant", 
             messages=[
                 {
                     "role": "system", 
