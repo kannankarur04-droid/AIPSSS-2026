@@ -6,7 +6,6 @@ import os
 import re
 
 # --- 🔐 1. Groq API Key Setup ---
-# Streamlit Secrets-ல் GROQ_API_KEY இருப்பதை உறுதி செய்யவும்
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
@@ -19,10 +18,9 @@ st.title("🎓 AI Powered Student Support System")
 st.markdown("### *Your Intelligent Bilingual Learning Assistant*")
 st.write("---")
 
-# --- 🧠 3. AI Core Logic (Updated Model Name) ---
+# --- 🧠 3. AI Core Logic (Strict Instructions) ---
 def ai_response(q):
     try:
-        # ⚠️ இங்கே புதிய மாடல் பெயர் சரியாக கொடுக்கப்பட்டுள்ளது
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
@@ -30,25 +28,27 @@ def ai_response(q):
                     "role": "system", 
                     "content": """
                     You are a professional bilingual student assistant. 
-                    - If user asks in Tamil, respond in simple Tamil. 
-                    - If user asks in English, respond in simple English. 
-                    - If user says 'Vanakkam' or 'வணக்கம்', reply 'வணக்கம் கண்ணன்! நான் உங்களுக்கு இன்று எப்படி உதவ முடியும்?'.
-                    - Keep explanations brief, clear, and educational (3-5 lines).
+                    - RULES: 
+                      1. Respond ONLY in English if the query is in English. 
+                      2. Respond ONLY in Tamil if the query is in Tamil. 
+                      3. STRICTLY follow the line limit requested by the user (e.g., '4 lines' means exactly 4 sentences/lines). 
+                      4. Do not define the number; explain the topic instead.
+                      5. If user says 'Vanakkam' or 'வணக்கம்', reply 'வணக்கம் கண்ணன்! நான் உங்களுக்கு இன்று எப்படி உதவ முடியும்?'.
+                      6. Keep all other responses brief and educational.
                     """
                 },
                 {"role": "user", "content": q}
             ],
-            temperature=0.6
+            temperature=0.1  # Low temperature for strict instruction following
         )
         return completion.choices[0].message.content
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
-# --- 🔊 4. Smart Voice Engine (Language Detection) ---
+# --- 🔊 4. Smart Voice Engine ---
 def speak(text):
     try:
-        short_text = text[:200] 
-        # தமிழில் எழுத்துக்கள் இருக்கிறதா என்று பார்க்கிறோம்
+        short_text = text[:250] 
         is_tamil = bool(re.search(r'[\u0b80-\u0bff]', short_text))
         lang_code = 'ta' if is_tamil else 'en'
         
@@ -59,21 +59,18 @@ def speak(text):
         return None
 
 # --- 🚀 5. Main Interaction Logic ---
-st.info("💡 **Tip:** Click the microphone to ask questions in Tamil or English.")
+st.info("💡 **Tip:** Click the microphone to ask questions. You can specify line limits (e.g., 'Explain AI in 4 lines').")
 
-# Voice Input Section
 voice_data = speech_to_text(
     start_prompt="🎤 Click to Ask via Voice",
     stop_prompt="🛑 Stop Recording",
     language='ta-IN', 
     use_container_width=True,
-    key='final_aipsss_mic'
+    key='final_v3_mic'
 )
 
-# Text Input Section
-text_data = st.chat_input("Type your question here...")
+text_data = st.chat_input("Type your question here (e.g., Explain Physics in 3 lines)...")
 
-# Logic to determine input source
 prompt = voice_data if voice_data else text_data
 is_voice = True if voice_data else False
 
@@ -86,7 +83,6 @@ if prompt:
             reply = ai_response(prompt)
             st.success(reply)
             
-            # மைக் மூலம் கேள்வி கேட்டால் மட்டும் ஆடியோ தானாக ஒலிக்கும்
             if is_voice:
                 audio_path = speak(reply)
                 if audio_path:
