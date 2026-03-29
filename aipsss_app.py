@@ -15,10 +15,10 @@ else:
 # --- 🎨 2. UI Configuration ---
 st.set_page_config(page_title="AI Student Support", layout="wide", page_icon="🎓")
 st.title("🎓 AI Powered Student Support System")
-st.markdown("### *Your Intelligent Bilingual Learning Assistant*")
+st.markdown("### *Your Secure & Intelligent Educational Assistant*")
 st.write("---")
 
-# --- 🧠 3. AI Core Logic (Strict Instructions) ---
+# --- 🧠 3. AI Core Logic (Strict Safety & Education Rules) ---
 def ai_response(q):
     try:
         completion = client.chat.completions.create(
@@ -27,19 +27,20 @@ def ai_response(q):
                 {
                     "role": "system", 
                     "content": """
-                    You are a professional bilingual student assistant. 
-                    - RULES: 
-                      1. Respond ONLY in English if the query is in English. 
-                      2. Respond ONLY in Tamil if the query is in Tamil. 
-                      3. STRICTLY follow the line limit requested by the user (e.g., '4 lines' means exactly 4 sentences/lines). 
-                      4. Do not define the number; explain the topic instead.
-                      5. If user says 'Vanakkam' or 'வணக்கம்', reply 'வணக்கம் கண்ணன்! நான் உங்களுக்கு இன்று எப்படி உதவ முடியும்?'.
-                      6. Keep all other responses brief and educational.
+                    You are a STRICT PROFESSIONAL EDUCATIONAL ASSISTANT for students.
+                    - PRIMARY RULE: Respond ONLY to educational, scientific, historical, or learning-related queries.
+                    - SAFETY RULE: DO NOT provide information about online games, movies, celebrities, adult content, violence, or illegal activities.
+                    - If a user asks about restricted topics, respond: 'மன்னிக்கவும், நான் ஒரு கல்வி உதவியாளர். கல்வி சார்ந்த கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.' (or English equivalent if query is in English).
+                    - LANGUAGE RULES: 
+                      1. Respond in English ONLY if the query is in English.
+                      2. Respond in Tamil ONLY if the query is in Tamil.
+                    - LINE LIMIT: Strictly follow the line/sentence limit if requested by the user.
+                    - Use 'வணக்கம் கண்ணன்!' only if the user says 'Vanakkam' or 'வணக்கம்'.
                     """
                 },
                 {"role": "user", "content": q}
             ],
-            temperature=0.1  # Low temperature for strict instruction following
+            temperature=0.1
         )
         return completion.choices[0].message.content
     except Exception as e:
@@ -59,17 +60,17 @@ def speak(text):
         return None
 
 # --- 🚀 5. Main Interaction Logic ---
-st.info("💡 **Tip:** Click the microphone to ask questions. You can specify line limits (e.g., 'Explain AI in 4 lines').")
+st.info("💡 **Educational Use Only:** Ask about Science, History, Math, or Languages.")
 
 voice_data = speech_to_text(
     start_prompt="🎤 Click to Ask via Voice",
     stop_prompt="🛑 Stop Recording",
     language='ta-IN', 
     use_container_width=True,
-    key='final_v3_mic'
+    key='final_secure_mic'
 )
 
-text_data = st.chat_input("Type your question here (e.g., Explain Physics in 3 lines)...")
+text_data = st.chat_input("Ask an educational question...")
 
 prompt = voice_data if voice_data else text_data
 is_voice = True if voice_data else False
@@ -79,7 +80,7 @@ if prompt:
         st.markdown(f"**Query:** {prompt}")
 
     with st.chat_message("assistant"):
-        with st.spinner("Processing..."):
+        with st.spinner("Analyzing educational query..."):
             reply = ai_response(prompt)
             st.success(reply)
             
