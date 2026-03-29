@@ -1,87 +1,86 @@
 import streamlit as st
-import google.generativeai as genai
+from groq import Groq
 from gtts import gTTS
 from streamlit_mic_recorder import speech_to_text
 import os
+import re
 
 # --- 🔐 1. API Key Setup ---
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+if "GROQ_API_KEY" in st.secrets:
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Please set GOOGLE_API_KEY in Streamlit Secrets!")
+    st.error("Missing GROQ_API_KEY! Please check Streamlit Secrets.")
     st.stop()
 
-st.set_page_config(page_title="AIPSSS Voice AI", layout="wide", page_icon="🎓")
-st.title("🎓 ஏஐ மாணவர் ஆதரவு அமைப்பு (AIPSSS)")
+# --- 🎨 2. UI Configuration ---
+st.set_page_config(page_title="AI Student Support", layout="wide", page_icon="🎓")
+st.title("🎓 AI Powered Student Support System") # தலைப்பு மாற்றப்பட்டுள்ளது
+st.markdown("### *Your Intelligent Bilingual Learning Assistant*")
+st.write("---")
 
-# --- 🤖 2. சரியான மாடலைக் கண்டுபிடிக்கும் பகுதி ---
-def get_working_model():
-    try:
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        for model_name in available_models:
-            if "gemini-1.5-flash" in model_name:
-                return model_name
-        return available_models[0] if available_models else "gemini-pro"
-    except:
-        return "gemini-1.5-flash"
-
-# --- 🧠 3. AI பதில் சொல்லும் பகுதி (உங்கள் 'வணக்கம்' ஸ்பெஷல் கோட்) ---
+# --- 🧠 3. AI Core Logic ---
 def ai_response(q):
     try:
-        working_model_name = get_working_model()
-        model = genai.GenerativeModel(working_model_name)
-        
-        # ஏஐ-க்கு ஒரு உதவியாளராகப் பதில் சொல்லக் கட்டளையிடுகிறோம்
-        instruction = """
-        You are a friendly AI Student Assistant named AIPSSS. 
-        If the user says 'Vanakkam' or 'வணக்கம்', respond with 'வணக்கம் கண்ணன்! நான் உங்களுக்கு இன்று எப்படி உதவ முடியும்?'. 
-        For other questions, explain simply in 3 to 5 lines in Tamil language only.
-        """
-        
-        res = model.generate_content(instruction + "\n\nUser Question: " + q)
-        return res.text
+        completion = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[
+                {
+                    "role": "system", 
+                    "content": """
+                    You are a professional bilingual student assistant. 
+                    - If user asks in Tamil, respond in simple Tamil. 
+                    - If user asks in English, respond in simple English. 
+                    - If user says 'Vanakkam' or 'வணக்கம்', reply 'வணக்கம் கண்ணன்! நான் உங்களுக்கு இன்று எப்படி உதவ முடியும்?'.
+                    - Keep explanations brief, clear, and educational (3-5 lines).
+                    """
+                },
+                {"role": "user", "content": q}
+            ],
+            temperature=0.6
+        )
+        return completion.choices[0].message.content
     except Exception as e:
-        return f"⚠️ ஏபிஐ இணைப்பில் சிக்கல்: {str(e)}"
+        return f"⚠️ Error: {str(e)}"
 
-# --- 🔊 4. தமிழ் ஆடியோவாக மாற்றும் பகுதி ---
+# --- 🔊 4. Smart Voice Engine ---
 def speak(text):
     try:
-        # முதல் 150 எழுத்துக்களை மட்டும் வேகமாக மாற்றுகிறது
-        short_text = text[:150] 
-        tts = gTTS(text=short_text, lang='ta') 
-        tts.save("output.mp3")
-        return "output.mp3"
+        short_text = text[:200] 
+        is_tamil = bool(re.search(r'[\u0b80-\u0bff]', short_text))
+        lang_code = 'ta' if is_tamil else 'en'
+        
+        tts = gTTS(text=short_text, lang=lang_code) 
+        tts.save("response.mp3")
+        return "response.mp3"
     except:
         return None
 
-# --- 🚀 5. செயல்பாட்டு பகுதி (Main Logic) ---
-st.write("### 🎤 மைக் மூலம் கேள்வி கேட்க அல்லது கீழே டைப் செய்யவும்:")
+# --- 🚀 5. Main Logic ---
+st.info("💡 **Tip:** Click the microphone to ask questions in Tamil or English.")
 
-# மைக் பட்டன்
-voice_input = speech_to_text(
-    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
-    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+voice_data = speech_to_text(
+    start_prompt="🎤 Click to Ask via Voice",
+    stop_prompt="🛑 Stop Recording",
     language='ta-IN', 
     use_container_width=True,
-    key='my_mic'
+    key='final_mic'
 )
 
-# தட்டச்சு பெட்டி
-text_input = st.chat_input("உங்களுடைய கேள்வியை இங்கே கேட்கவும்...")
+text_data = st.chat_input("Type your question here...")
 
-# மைக் அல்லது டைப்பிங் - எது வந்தாலும் 'prompt' ஆக எடுத்துக்கொள்ளும்
-prompt = voice_input if voice_input else text_input
+prompt = voice_data if voice_data else text_data
+is_voice = True if voice_data else False
 
 if prompt:
     with st.chat_message("user"):
-        st.markdown(f"**கேள்வி:** {prompt}")
+        st.markdown(f"**Query:** {prompt}")
 
     with st.chat_message("assistant"):
-        with st.spinner("சிந்திக்கிறேன்..."):
+        with st.spinner("Processing..."):
             reply = ai_response(prompt)
-            st.info(reply) # நீல நிறப் பெட்டியில் பதில்
+            st.success(reply)
             
-            # ஆடியோ பதில் உருவாக்கம்
-            audio_path = speak(reply)
-            if audio_path:
-                st.audio(audio_path)
+            if is_voice:
+                audio_path = speak(reply)
+                if audio_path:
+                    st.audio(audio_path, autoplay=True)
