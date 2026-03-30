@@ -102,28 +102,21 @@ def get_base64_image(image_path):
 try:
     if os.path.exists(img_path):
         base64_img = get_base64_image(img_path)
-        # லோகோவும் பெயரும் எப்போதும் ஒரே வரிசையில் இருக்க HTML Flexbox
-        header_html = f"""
+        # HTML Flexbox - தலைப்பு மற்றும் லோகோ ஒரே வரிசையில் இருக்க
+        header_html = f'''
             <div style="display: flex; align-items: center; gap: 15px; margin-top: -30px; margin-bottom: 20px;">
-                <img src="data:image/png;base64,{{base64_img}}" style="width: 75px; height: auto;">
+                <img src="data:image/png;base64,{base64_img}" style="width: 75px; height: auto;">
                 <div style="display: flex; flex-direction: column; justify-content: center;">
                     <p class="main-title" style="margin: 0 !important; line-height: 1.2 !important; font-size: 40px !important;">AIPSSS</p>
                     <p class="main-tagline" style="margin: 0 !important; font-size: 14px !important;">AI Powered Student Support System</p>
                 </div>
             </div>
-        """
+        '''
         st.markdown(header_html, unsafe_allow_html=True)
     else:
-        # படம் இல்லையென்றால் இங்கே வரும்
         st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
 except Exception as e:
-    # ஏதேனும் பிழை ஏற்பட்டால் இங்கே வரும்
     st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
-
-            
-    else:
-        # படம் இல்லையென்றால்Fall Back
-        st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
         st.markdown('<p style="text-align:center; color:#555; font-weight:bold;">AI Powered Student Support System</p>', unsafe_allow_html=True)
         # படக் கோப்பு ஏன் வரவில்லை என்ற குறிப்பு அட்மினுக்கு மட்டும்
         # st.warning(f"Note: {img_name} not found in root.")
