@@ -107,7 +107,7 @@ try:
         st.markdown(f'''
             <div class="logo-container">
                 <img src="data:image/png;base64,{st_image_to_base64(img_path)}" class="logo-img">
-                <p class="logo-caption">Developed by Kannan</p>
+                <p class="logo-caption">Developed by Brammmadevan</p>
                 <p class="main-title">AIPSSS</p>
                 <p class="main-tagline">AI Powered Student Support System</p>
             </div>
