@@ -31,14 +31,17 @@ st.markdown("""
         margin-top: -30px; /* மேல் இடைவெளியைக் குறைக்க */
     }
 
-       /* AIPSSS Title - Responsive & Fixed */
+       /* AIPSSS Title - முழுமையாகத் தெரிய திருத்தப்பட்டது */
     .main-title { 
+        font-size: 55px !important; 
         font-weight: 900; 
         text-align: left; 
         color: #FF4B4B;
         letter-spacing: 2px;
-        display: block;
-        overflow: visible !important; /* எழுத்து வெட்டப்படுவதைத் தவிர்க்க */
+        margin: 0 !important; 
+        line-height: 1.5 !important; /* 1-க்கு பதில் 1.5 - இதுதான் மிக முக்கியம் */
+        display: inline-block;
+        padding-bottom: 10px; /* கீழ் பகுதி வெட்டப்படாமல் இருக்க */
     }
 
     /* மொபைலில் 35px */
