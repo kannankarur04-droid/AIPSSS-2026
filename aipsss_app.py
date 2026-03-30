@@ -40,8 +40,8 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🎓 AIPSSS - Life-Time Education Assistant")
-st.markdown("### *பள்ளி முதல் வேலைவாய்ப்பு வரை உங்களின் டிஜிட்டல் குரு*")
+st.title("🎓 AIPSSS - Student Support System")
+st.markdown("### *அனைத்து மாணவர்களுக்கான பிரத்யேக கல்வி உதவியாளர்*")
 st.write("---")
 
 # --- 🧠 3. AI Core Logic (The Brain) ---
