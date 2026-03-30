@@ -77,30 +77,24 @@ st.markdown("""
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-# லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் காட்ட (CSS alignments மேலே கொடுத்துள்ளோம்)
+# லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் காட்ட
 try:
     if os.path.exists(img_path):
         logo_img = Image.open(img_path)
         
-        # ஸ்ட்ரீம்லிட் காலம்ஸ் - இது ரெஸ்பான்சிவ் ஆக இருக்கும்
         col1, col2 = st.columns([1, 4]) 
         
         with col1:
-            # லோகோ அளவு - சுருக்கப்பட்டது
             st.image(logo_img, width=85) 
             
         with col2:
-            # தலைப்பு மற்றும் கேப்ஷன் ஒரே பாக்ஸில் இருக்கும்
             st.markdown('<p class="main-title">AIPSSS</p>', unsafe_allow_html=True)
             st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
             
     else:
-        # படம் இல்லையென்றால்Fall Back
+        # படம் இல்லையென்றால் Fallback
         st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
         st.markdown('<p style="text-align:center; color:#555; font-weight:bold;">AI Powered Student Support System</p>', unsafe_allow_html=True)
-        # படக் கோப்பு ஏன் வரவில்லை என்ற குறிப்பு அட்மினுக்கு மட்டும்
-        # st.warning(f"Note: {img_name} not found in root.")
-
 except:
     st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
 
