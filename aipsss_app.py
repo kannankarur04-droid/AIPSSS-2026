@@ -102,17 +102,16 @@ try:
     if os.path.exists(img_path):
         logo_img = Image.open(img_path)
         
-        # ஸ்ட்ரீம்லிட் காலம்ஸ் - இது ரெஸ்பான்சிவ் ஆக இருக்கும்
-        col1, col2 = st.columns([0.5, 4.5]) 
+               # தலைப்பு மற்றும் லோகோவுக்கு சமமான இடம் கொடுக்க [1, 5] என மாற்றப்பட்டுள்ளது
+        col1, col2 = st.columns([1, 5]) 
         
         with col1:
-            # லோகோ அளவு - சுருக்கப்பட்டது
             st.image(logo_img, width=85) 
             
         with col2:
-            # தலைப்பு மற்றும் கேப்ஷன் ஒரே பாக்ஸில் இருக்கும்
-            st.markdown('<p class="main-title">AIPSSS</p>', unsafe_allow_html=True)
-            st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
+            # line-height: 1.5 மற்றும் padding-bottom ஆகியவை எழுத்து வெட்டப்படுவதைத் தடுக்கும்
+            st.markdown('<p class="main-title" style="line-height: 1.5 !important; margin-bottom: 0px; padding-bottom: 5px;">AIPSSS</p>', unsafe_allow_html=True)
+            st.markdown('<p class="main-tagline" style="margin-top: -10px;">AI Powered Student Support System</p>', unsafe_allow_html=True)
             
     else:
         # படம் இல்லையென்றால்Fall Back
