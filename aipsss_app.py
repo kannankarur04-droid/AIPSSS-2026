@@ -7,14 +7,14 @@ import re
 from PIL import Image
 import fitz  # PyMuPDF
 
-# --- 🔐 1. Setup ---
+# --- 🔐 1. Setup (No change here) ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive (Updated) ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
@@ -22,32 +22,48 @@ st.markdown("""
     /* தலைப்பைச் சுருக்க */
     .block-container { padding-top: 1rem; }
     
-    /* லோகோ மற்றும் பெயரை இடதுபுறம் நெருக்கமாக வைக்க (Logo Left, Text Left) */
-    [data-testid="stHorizontalBlock"] {
-        align-items: center; 
-        justify-content: flex-start; /* இடது பக்கம் ஒட்டியிருக்க */
+    /* மையப்படுத்தப்பட்ட லோகோ பாக்ஸ் */
+    .logo-container {
         display: flex;
-        gap: 10px; /* லோகோவுக்கும் பெயருக்கும் இடையே சிறிய இடைவெளி */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         margin-top: -30px; /* மேல் இடைவெளியைக் குறைக்க */
+        margin-bottom: 20px;
     }
 
-    /* AIPSSS Title - சிவப்பு நிறம் */
+    /* லோகோ அளவு - சிறியதாக */
+    .logo-img {
+        width: 100px; /* படத்தின் அளவை 100px ஆகக் குறைத்துள்ளோம் */
+        height: auto;
+    }
+
+    /* படத்தின் கீழ் பெயர் - சிறியதாகவும், சாம்பல் நிறத்திலும் */
+    .logo-caption {
+        font-size: 12px;
+        color: #666; /* Subtler color */
+        margin-top: -10px; /* படத்திற்கு மிக நெருக்கமாக */
+        margin-bottom: 10px;
+    }
+
+    /* AIPSSS Title - சிவப்பு நிறம் (Centered) */
     .main-title { 
         font-size: 50px !important; 
         font-weight: 900; 
-        text-align: left; 
+        text-align: center; 
         color: #FF4B4B;
         letter-spacing: 2px;
-        margin: 0; /* மார்ஜினை நீக்கு */
-        line-height: 1; /* வரி உயரத்தைச் சுருக்கு */
+        margin: 0;
+        line-height: 1;
     }
     
-    /* (AI Powered Student Support System) - கேப்ஷன் */
+    /* (AI Powered Student Support System) - கேப்ஷன் (Centered) */
     .main-tagline {
         font-size: 16px !important; 
-        text-align: left; 
-        color: #555; /* Neutral color for readability */
-        margin-top: -5px; /* தலைப்புக்கு நெருக்கமாக வைக்க */
+        text-align: center; 
+        color: #555;
+        margin-top: -5px;
         display: block;
         font-weight: bold;
     }
@@ -72,33 +88,31 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Fixed Header Alignment (Logo Left, Text Right) ---
+# --- 🖼️ 3. Fixed Header Alignment (Logo Centered with Name, Title Centered) (Updated) ---
 # GitHub-ல் aipsss_robot_final.png என்ற பெயரில் படம் இருப்பதை உறுதி செய்யவும்
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-# லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் காட்ட
+# மையப்படுத்தப்பட்ட லோகோ மற்றும் தலைப்பு
 try:
     if os.path.exists(img_path):
-        logo_img = Image.open(img_path)
-        
-        col1, col2 = st.columns([1, 4]) 
-        
-        with col1:
-            st.image(logo_img, width=85) 
-            
-        with col2:
-            st.markdown('<p class="main-title">AIPSSS</p>', unsafe_allow_html=True)
-            st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
+        # HTML & CSS பயன்படுத்தி லோகோவை மையப்படுத்திக் காட்ட
+        st.markdown(f'''
+            <div class="logo-container">
+                <img src="data:image/png;base64,{st.image_to_base64(img_path)}" class="logo-img">
+                <p class="logo-caption">Developed by Kannan</p>
+                <p class="main-title">AIPSSS</p>
+                <p class="main-tagline">AI Powered Student Support System</p>
+            </div>
+        ''', unsafe_allow_html=True)
             
     else:
-        # படம் இல்லையென்றால் Fallback
-        st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
-        st.markdown('<p style="text-align:center; color:#555; font-weight:bold;">AI Powered Student Support System</p>', unsafe_allow_html=True)
+        # படம் இல்லையென்றால் Fallback ( centered)
+        st.markdown('<div class="logo-container"><p class="main-title">AIPSSS</p><p class="main-tagline">AI Powered Student Support System</p></div>', unsafe_allow_html=True)
 except:
-    st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
+    st.markdown('<div class="logo-container"><p class="main-title">AIPSSS</p></div>', unsafe_allow_html=True)
 
-# --- 🎙️ 4. Interaction - Voice (Top Priority) ---
+# ---🎙️ 4. Interaction - Voice (No change here) ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
@@ -107,13 +121,11 @@ voice_input = speech_to_text(
     key='aipsss_final_mic'
 )
 
-# --- 🧠 5. AI Core Logic (Accuracy Guaranteed) ---
+# --- 🧠 5. AI Core Logic (Accuracy Guaranteed) (No change here) ---
 def ai_response(q, pdf_text=""):
     try:
-        # PDF தகவலை 1500 எழுத்துக்களுக்குள் சுருக்குகிறோம்
         context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
         
-        # 'System' மெசேஜில் துல்லியம் குறித்த கட்டளை சேர்க்கப்பட்டுள்ளது
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
@@ -130,7 +142,7 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- ⌨️ 6. Input & PDF (Bottom Placement) ---
+# --- ⌨️ 6. Input & PDF (Bottom Placement) (No change here) ---
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
 # PDF அப்லோடர் கீழே
@@ -143,7 +155,7 @@ if uploaded_pdf:
         pdf_context += page.get_text()
     st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
 
-# --- 🚀 7. Process & Display Output ---
+# --- 🚀 7. Process & Display Output (No change here) ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
