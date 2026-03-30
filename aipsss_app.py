@@ -13,36 +13,37 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (வெள்ளை இடைவெளியைக் குறைக்க) ---
+# --- 🎨 2. Styling (Dark Mode & Color Fix) ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🎓")
 
 st.markdown("""
     <style>
-    /* திரையின் மேல் மற்றும் கீழ் இடைவெளியைக் குறைக்க */
-    .block-container { 
-        padding-top: 1.5rem !important; 
-        padding-bottom: 0rem !important; 
-    }
+    /* முழுத் திரையின் பின்னணியையும் வெள்ளையாகவே வைக்க (விருப்பமென்றால்) */
+    /* .main { background-color: white !important; } */
+
+    .block-container { padding-top: 1.5rem !important; }
     
-    /* 🎓 AIPSSS தலைப்பு */
+    /* 🎓 AIPSSS - Bright Red */
     .main-title { 
         font-size: 48px !important; 
         font-weight: 900; 
         text-align: center; 
-        color: #FF4B4B;
+        color: #FF4B4B !important;
         margin-bottom: 0px;
     }
     
-    /* Tagline */
+    /* Tagline - இப்போது இது 'தங்க நிறத்தில்' (Gold) இருக்கும் */
+    /* இது கருப்பு மற்றும் வெள்ளை என இரண்டு பின்னணியிலும் மிகத் தெளிவாகத் தெரியும் */
     .main-tagline {
-        font-size: 16px !important; 
+        font-size: 17px !important; 
         text-align: center; 
-        color: #555;
+        color: #FFD700 !important; /* Gold Color */
         margin-bottom: 20px;
-        font-style: italic;
+        font-weight: bold;
+        letter-spacing: 1px;
     }
     
-    /* மைக் பட்டன் - பெரிய அளவு */
+    /* மைக் பட்டன் */
     .stButton > button {
         height: 85px !important;
         width: 100% !important;
@@ -54,14 +55,8 @@ st.markdown("""
         border: none;
     }
 
-    /* PDF அப்லோடர் பெட்டி - சுருக்கமான வடிவமைப்பு */
-    .stFileUploader { 
-        margin-top: -10px !important; 
-        padding-bottom: 50px; /* சேட் பாக்ஸிற்கு மேலே நெருக்கமாக வைக்க */
-    }
-    
-    /* சேட் மெசேஜ் பாக்ஸ் இடைவெளியைக் குறைக்க */
-    .stChatMessage { margin-bottom: 1px !important; }
+    /* PDF அப்லோடர் இடைவெளி குறைப்பு */
+    .stFileUploader { margin-top: -15px !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -69,7 +64,7 @@ st.markdown("""
 st.markdown('<p class="main-title">🎓 AIPSSS</p>', unsafe_allow_html=True)
 st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
 
-# --- 🎙️ 4. Voice Input (Top) ---
+# --- 🎙️ 4. Voice Input ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
@@ -95,10 +90,9 @@ def ai_response(q, pdf_text=""):
         return f"Error: {str(e)}"
 
 # --- 🚀 6. Process Input ---
-# சேட் இன்புட் எப்போதும் அடியில் இருக்கும்
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
-# PDF அப்லோடர் - இன்புட் பாக்ஸிற்கு சற்று மேலே நெருக்கமாகத் தெரியும்
+# PDF அப்லோடர் - இன்புட் பாக்ஸிற்கு மிக நெருக்கமாக மேலே
 uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
 
 pdf_context = ""
