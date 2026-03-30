@@ -14,25 +14,33 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (Dark Mode & UI Fix) ---
+# --- 🎨 2. Styling (Logo & Title Side-by-Side) ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1rem !important; }
+    .block-container { padding-top: 1.5rem !important; }
     
-    /* AIPSSS Title */
+    /* லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் வைக்க */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px; /* படத்திற்கும் பெயருக்கும் இடைவெளி */
+        margin-top: -40px;
+        margin-bottom: 5px;
+    }
+
     .main-title { 
-        font-size: 48px !important; 
+        font-size: 45px !important; 
         font-weight: 900; 
-        text-align: center; 
         color: #FF4B4B !important;
-        margin-top: -20px;
+        margin: 0;
+        line-height: 1;
     }
     
-    /* Tagline - Gold Color */
     .main-tagline {
-        font-size: 17px !important; 
+        font-size: 16px !important; 
         text-align: center; 
         color: #FFD700 !important;
         margin-bottom: 20px;
@@ -56,19 +64,23 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header with Robot Image ---
-try:
-    # படத்தின் பெயர் இங்கே மாற்றப்பட்டுள்ளது
-    img_path = os.path.join(os.path.dirname(__file__), 'aipsss_robot.png')
-    if os.path.exists(img_path):
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            st.image(Image.open(img_path), use_container_width=True)
+# --- 🖼️ 3. Header: Logo (Left) + AIPSSS (Right) ---
+img_path = os.path.join(os.path.dirname(__file__), 'aipsss_robot.png')
+
+if os.path.exists(img_path):
+    # லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் காட்ட (CSS Flexbox மூலம்)
+    logo_img = Image.open(img_path)
+    # படத்தை சிறியதாக மாற்றி தலைப்புக்கு அருகில் வைக்கிறோம்
+    col1, col2 = st.columns([1, 3]) 
     
-    st.markdown('<p class="main-title">AIPSSS</p>', unsafe_allow_html=True)
-    st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
-except:
-    st.markdown('<p class="main-title">AIPSSS</p>', unsafe_allow_html=True)
+    with col1:
+        st.image(logo_img, width=80) # லோகோ அளவு 80px
+    with col2:
+        st.markdown('<h1 class="main-title">AIPSSS</h1>', unsafe_allow_html=True)
+else:
+    st.markdown('<p class="main-title" style="text-align:center;">AIPSSS</p>', unsafe_allow_html=True)
+
+st.markdown('<p class="main-tagline">AI Powered Student Support System</p>', unsafe_allow_html=True)
 
 # --- 🎙️ 4. Interaction ---
 voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_final_mic')
