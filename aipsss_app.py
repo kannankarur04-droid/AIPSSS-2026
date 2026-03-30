@@ -4,60 +4,76 @@ from gtts import gTTS
 from streamlit_mic_recorder import speech_to_text
 import os
 import re
-from PIL import Image
 import fitz  # PyMuPDF
 
-# --- 🔐 1. Setup ---
+# --- 🔐 1. API Key Setup ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Missing GROQ_API_KEY!")
+    st.error("Missing GROQ_API_KEY in Streamlit Secrets!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile & Logo Friendly ---
+# --- 🎨 2. Minimalist UI Styling ---
 st.set_page_config(page_title="AIPSSS", layout="centered")
 
 st.markdown("""
     <style>
-    /* தேவையற்ற இடைவெளிகளைக் குறைக்க */
-    .block-container { padding-top: 1rem; }
+    /* மொபைல் திரையில் தேவையற்ற இடைவெளியைக் குறைக்க */
+    .block-container { padding-top: 2rem; }
     
-    /* தலைப்பு (லோகோ இல்லையென்றால்) */
-    .fallback-title { font-size: 45px; font-weight: 900; text-align: center; color: #FF4B4B; margin-top: -50px; letter-spacing: 3px; }
-
-    /* மைக் பட்டன் - பெரிய அளவு */
-    .stButton > button { height: 85px !important; width: 100% !important; border-radius: 15px !important; font-size: 22px !important; font-weight: bold; background-color: #FF4B4B !important; color: white !important; }
-    
-    /* படங்களைச் சுற்றி பெட்டியை (Border) நீக்க */
-    div[data-testid="stImage"] img {
-        border: none !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
+    /* 🎓 AIPSSS தலைப்பு வடிவமைப்பு */
+    .main-title { 
+        font-size: 50px !important; 
+        font-weight: 900; 
+        text-align: center; 
+        margin-top: -60px; 
+        color: #FF4B4B;
+        letter-spacing: 3px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
     
-    /* PDF அப்லோடர் */
+    /* மைக் பட்டன் - பெரிய அளவு மற்றும் சிவப்பு நிறம் */
+    .stButton > button {
+        height: 90px !important;
+        width: 100% !important;
+        border-radius: 15px !important;
+        font-size: 24px !important;
+        font-weight: bold;
+        background-color: #FF4B4B !important;
+        color: white !important;
+        border: none;
+        box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
+        transition: 0.3s;
+    }
+    .stButton > button:hover {
+        background-color: #FF3333 !important;
+        transform: scale(1.02);
+    }
+
+    /* PDF அப்லோடர் பெட்டி */
     .stFileUploader { margin-top: 20px; }
+    
+    /* Chat Message Bubble Style */
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Logo Placement ---
-logo_path = os.path.join(os.path.dirname(__file__), 'aipsss_logo.png')
-if os.path.exists(logo_path):
-    # லோகோவை நடுவில் வைக்க
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image(Image.open(logo_path), use_container_width=True)
-else:
-    st.markdown('<p class="fallback-title">AIPSSS</p>', unsafe_allow_html=True)
+# முகப்பில் தலைப்பு மட்டும்
+st.markdown('<p class="main-title">🎓 AIPSSS</p>', unsafe_allow_html=True)
 
-# --- 🧠 4. AI Logic ---
+# --- 🧠 3. AI Core Logic (Groq) ---
 def ai_response(q, pdf_text=""):
     try:
+        # PDF தகவலை 1500 எழுத்துக்களுக்குள் சுருக்குகிறோம்
         context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
+        
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AIPSSS, a kind Education Assistant. Answer educational doubts briefly (max 4 lines). Encourage the student."},
+                {
+                    "role": "system", 
+                    "content": "You are AIPSSS, a kind and professional Education Assistant. Answer educational doubts briefly (max 4 lines). If PDF context is given, use it. Be encouraging to the student."
+                },
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
@@ -66,34 +82,45 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 5. Interaction - Voice (First) ---
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_final_mic')
+# --- 🎙️ 4. Interaction - Voice (Top Priority) ---
+# மைக் பட்டன் - மாணவர்கள் எளிதாக அழுத்த
+voice_input = speech_to_text(
+    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
+    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+    language='ta-IN',
+    use_container_width=True,
+    key='aipsss_final_mic'
+)
 
-# --- ⌨️ 6. Interaction - Input & PDF (Bottom) ---
+# --- ⌨️ 5. Interaction - Text & PDF (Bottom Placement) ---
+# கேள்வி கேட்கும் பெட்டி
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
-# PDF அப்லோடர்
-uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
+# PDF அப்லோடர் - உங்கள் விருப்பப்படி கீழே
+uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF-ஐ இங்கே பதிவேற்றவும்)", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     for page in doc:
         pdf_context += page.get_text()
-    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
+    st.success("✅ PDF இணைக்கப்பட்டுள்ளது. இப்போது கேள்வி கேட்கலாம்!")
 
-# --- 🚀 7. Generate Response ---
+# --- 🚀 6. Process & Display Output ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
+    # பயனர் கேள்வி
     with st.chat_message("user"):
         st.write(prompt)
+    
+    # ஏஐ பதில்
     with st.chat_message("assistant"):
         with st.spinner("யோசிக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.success(reply)
             
-            # Audio Output
+            # ஆடியோ பதில் (gTTS)
             is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
             tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
             tts.save("response.mp3")
