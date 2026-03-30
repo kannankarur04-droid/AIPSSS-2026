@@ -6,6 +6,7 @@ import os
 import re
 from PIL import Image
 import fitz  # PyMuPDF
+import base64
 
 # --- 🔐 1. Setup ---
 if "GROQ_API_KEY" in st.secrets:
@@ -19,49 +20,30 @@ st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    /* தலைப்பைச் சுருக்க */
     .block-container { padding-top: 1rem; }
     
-    /* லோகோ மற்றும் பெயரை இடதுபுறம் நெருக்கமாக வைக்க (Logo Left, Text Left) */
-     [data-testid="stHorizontalBlock"] {
-        align-items: center !important; 
-        display: flex !important;
-        gap: 15px !important;
-        margin-top: 0px !important; /* மேலே ஏறுவதைத் தவிர்க்க 0px */
-        padding-top: 10px !important;
-    }
-          /* AIPSSS Title - கம்ப்யூட்டரில் வெட்டப்படாமல் இருக்க திருத்தப்பட்டது */
+    /* AIPSSS Title Style */
     .main-title { 
-        font-size: 50px !important; 
         font-weight: 900; 
         text-align: left; 
         color: #FF4B4B;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
         margin: 0 !important; 
-        line-height: 1.4 !important; /* இதுதான் தலைப்பு வெட்டப்படுவதைத் தடுக்கும் */
         display: block !important;
         overflow: visible !important;
     }
 
-    /* மொபைலில் 35px */
+    /* Screen Specific Sizes */
     @media only screen and (max-width: 600px) {
         .main-title { font-size: 35px !important; line-height: 1.2 !important; }
         .main-tagline { font-size: 13px !important; }
     }
-    }
-
-    /* கம்ப்யூட்டரில் 50px */
     @media only screen and (min-width: 601px) {
-        .main-title {
-            font-size: 50px !important;
-            line-height: 1.4 !important; /* கம்ப்யூட்டரில் உயரம் அதிகம் தேவை */
-            margin: 5px 0;
-        }
+        .main-title { font-size: 55px !important; line-height: 1.4 !important; }
+        .main-tagline { font-size: 16px !important; }
     }
     
-    /* (AI Powered Student Support System) - கேப்ஷன் */
-     .main-tagline {
-        font-size: 16px !important; 
+    .main-tagline {
         text-align: left; 
         color: #555; 
         margin-top: 0px !important;
@@ -70,7 +52,6 @@ st.markdown("""
         display: block;
     }
     
-    /* மைக் பட்டன் - பெரிய அளவு மற்றும் சிவப்பு நிறம் */
     .stButton > button {
         height: 85px !important;
         width: 100% !important;
@@ -82,19 +63,15 @@ st.markdown("""
         box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
     }
 
-    /* PDF அப்லோடர் பெட்டி */
     .stFileUploader { margin-top: 20px; }
-    
-    /* Chat Message bubble style */
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ லோகோ மற்றும் தலைப்பு (Fixed for All Screens) ---
+# --- 🖼️ 3. Header Logic (Fixed Alignment) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-import base64
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
@@ -102,29 +79,23 @@ def get_base64_image(image_path):
 try:
     if os.path.exists(img_path):
         base64_img = get_base64_image(img_path)
-        # HTML Flexbox - தலைப்பு மற்றும் லோகோ ஒரே வரிசையில் இருக்க
         header_html = f'''
-            <div style="display: flex; align-items: center; gap: 15px; margin-top: -30px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 15px; margin-top: -20px; margin-bottom: 20px;">
                 <img src="data:image/png;base64,{base64_img}" style="width: 75px; height: auto;">
                 <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <p class="main-title" style="margin: 0 !important; line-height: 1.2 !important; font-size: 40px !important;">AIPSSS</p>
-                    <p class="main-tagline" style="margin: 0 !important; font-size: 14px !important;">AI Powered Student Support System</p>
+                    <p class="main-title">AIPSSS</p>
+                    <p class="main-tagline">AI Powered Student Support System</p>
                 </div>
             </div>
         '''
         st.markdown(header_html, unsafe_allow_html=True)
     else:
-        st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
-except Exception as e:
-    st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
-        st.markdown('<p style="text-align:center; color:#555; font-weight:bold;">AI Powered Student Support System</p>', unsafe_allow_html=True)
-        # படக் கோப்பு ஏன் வரவில்லை என்ற குறிப்பு அட்மினுக்கு மட்டும்
-        # st.warning(f"Note: {img_name} not found in root.")
+        st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#555; font-weight:bold; margin:0;">AI Powered Student Support System</p>', unsafe_allow_html=True)
+except Exception:
+    st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
 
-except:
-    st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
-
-# --- 🎙️ 4. Interaction - Voice (Top Priority) ---
+# --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
@@ -133,20 +104,16 @@ voice_input = speech_to_text(
     key='aipsss_final_mic'
 )
 
-# --- 🧠 5. AI Core Logic (Accuracy Guaranteed) ---
+# --- 🧠 5. AI Core Logic ---
 def ai_response(q, pdf_text=""):
     try:
-        # PDF தகவலை 1500 எழுத்துக்களுக்குள் சுருக்குகிறோம்
         context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
-        
-        # 'System' மெசேஜில் துல்லியம் குறித்த கட்டளை சேர்க்கப்பட்டுள்ளது
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
                 {
                     "role": "system", 
-                    "content": """You are AIPSSS, a highly accurate Education Assistant. 
-                    Accuracy is paramount. Double-check mathematical and factual data before answering."""
+                    "content": "You are AIPSSS, a highly accurate Education Assistant. Accuracy is paramount."
                 },
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
@@ -156,10 +123,8 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- ⌨️ 6. Input & PDF (Bottom Placement) ---
+# --- ⌨️ 6. Input & PDF ---
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-
-# PDF அப்லோடர் கீழே
 uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
 
 pdf_context = ""
@@ -169,7 +134,7 @@ if uploaded_pdf:
         pdf_context += page.get_text()
     st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
 
-# --- 🚀 7. Process & Display Output ---
+# --- 🚀 7. Output ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
@@ -181,8 +146,11 @@ if prompt:
             reply = ai_response(prompt, pdf_context)
             st.success(reply)
             
-            # ஆடியோ பதில் (Audio Response)
-            is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-            tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-            tts.save("response.mp3")
-            st.audio("response.mp3", autoplay=True)
+            # Audio Response
+            try:
+                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except:
+                pass
