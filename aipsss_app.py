@@ -31,15 +31,32 @@ st.markdown("""
         margin-top: -30px; /* மேல் இடைவெளியைக் குறைக்க */
     }
 
-    /* AIPSSS Title - சிவப்பு நிறம் */
+       /* AIPSSS Title - Responsive & Fixed */
     .main-title { 
-        font-size: 50px !important; 
         font-weight: 900; 
         text-align: left; 
         color: #FF4B4B;
         letter-spacing: 2px;
-        margin: 1; /* மார்ஜினை நீக்கு */
-        line-height: 1; /* வரி உயரத்தைச் சுருக்கு */
+        display: block;
+        overflow: visible !important; /* எழுத்து வெட்டப்படுவதைத் தவிர்க்க */
+    }
+
+    /* மொபைலில் 35px */
+    @media only screen and (max-width: 600px) {
+        .main-title {
+            font-size: 35px !important;
+            line-height: 1.2 !important;
+            margin: 0;
+        }
+    }
+
+    /* கம்ப்யூட்டரில் 50px */
+    @media only screen and (min-width: 601px) {
+        .main-title {
+            font-size: 50px !important;
+            line-height: 1.4 !important; /* கம்ப்யூட்டரில் உயரம் அதிகம் தேவை */
+            margin: 5px 0;
+        }
     }
     
     /* (AI Powered Student Support System) - கேப்ஷன் */
