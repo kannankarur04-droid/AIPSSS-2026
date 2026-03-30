@@ -5,163 +5,165 @@ from streamlit_mic_recorder import speech_to_text
 import os
 import re
 import base64
-from PIL import Image
-import fitz  # PyMuPDF
+import fitz # PyMuPDF
 
-# --- 🔐 1. Setup ---
+# ---------------- 🔐 SETUP ----------------
+st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🎓")
+
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Missing GROQ_API_KEY!")
+    st.error("❌ Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Fix for Half Display ---
-st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
-
+# ---------------- 🎨 CSS FIX ----------------
 st.markdown("""
-    <style>
-    .block-container { padding-top: 1rem; }
-    
-    /* லோகோ மற்றும் பெயருக்கான கண்டெய்னர் */
+<style>
+
+/* Layout fix */
+.block-container {
+    padding-top: 1rem;
+}
+
+/* Header */
+.header-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+/* Logo */
+.logo-img {
+    width: 110px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Title */
+.main-title {
+    font-size: 38px !important;
+    font-weight: 900;
+    color: #FF4B4B;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    letter-spacing: 2px;
+}
+
+/* Tagline */
+.main-tagline {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Caption */
+.logo-caption {
+    font-size: 11px;
+    color: #888;
+}
+
+/* Mobile fix */
+@media (max-width: 768px) {
     .header-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: -20px;
-        margin-bottom: 25px;
-        gap: 15px;
-        min-height: 120px; /* படத்திற்குத் தேவையான குறைந்தபட்ச உயரம் */
-    }
-
-    /* லோகோ முழுமையாகத் தெரிய height: auto மற்றும் display: block */
-    .logo-img {
-        width: 120px;
-        height: auto !important; /* உயரத்தை கட்டாயமாக தானாகச் சரிசெய்யும் */
-        display: block;
-        object-fit: contain;
-    }
-
-    .text-container {
-        display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
+        text-align: center;
     }
 
-    .main-title { 
-        font-size: 45px !important; 
-        font-weight: 900; 
-        color: #FF4B4B;
-        margin: 0;
-        line-height: 1.1;
+    .main-title {
+        font-size: 28px !important;
+        white-space: normal;
     }
-    
-    .main-tagline {
-        font-size: 16px !important; 
-        color: #555;
-        margin-top: 2px;
-        font-weight: bold;
-    }
+}
 
-    /* Developed by Kannan - Right Bottom of Logo */
-    .logo-caption {
-        font-size: 11px;
-        color: #888;
-        text-align: right;
-        margin-top: 2px;
-        width: 120px; /* படத்தின் அதே அகலம் */
-    }
-    
-    .stButton > button {
-        height: 80px !important;
-        width: 100% !important;
-        border-radius: 15px !important;
-        font-size: 20px !important;
-        background-color: #FF4B4B !important;
-        color: white !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
 
-# --- 🖼️ 3. Logo Logic (Base64) ---
-img_name = 'aipsss_robot_final.png' 
-
+# ---------------- 🖼️ LOGO ----------------
 def get_base64_image(path):
-    full_path = os.path.join(os.getcwd(), path)
-    if os.path.exists(full_path):
-        with open(full_path, "rb") as f:
-            data = f.read()
-            return base64.b64encode(data).decode()
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
     return None
 
-encoded_img = get_base64_image(img_name)
+encoded_img = get_base64_image("aipsss_robot_final.png")
 
 if encoded_img:
-    st.markdown(f'''
-        <div class="header-wrapper">
-            <div style="display: flex; flex-direction: column;">
-                <img src="data:image/png;base64,{encoded_img}" class="logo-img">
-                <p class="logo-caption">Developed by Kannan</p>
-            </div>
-            <div class="text-container">
-                <p class="main-title">AIPSSS</p>
-                <p class="main-tagline">AI Powered Student Support System</p>
-            </div>
+    st.markdown(f"""
+    <div class="header-wrapper">
+        <div>
+            <img src="data:image/png;base64,{encoded_img}" class="logo-img">
+            <div class="logo-caption">Developed by Kannan</div>
         </div>
-    ''', unsafe_allow_html=True)
+        <div>
+            <div class="main-title">AIPSSS</div>
+            <div class="main-tagline">AI Powered Student Support System</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 else:
-    st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
+    st.title("AIPSSS")
 
-# --- 🎙️ 4. Voice Input ---
+# ---------------- 🎤 VOICE ----------------
 voice_input = speech_to_text(
-    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
-    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+    start_prompt="🎤 பேச",
+    stop_prompt="🛑 நிறுத்த",
     language='ta-IN',
     use_container_width=True,
-    key='aipsss_mic'
+    key='mic'
 )
 
-# --- 🧠 5. AI Logic ---
+# ---------------- 🧠 AI ----------------
 def ai_response(q, pdf_text=""):
     try:
         context = f"Context: {pdf_text[:1500]}" if pdf_text else ""
+
         completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant", 
+            model="llama-3.1-8b-instant",
             messages=[
-                {"role": "system", "content": "You are AIPSSS, a helpful educational assistant. Answer in Tamil or English."},
+                {"role": "system", "content": "You are an educational assistant. Answer clearly in Tamil or English."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
-            temperature=0.1
+            temperature=0.2
         )
+
         return completion.choices[0].message.content
+
     except Exception as e:
-        return f"Error: {str(e)}"
+        return "⚠️ Server busy. Please try again."
 
-# --- ⌨️ 6. Input & PDF ---
-text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
-
+# ---------------- 📂 PDF ----------------
+uploaded_pdf = st.file_uploader("📂 PDF upload", type=["pdf"])
 pdf_context = ""
+
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     for page in doc:
         pdf_context += page.get_text()
-    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
+    st.success("✅ PDF Loaded")
 
-# --- 🚀 7. Output ---
+# ---------------- 💬 INPUT ----------------
+text_input = st.chat_input("Ask your question...")
+
 prompt = voice_input if voice_input else text_input
 
+# ---------------- 🚀 RESPONSE ----------------
 if prompt:
     with st.chat_message("user"):
         st.write(prompt)
-    
+
     with st.chat_message("assistant"):
-        with st.spinner("யோசிக்கிறேன்..."):
+        with st.spinner("Thinking..."):
             reply = ai_response(prompt, pdf_context)
             st.write(reply)
-            
-            is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-            tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-            tts.save("response.mp3")
-            st.audio("response.mp3", autoplay=True)
+
+            # Voice output
+            try:
+                lang = 'ta' if re.search(r'[\u0b80-\u0bff]', reply) else 'en'
+                tts = gTTS(text=reply[:300], lang=lang)
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except:
+                pass
