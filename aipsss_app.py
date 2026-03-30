@@ -22,7 +22,6 @@ st.markdown("""
     <style>
     .block-container { padding-top: 1rem; }
     
-    /* லோகோ மற்றும் பெயருக்கான பெட்டி */
     .logo-container {
         display: flex;
         flex-direction: column;
@@ -33,21 +32,19 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* லோகோ அளவு - சிறியதாக (100px) */
+    /* லோகோ அளவு */
     .logo-img {
-        width: 100px;
+        width: 120px;
         height: auto;
     }
 
-    /* படத்தின் கீழ் உங்கள் பெயர் */
     .logo-caption {
-        font-size: 13px;
+        font-size: 14px;
         color: #666;
         margin-top: 5px;
         font-weight: bold;
     }
 
-    /* AIPSSS தலைப்பு */
     .main-title { 
         font-size: 45px !important; 
         font-weight: 900; 
@@ -65,7 +62,6 @@ st.markdown("""
         font-weight: bold;
     }
     
-    /* மைக் பட்டன் ஸ்டைல் */
     .stButton > button {
         height: 80px !important;
         width: 100% !important;
@@ -75,17 +71,18 @@ st.markdown("""
         background-color: #FF4B4B !important;
         color: white !important;
     }
-
-    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Logo Logic (Way 2: Base64) ---
+# --- 🖼️ 3. Logo Logic (Base64) ---
+# படத்தின் பெயர் சரியாக இருக்கிறதா எனப் பார்க்கவும்
 img_name = 'aipsss_robot_final.png' 
 
 def get_base64_image(path):
-    if os.path.exists(path):
-        with open(path, "rb") as f:
+    # இங்கே os.path.join சேர்த்து இன்னும் துல்லியமாக மாற்றியுள்ளேன்
+    full_path = os.path.join(os.getcwd(), path)
+    if os.path.exists(full_path):
+        with open(full_path, "rb") as f:
             data = f.read()
             return base64.b64encode(data).decode()
     return None
@@ -102,12 +99,12 @@ if encoded_img:
         </div>
     ''', unsafe_allow_html=True)
 else:
-    # படம் இல்லையென்றால் வெறும் எழுத்துக்கள் மட்டும் வரும்
+    # படம் லோடு ஆகவில்லை என்றால் பிழையைக் காட்டாமல் வெறும் தலைப்பை மட்டும் காட்டும்
     st.markdown('''
         <div class="logo-container">
             <p class="main-title">AIPSSS</p>
             <p class="main-tagline">AI Powered Student Support System</p>
-            <p style="color:red; font-size:10px;">(Logo file not found in root folder)</p>
+            <p style="color:red; font-size:12px;">(Logo file "aipsss_robot_final.png" not found in the folder)</p>
         </div>
     ''', unsafe_allow_html=True)
 
@@ -127,7 +124,7 @@ def ai_response(q, pdf_text=""):
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AIPSSS, a helpful educational assistant. Answer clearly in Tamil or English."},
+                {"role": "system", "content": "You are AIPSSS, a helpful educational assistant. Answer in Tamil or English."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
@@ -159,7 +156,6 @@ if prompt:
             reply = ai_response(prompt, pdf_context)
             st.write(reply)
             
-            # ஆடியோ பதில்
             is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
             tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
             tts.save("response.mp3")
