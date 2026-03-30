@@ -23,14 +23,13 @@ st.markdown("""
     .block-container { padding-top: 1rem; }
     
     /* லோகோ மற்றும் பெயரை இடதுபுறம் நெருக்கமாக வைக்க (Logo Left, Text Left) */
-    [data-testid="stHorizontalBlock"] {
-        align-items: center; 
-        justify-content: flex-start; /* இடது பக்கம் ஒட்டியிருக்க */
-        display: flex;
-        gap: 10px; /* லோகோவுக்கும் பெயருக்கும் இடையே சிறிய இடைவெளி */
-        margin-top: -30px; /* மேல் இடைவெளியைக் குறைக்க */
+     [data-testid="stHorizontalBlock"] {
+        align-items: center !important; 
+        display: flex !important;
+        gap: 15px !important;
+        margin-top: 0px !important; /* மேலே ஏறுவதைத் தவிர்க்க 0px */
+        padding-top: 10px !important;
     }
-
           /* AIPSSS Title - கம்ப்யூட்டரில் வெட்டப்படாமல் இருக்க திருத்தப்பட்டது */
     .main-title { 
         font-size: 50px !important; 
@@ -39,19 +38,16 @@ st.markdown("""
         color: #FF4B4B;
         letter-spacing: 2px;
         margin: 0 !important; 
-        line-height: 1.4 !important; /* 1-க்கு பதில் 1.4 - இதுதான் தீர்வு */
-        display: block;
+        line-height: 1.4 !important; /* இதுதான் தலைப்பு வெட்டப்படுவதைத் தடுக்கும் */
+        display: block !important;
         overflow: visible !important;
-        padding-bottom: 10px; /* கீழ் பகுதி மறையாமல் இருக்க */
     }
 
     /* மொபைலில் 35px */
     @media only screen and (max-width: 600px) {
-        .main-title {
-            font-size: 35px !important;
-            line-height: 1.2 !important;
-            margin: 0;
-        }
+        .main-title { font-size: 35px !important; line-height: 1.2 !important; }
+        .main-tagline { font-size: 13px !important; }
+    }
     }
 
     /* கம்ப்யூட்டரில் 50px */
@@ -64,13 +60,14 @@ st.markdown("""
     }
     
     /* (AI Powered Student Support System) - கேப்ஷன் */
-    .main-tagline {
+     .main-tagline {
         font-size: 16px !important; 
         text-align: left; 
-        color: #555; /* Neutral color for readability */
-        margin-top: -5px; /* தலைப்புக்கு நெருக்கமாக வைக்க */
-        display: block;
+        color: #555; 
+        margin-top: 0px !important;
+        line-height: 1.2 !important;
         font-weight: bold;
+        display: block;
     }
     
     /* மைக் பட்டன் - பெரிய அளவு மற்றும் சிவப்பு நிறம் */
