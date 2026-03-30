@@ -100,7 +100,7 @@ try:
         logo_img = Image.open(img_path)
         
         # ஸ்ட்ரீம்லிட் காலம்ஸ் - இது ரெஸ்பான்சிவ் ஆக இருக்கும்
-        col1, col2 = st.columns([1, 4]) 
+        col1, col2 = st.columns([0.5, 4.5]) 
         
         with col1:
             # லோகோ அளவு - சுருக்கப்பட்டது
