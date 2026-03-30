@@ -100,4 +100,66 @@ if encoded_img:
     st.markdown(f'''
         <div class="header-wrapper">
             <img src="data:image/png;base64,{encoded_img}" class="logo-img">
-            <div
+            <div class="text-container">
+                <p class="main-title">AIPSSS</p>
+                <p class="main-tagline">AI Powered Student Support System</p>
+            </div>
+        </div>
+    ''', unsafe_allow_html=True)
+else:
+    # படம் இல்லையென்றால் Fallback
+    st.markdown('<h1 style="text-align:center; color:#FF4B4B;">AIPSSS</h1><p style="text-align:center; color:#555; font-weight:bold;">AI Powered Student Support System</p>', unsafe_allow_html=True)
+
+# --- 🎙️ 4. Interaction - Voice ---
+voice_input = speech_to_text(
+    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
+    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+    language='ta-IN',
+    use_container_width=True,
+    key='aipsss_mic'
+)
+
+# --- 🧠 5. AI Logic ---
+def ai_response(q, pdf_text=""):
+    try:
+        context = f"Context: {pdf_text[:1500]}" if pdf_text else ""
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant", 
+            messages=[
+                {"role": "system", "content": "You are AIPSSS, a helpful educational assistant. Answer clearly in Tamil or English."},
+                {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
+            ],
+            temperature=0.1
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# --- ⌨️ 6. Input & PDF ---
+text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
+uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
+
+pdf_context = ""
+if uploaded_pdf:
+    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
+    for page in doc:
+        pdf_context += page.get_text()
+    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
+
+# --- 🚀 7. Output ---
+prompt = voice_input if voice_input else text_input
+
+if prompt:
+    with st.chat_message("user"):
+        st.write(prompt)
+    
+    with st.chat_message("assistant"):
+        with st.spinner("யோசிக்கிறேன்..."):
+            reply = ai_response(prompt, pdf_context)
+            st.write(reply)
+            
+            # ஆடியோ பதில்
+            is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+            tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+            tts.save("response.mp3")
+            st.audio("response.mp3", autoplay=True)
