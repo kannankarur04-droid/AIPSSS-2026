@@ -20,9 +20,9 @@ st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1rem; }
+    .block-container { padding-top: 1.5rem !important; }
     
-    /* AIPSSS Title Style */
+    /* AIPSSS Title Style - Fixed Clipping */
     .main-title { 
         font-weight: 900; 
         text-align: left; 
@@ -30,16 +30,16 @@ st.markdown("""
         letter-spacing: 1px;
         margin: 0 !important; 
         display: block !important;
-        overflow: visible !important;
+        overflow: visible !important; /* வெட்டப்படுவதைத் தவிர்க்க */
     }
 
-    /* Screen Specific Sizes */
+    /* Responsive Sizes */
     @media only screen and (max-width: 600px) {
-        .main-title { font-size: 35px !important; line-height: 1.2 !important; }
-        .main-tagline { font-size: 13px !important; }
+        .main-title { font-size: 32px !important; line-height: 1.3 !important; }
+        .main-tagline { font-size: 12px !important; }
     }
     @media only screen and (min-width: 601px) {
-        .main-title { font-size: 55px !important; line-height: 1.4 !important; }
+        .main-title { font-size: 52px !important; line-height: 1.5 !important; }
         .main-tagline { font-size: 16px !important; }
     }
     
@@ -52,23 +52,22 @@ st.markdown("""
         display: block;
     }
     
+    /* Button Style */
     .stButton > button {
-        height: 85px !important;
+        height: 75px !important;
         width: 100% !important;
         border-radius: 15px !important;
-        font-size: 22px !important;
+        font-size: 20px !important;
         font-weight: bold;
         background-color: #FF4B4B !important;
         color: white !important;
         box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
     }
-
-    .stFileUploader { margin-top: 20px; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Fixed Alignment) ---
+# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -79,9 +78,10 @@ def get_base64_image(image_path):
 try:
     if os.path.exists(img_path):
         base64_img = get_base64_image(img_path)
+        # HTML Flexbox - தலைப்பு மேலே ஏறாமல் இருக்க margin-top: 0px
         header_html = f'''
-            <div style="display: flex; align-items: center; gap: 15px; margin-top: -20px; margin-bottom: 20px;">
-                <img src="data:image/png;base64,{base64_img}" style="width: 75px; height: auto;">
+            <div style="display: flex; align-items: center; gap: 15px; margin-top: 0px; margin-bottom: 25px; padding-top: 5px;">
+                <img src="data:image/png;base64,{base64_img}" style="width: 70px; height: auto; object-fit: contain;">
                 <div style="display: flex; flex-direction: column; justify-content: center;">
                     <p class="main-title">AIPSSS</p>
                     <p class="main-tagline">AI Powered Student Support System</p>
@@ -101,7 +101,7 @@ voice_input = speech_to_text(
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
     language='ta-IN',
     use_container_width=True,
-    key='aipsss_final_mic'
+    key='aipsss_mic_v2'
 )
 
 # --- 🧠 5. AI Core Logic ---
@@ -111,10 +111,7 @@ def ai_response(q, pdf_text=""):
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {
-                    "role": "system", 
-                    "content": "You are AIPSSS, a highly accurate Education Assistant. Accuracy is paramount."
-                },
+                {"role": "system", "content": "You are AIPSSS, a helpful Education Assistant."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
@@ -146,7 +143,7 @@ if prompt:
             reply = ai_response(prompt, pdf_context)
             st.success(reply)
             
-            # Audio Response
+            # Audio Output
             try:
                 is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
                 tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
