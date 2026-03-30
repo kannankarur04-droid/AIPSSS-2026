@@ -6,22 +6,22 @@ import os
 import re
 import fitz  # PyMuPDF
 
-# --- 🔐 1. API Key Setup ---
+# --- 🔐 1. Setup ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Missing GROQ_API_KEY in Streamlit Secrets!")
+    st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Minimalist UI Styling ---
-st.set_page_config(page_title="AIPSSS", layout="centered")
+# --- 🎨 2. Styling (CSS) - Mobile & Mic Friendly ---
+st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🎓")
 
 st.markdown("""
     <style>
     /* மொபைல் திரையில் தேவையற்ற இடைவெளியைக் குறைக்க */
     .block-container { padding-top: 2rem; }
     
-    /* 🎓 AIPSSS தலைப்பு வடிவமைப்பு */
+    /* 🎓 AIPSSS தலைப்பு - சிவப்பு நிறம் */
     .main-title { 
         font-size: 50px !important; 
         font-weight: 900; 
@@ -30,6 +30,18 @@ st.markdown("""
         color: #FF4B4B;
         letter-spacing: 3px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: -15px; /* விரிவான வாசகத்திற்கு இடம் விட */
+    }
+    
+    /* (AI Powered Student Support System) - Cursive Font */
+    .main-tagline {
+        font-family: 'Great Vibes', cursive; /* இந்த ஃபான்ட் மொபைலில் அழகாகத் தெரியும் */
+        font-size: 20px !important; 
+        font-weight: 400; 
+        text-align: center; 
+        color: #FF4B4B;
+        margin-bottom: 25px;
+        display: block;
     }
     
     /* மைக் பட்டன் - பெரிய அளவு மற்றும் சிவப்பு நிறம் */
@@ -51,17 +63,21 @@ st.markdown("""
     }
 
     /* PDF அப்லோடர் பெட்டி */
-    .stFileUploader { margin-top: 20px; }
+    .stFileUploader { margin-top: 15px; }
     
     /* Chat Message Bubble Style */
     .stChatMessage { border-radius: 15px; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great Vibes&display=swap" rel="stylesheet">
     """, unsafe_allow_html=True)
 
-# முகப்பில் தலைப்பு மட்டும்
+# --- 🖼️ 3. Title & Tagline Placement (Top) ---
+# தலைப்பு மட்டும்
 st.markdown('<p class="main-title">🎓 AIPSSS</p>', unsafe_allow_html=True)
+# அதன் கீழே Cursive Font-ல் expansion
+st.markdown('<p class="main-tagline">(AI Powered Student Support System)</p>', unsafe_allow_html=True)
 
-# --- 🧠 3. AI Core Logic (Groq) ---
+# --- 🧠 4. AI Logic (Groq Brain) ---
 def ai_response(q, pdf_text=""):
     try:
         # PDF தகவலை 1500 எழுத்துக்களுக்குள் சுருக்குகிறோம்
@@ -72,7 +88,7 @@ def ai_response(q, pdf_text=""):
             messages=[
                 {
                     "role": "system", 
-                    "content": "You are AIPSSS, a kind and professional Education Assistant. Answer educational doubts briefly (max 4 lines). If PDF context is given, use it. Be encouraging to the student."
+                    "content": "You are AIPSSS, a kind and professional Education Assistant. Answer educational doubts briefly (max 4 lines). Encourage the student."
                 },
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
@@ -82,8 +98,7 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 4. Interaction - Voice (Top Priority) ---
-# மைக் பட்டன் - மாணவர்கள் எளிதாக அழுத்த
+# --- 🎙️ 5. Interaction - Voice (Top Priority) ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
@@ -92,11 +107,10 @@ voice_input = speech_to_text(
     key='aipsss_final_mic'
 )
 
-# --- ⌨️ 5. Interaction - Text & PDF (Bottom Placement) ---
-# கேள்வி கேட்கும் பெட்டி
+# --- ⌨️ 6. Interaction - Text & PDF (Bottom Placement) ---
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
-# PDF அப்லோடர் - உங்கள் விருப்பப்படி கீழே
+# PDF அப்லோடர் - கேள்வி கேட்கும் இடத்திற்கு கீழே
 uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF-ஐ இங்கே பதிவேற்றவும்)", type=["pdf"])
 
 pdf_context = ""
@@ -106,7 +120,7 @@ if uploaded_pdf:
         pdf_context += page.get_text()
     st.success("✅ PDF இணைக்கப்பட்டுள்ளது. இப்போது கேள்வி கேட்கலாம்!")
 
-# --- 🚀 6. Process & Display Output ---
+# --- 🚀 7. Generate Response ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
