@@ -16,7 +16,7 @@ else:
     st.stop()
 
 # --- 🎨 2. Styling (CSS) - Fix for Half Display ---
-st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
+st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
