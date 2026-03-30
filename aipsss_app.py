@@ -90,26 +90,34 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Fixed Header Alignment (Logo Left, Text Right) ---
-# GitHub-ல் aipsss_robot_final.png என்ற பெயரில் படம் இருப்பதை உறுதி செய்யவும்
+# --- 🖼️ லோகோ மற்றும் தலைப்பு (Fixed for All Screens) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-# லோகோ மற்றும் தலைப்பை ஒரே வரிசையில் காட்ட (CSS alignments மேலே கொடுத்துள்ளோம்)
+import base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
 try:
     if os.path.exists(img_path):
-        logo_img = Image.open(img_path)
-        
-               # தலைப்பு மற்றும் லோகோவுக்கு சமமான இடம் கொடுக்க [1, 5] என மாற்றப்பட்டுள்ளது
-        col1, col2 = st.columns([1, 5]) 
-        
-        with col1:
-            st.image(logo_img, width=85) 
-            
-        with col2:
-            # line-height: 1.5 மற்றும் padding-bottom ஆகியவை எழுத்து வெட்டப்படுவதைத் தடுக்கும்
-            st.markdown('<p class="main-title" style="line-height: 1.5 !important; margin-bottom: 0px; padding-bottom: 5px;">AIPSSS</p>', unsafe_allow_html=True)
-            st.markdown('<p class="main-tagline" style="margin-top: -10px;">AI Powered Student Support System</p>', unsafe_allow_html=True)
+        base64_img = get_base64_image(img_path)
+        # லோகோவும் பெயரும் எப்போதும் ஒரே வரிசையில் இருக்க HTML Flexbox
+        header_html = f"""
+            <div style="display: flex; align-items: center; gap: 15px; margin-top: -30px; margin-bottom: 20px;">
+                <img src="data:image/png;base64,{base64_img}" style="width: 75px; height: auto;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <p class="main-title" style="margin: 0 !important; line-height: 1.2 !important; font-size: 40px !important;">AIPSSS</p>
+                    <p class="main-tagline" style="margin: 0 !important; font-size: 14px !important;">AI Powered Student Support System</p>
+                </div>
+            </div>
+        """
+        st.markdown(header_html, unsafe_allow_html=True)
+    else:
+        st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
+except Exception as e:
+    st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
+
             
     else:
         # படம் இல்லையென்றால்Fall Back
