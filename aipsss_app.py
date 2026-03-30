@@ -38,7 +38,7 @@ st.markdown("""
         text-align: left; 
         color: #FF4B4B;
         letter-spacing: 2px;
-        margin: 0.5; /* மார்ஜினை நீக்கு */
+        margin: 1; /* மார்ஜினை நீக்கு */
         line-height: 1; /* வரி உயரத்தைச் சுருக்கு */
     }
     
