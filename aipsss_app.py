@@ -13,46 +13,55 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (Clean & Modern) ---
+# --- 🎨 2. Styling (வெள்ளை இடைவெளியைக் குறைக்க) ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem; }
+    /* திரையின் மேல் மற்றும் கீழ் இடைவெளியைக் குறைக்க */
+    .block-container { 
+        padding-top: 1.5rem !important; 
+        padding-bottom: 0rem !important; 
+    }
     
-    /* 🎓 AIPSSS - Bold Red */
+    /* 🎓 AIPSSS தலைப்பு */
     .main-title { 
-        font-size: 52px !important; 
+        font-size: 48px !important; 
         font-weight: 900; 
         text-align: center; 
         color: #FF4B4B;
         margin-bottom: 0px;
     }
     
-    /* Tagline - Simple & Clear */
+    /* Tagline */
     .main-tagline {
-        font-size: 18px !important; 
+        font-size: 16px !important; 
         text-align: center; 
         color: #555;
-        margin-bottom: 30px;
-        display: block;
+        margin-bottom: 20px;
         font-style: italic;
     }
     
-    /* Mic Button */
+    /* மைக் பட்டன் - பெரிய அளவு */
     .stButton > button {
-        height: 90px !important;
+        height: 85px !important;
         width: 100% !important;
         border-radius: 15px !important;
-        font-size: 24px !important;
+        font-size: 22px !important;
         font-weight: bold;
         background-color: #FF4B4B !important;
         color: white !important;
         border: none;
     }
 
-    /* PDF Uploader Box */
-    .stFileUploader { margin-top: 10px; }
+    /* PDF அப்லோடர் பெட்டி - சுருக்கமான வடிவமைப்பு */
+    .stFileUploader { 
+        margin-top: -10px !important; 
+        padding-bottom: 50px; /* சேட் பாக்ஸிற்கு மேலே நெருக்கமாக வைக்க */
+    }
+    
+    /* சேட் மெசேஜ் பாக்ஸ் இடைவெளியைக் குறைக்க */
+    .stChatMessage { margin-bottom: 1px !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -85,22 +94,21 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- ⌨️ 6. Text Input & PDF (The Order You Asked) ---
-# முதலில் கேள்வி கேட்கும் பெட்டி
+# --- 🚀 6. Process Input ---
+# சேட் இன்புட் எப்போதும் அடியில் இருக்கும்
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
-# அதன் பிறகு PDF அப்லோடர் (கண்டிப்பாக கீழே இருக்கும்)
-st.write("---") # ஒரு சிறிய கோடு பிரிப்பிற்காக
-uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF-ஐ இங்கே பதிவேற்றவும்)", type=["pdf"])
+# PDF அப்லோடர் - இன்புட் பாக்ஸிற்கு சற்று மேலே நெருக்கமாகத் தெரியும்
+uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     for page in doc:
         pdf_context += page.get_text()
-    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
+    st.success("✅ PDF தயார்!")
 
-# --- 🚀 7. Output ---
+# --- 💬 7. Display Response ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
