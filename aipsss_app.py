@@ -7,170 +7,136 @@ import re
 import base64
 import fitz # PyMuPDF
 
-# ---------------- 🔐 SETUP ----------------
-st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🎓")
-
+# --- 🔐 API ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("❌ Missing GROQ_API_KEY!")
+    st.error("❌ Missing GROQ_API_KEY")
     st.stop()
 
-# ---------------- 🎨 CSS FIX ----------------
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖")
+
+# --- 🎨 CLEAN CSS (NO BREAK UI) ---
 st.markdown("""
 <style>
-
-/* FULL WIDTH FIX */
 .block-container {
     padding-top: 1rem;
-    max-width: 100% !important;
 }
 
-/* Header */
-.header-wrapper {
+/* Header layout */
+.header {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 25px;
-    width: 100%;
-    overflow: visible !important;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
-/* Logo */
-.logo-img {
-    width: 120px;
+/* Logo fix */
+.logo {
+    width: 90px;
     height: auto;
-    object-fit: contain;
 }
 
-/* Title */
-.main-title {
-    font-size: 34px !important;
-    font-weight: 900;
+/* Title fix */
+.title {
+    font-size: 32px;
+    font-weight: bold;
     color: #FF4B4B;
-    margin: 0;
-    line-height: 1.2;
-    white-space: nowrap;
 }
 
 /* Tagline */
-.main-tagline {
-    font-size: 15px;
-    color: #555;
-    font-weight: bold;
-}
-
-/* Caption */
-.logo-caption {
-    font-size: 11px;
-    color: #888;
-}
-
-/* Prevent cut */
-div {
-    overflow: visible !important;
+.tagline {
+    font-size: 14px;
+    color: #aaa;
 }
 
 /* Mobile fix */
-@media (max-width: 768px) {
-    .header-wrapper {
+@media (max-width: 600px) {
+    .header {
         flex-direction: column;
+        align-items: center;
         text-align: center;
     }
-
-    .main-title {
-        font-size: 26px !important;
-        white-space: normal;
-    }
 }
-
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- 🖼️ LOGO ----------------
-def get_base64_image(path):
+# --- 🖼️ LOGO LOAD ---
+def get_base64(path):
     if os.path.exists(path):
         with open(path, "rb") as f:
             return base64.b64encode(f.read()).decode()
     return None
 
-encoded_img = get_base64_image("aipsss_robot_final.png")
+logo = get_base64("aipsss_robot_final.png")
 
-if encoded_img:
+# --- HEADER ---
+if logo:
     st.markdown(f"""
-    <div class="header-wrapper">
+    <div class="header">
+        <img src="data:image/png;base64,{logo}" class="logo">
         <div>
-            <img src="data:image/png;base64,{encoded_img}" class="logo-img">
-            <div class="logo-caption">Developed by Kannan</div>
-        </div>
-
-        <div style="flex:1;">
-            <div class="main-title">AIPSSS</div>
-            <div class="main-tagline">AI Powered Student Support System</div>
+            <div class="title">AIPSSS</div>
+            <div class="tagline">AI Powered Student Support System</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 else:
     st.title("AIPSSS")
 
-# ---------------- 🎤 VOICE ----------------
-voice_input = speech_to_text(
+# --- 🎤 VOICE ---
+voice = speech_to_text(
     start_prompt="🎤 பேச",
     stop_prompt="🛑 நிறுத்த",
-    language='ta-IN',
-    use_container_width=True,
-    key='mic'
+    language="ta-IN",
+    key="mic"
 )
 
-# ---------------- 🧠 AI ----------------
-def ai_response(q, pdf_text=""):
-    try:
-        context = f"Context: {pdf_text[:1500]}" if pdf_text else ""
+# --- 📂 PDF ---
+pdf_text = ""
+file = st.file_uploader("📂 Upload PDF", type=["pdf"])
 
-        completion = client.chat.completions.create(
+if file:
+    doc = fitz.open(stream=file.read(), filetype="pdf")
+    for p in doc:
+        pdf_text += p.get_text()
+    st.success("✅ PDF loaded")
+
+# --- 🧠 AI FUNCTION ---
+def get_ai(q):
+    try:
+        res = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
-                {"role": "system", "content": "You are an educational assistant. Answer clearly in Tamil or English."},
-                {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
-            ],
-            temperature=0.2
+                {"role": "system", "content": "Educational assistant. Answer clearly."},
+                {"role": "user", "content": q + pdf_text[:1000]}
+            ]
         )
-
-        return completion.choices[0].message.content
-
+        return res.choices[0].message.content
     except Exception:
-        return "⚠️ Server busy. Please try again."
+        return "⚠️ AI busy. Try again."
 
-# ---------------- 📂 PDF ----------------
-uploaded_pdf = st.file_uploader("📂 PDF upload", type=["pdf"])
-pdf_context = ""
+# --- INPUT ---
+text = st.chat_input("Ask your question...")
 
-if uploaded_pdf:
-    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-    for page in doc:
-        pdf_context += page.get_text()
-    st.success("✅ PDF Loaded")
+query = voice if voice else text
 
-# ---------------- 💬 INPUT ----------------
-text_input = st.chat_input("Ask your question...")
-
-prompt = voice_input if voice_input else text_input
-
-# ---------------- 🚀 RESPONSE ----------------
-if prompt:
+# --- RESPONSE ---
+if query:
     with st.chat_message("user"):
-        st.write(prompt)
+        st.write(query)
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            reply = ai_response(prompt, pdf_context)
-            st.write(reply)
+            ans = get_ai(query)
+            st.write(ans)
 
-            # 🔊 Voice output
+            # --- 🔊 VOICE OUTPUT ---
             try:
-                lang = 'ta' if re.search(r'[\u0b80-\u0bff]', reply) else 'en'
-                tts = gTTS(text=reply[:300], lang=lang)
-                tts.save("response.mp3")
-                st.audio("response.mp3", autoplay=True)
+                lang = "ta" if re.search(r'[\u0B80-\u0BFF]', ans) else "en"
+                tts = gTTS(ans[:300], lang=lang)
+                tts.save("res.mp3")
+                st.audio("res.mp3")
             except:
                 pass
