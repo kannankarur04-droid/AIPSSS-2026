@@ -6,15 +6,16 @@ import os
 import re
 from PIL import Image
 import fitz  # PyMuPDF
+import base64
 
-# --- 🔐 1. Setup (No change here) ---
+# --- 🔐 1. Setup ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive (Updated) ---
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
@@ -88,7 +89,13 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Fixed Header Alignment (Logo Centered with Name, Title Centered) (Updated) ---
+# Helper function to convert image to base64
+def st_image_to_base64(path):
+    with open(path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# --- 🖼️ 3. Fixed Header Alignment (Logo Centered with Name, Title Centered) ---
 # GitHub-ல் aipsss_robot_final.png என்ற பெயரில் படம் இருப்பதை உறுதி செய்யவும்
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
@@ -99,7 +106,7 @@ try:
         # HTML & CSS பயன்படுத்தி லோகோவை மையப்படுத்திக் காட்ட
         st.markdown(f'''
             <div class="logo-container">
-                <img src="data:image/png;base64,{st.image_to_base64(img_path)}" class="logo-img">
+                <img src="data:image/png;base64,{st_image_to_base64(img_path)}" class="logo-img">
                 <p class="logo-caption">Developed by Kannan</p>
                 <p class="main-title">AIPSSS</p>
                 <p class="main-tagline">AI Powered Student Support System</p>
@@ -109,10 +116,11 @@ try:
     else:
         # படம் இல்லையென்றால் Fallback ( centered)
         st.markdown('<div class="logo-container"><p class="main-title">AIPSSS</p><p class="main-tagline">AI Powered Student Support System</p></div>', unsafe_allow_html=True)
-except:
+except Exception as e:
+    st.error(f"Error loading logo: {e}")
     st.markdown('<div class="logo-container"><p class="main-title">AIPSSS</p></div>', unsafe_allow_html=True)
 
-# ---🎙️ 4. Interaction - Voice (No change here) ---
+# --- 🎙️ 4. Interaction - Voice (Top Priority) ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
@@ -121,11 +129,13 @@ voice_input = speech_to_text(
     key='aipsss_final_mic'
 )
 
-# --- 🧠 5. AI Core Logic (Accuracy Guaranteed) (No change here) ---
+# --- 🧠 5. AI Core Logic (Accuracy Guaranteed) ---
 def ai_response(q, pdf_text=""):
     try:
+        # PDF தகவலை 1500 எழுத்துக்களுக்குள் சுருக்குகிறோம்
         context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
         
+        # 'System' மெசேஜில் துல்லியம் குறித்த கட்டளை சேர்க்கப்பட்டுள்ளது
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
@@ -142,7 +152,7 @@ def ai_response(q, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- ⌨️ 6. Input & PDF (Bottom Placement) (No change here) ---
+# --- ⌨️ 6. Input & PDF (Bottom Placement) ---
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 
 # PDF அப்லோடர் கீழே
@@ -155,7 +165,7 @@ if uploaded_pdf:
         pdf_context += page.get_text()
     st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
 
-# --- 🚀 7. Process & Display Output (No change here) ---
+# --- 🚀 7. Process & Display Output ---
 prompt = voice_input if voice_input else text_input
 
 if prompt:
