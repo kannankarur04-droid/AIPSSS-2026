@@ -19,9 +19,40 @@ st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; }
+    .block-container { padding-top: 1rem !important; }
+    
+    /* Title Styling */
+    .main-title { 
+        font-weight: 900; 
+        color: #FF4B4B;
+        margin: 0 !important; 
+        line-height: 0.8 !important;
+    }
+    
+    /* Responsive Title Sizes */
+    @media only screen and (max-width: 600px) {
+        .main-title { font-size: 40px !important; }
+        .tagline { font-size: 14px !important; }
+    }
+    @media only screen and (min-width: 601px) {
+        .main-title { font-size: 65px !important; }
+        .tagline { font-size: 18px !important; }
+    }
+
+    .tagline { color: #555; font-weight: bold; margin: 0 !important; line-height: 1.1 !important; padding-top: 8px; }
+    .quote { font-size: 15px; color: #444; font-style: italic; margin: 0 !important; line-height: 1.1 !important; padding-top: 5px; font-weight: 500; }
+    .developer { font-size: 13px; color: #888; margin: 0 !important; line-height: 1.1 !important; padding-top: 4px; }
+    
+    /* Button Styling */
+    .stButton > button {
+        height: 70px !important;
+        width: 100% !important;
+        border-radius: 15px !important;
+        font-size: 18px !important;
+        background-color: #FF4B4B !important;
+        color: white !important;
+    }
     .stChatMessage { border-radius: 15px; }
-    .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -29,7 +60,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (Logo & Name Aligned) ---
+# --- 🖼️ 4. Header Logic (Logo & Bottom Aligned Text) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -40,40 +71,41 @@ def get_base64_image(image_path):
     return None
 
 base64_img = get_base64_image(img_path)
+
 if base64_img:
+    # லோகோ 200px. அனைத்து வரிகளும் லோகோவின் பாதம் அருகே அலைன் செய்யப்பட்டுள்ளன.
     header_html = f'''
-        <div style="display: flex; align-items: flex-end; gap: 25px; margin-top: 40px; margin-bottom: 30px;">
-            <img src="data:image/png;base64,{base64_img}" style="width: 200px; height: auto; object-fit: contain;">
-            <div style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 5px;">
-                <p style="font-size: 60px; font-weight: 900; color: #FF4B4B; margin: 0; line-height: 0.9;">AIPSSS</p>
-                <p style="font-size: 18px; color: #555; font-weight: bold; margin: 0; line-height: 1.1; padding-top: 5px;">AI Powered Student Support System</p>
-                <p style="font-size: 14px; color: #888; margin: 0; line-height: 1.1; padding-top: 3px;">Developed by Kannan</p>
+        <div style="display: flex; align-items: flex-end; gap: 25px; margin-top: 35px; margin-bottom: 30px;">
+            <img src="data:image/png;base64,{base64_img}" style="width: 200px; height: auto; object-fit: contain; margin-bottom: -5px;">
+            <div style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8px;">
+                <p class="main-title">AIPSSS</p>
+                <p class="tagline">AI Powered Student Support System</p>
+                <p class="quote">"Everyone has the right to education"</p>
+                <p class="developer">Developed by Kannan</p>
             </div>
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
+else:
+    st.markdown('<h1 style="color:#FF4B4B; margin-top:30px;">AIPSSS</h1>', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Logic (Strict Educational Rules) ---
+# --- 🧠 5. AI Logic (Educational Guardrails) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # 1. 🚫 தடைசெய்யப்பட்ட வார்த்தைகளைக் கண்டறிதல் (Keyword filtering)
-        restricted = ["cinema", "movie", "actor", "actress", "song", "adult", "porn", "sexy", "violence", "kill", "suicide", "illegal", "hack", "drug", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்", "கொலை", "தற்கொலை"]
-        
+        # கல்வி சாரா மற்றும் தேவையற்ற வார்த்தைகள் கட்டுப்பாடு
+        restricted = ["cinema", "movie", "actor", "song", "adult", "porn", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்"]
         if any(word in user_query.lower() for word in restricted):
-            return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. கல்வி சாரா அல்லது தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது. உங்கள் பாடங்கள் அல்லது தொழில் முன்னேற்றம் குறித்து ஏதேனும் உதவி தேவையா?"
+            return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது."
 
-        # 2. 🧠 சிஸ்டம் இன்ஸ்ட்ரக்ஷன் (AI behavior control)
         system_instruction = """
         You are AIPSSS, a dedicated Educational and Career Mentor. 
-        - STRICTLY answer only queries related to: Education, Competitive Exams (TNPSC, UPSC, SSC), Career Guidance, Skill Development, and Academic subjects.
-        - STRICTLY REFUSE: Movies, Actors, Entertainment, Adult content, Violence, or Illegal activities.
-        - If the user asks anything outside education, politely say: "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான உதவிகளை மட்டுமே வழங்க முடியும்."
-        - Tone: Professional, encouraging, and helpful.
-        - Language: Respond in Tamil for Tamil queries and English for English queries.
+        - Only answer queries related to Education, Competitive Exams (TNPSC, UPSC), Career Guidance, and Academic subjects.
+        - Strictly refuse entertainment, movies, or illegal topics.
+        - Respond in Tamil for Tamil queries and English for English queries.
         """
 
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
-        context = f"PDF Context: {pdf_text[:1000]}\n" if pdf_text else ""
+        context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
 
         completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
@@ -81,20 +113,20 @@ def ai_response(user_query, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI & Chat Interaction ---
+# --- 🎙️ 6. UI & Interaction ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic')
+voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேட", type=["pdf"])
+uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     pdf_context = "".join([page.get_text() for page in doc])
-    st.success("✅ PDF இணைக்கப்பட்டது!")
+    st.success("✅ PDF வெற்றிகரமாக இணைக்கப்பட்டது!")
 
 prompt = voice_input if voice_input else text_input
 
@@ -104,14 +136,16 @@ if prompt:
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("ஆராய்கிறேன்..."):
+        with st.spinner("சிந்திக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
             
-            # ஆடியோ பதில்
-            is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-            tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-            tts.save("response.mp3")
-            st.audio("response.mp3", autoplay=True)
+            try:
+                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except:
+                pass
             
     st.session_state.messages.append({"role": "assistant", "content": reply})
