@@ -14,75 +14,90 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Enhanced Design ---
+# --- 🎨 2. Styling (CSS) - நீங்கள் கொடுத்த புதிய ஸ்டைல் ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; }
-    
-    /* Title Styling - Enhanced Size */
-    .main-title { 
-        font-weight: 900; 
-        text-align: left; 
-        color: #FF4B4B; /* Red */
-        letter-spacing: 1px;
-        margin: 0 !important; 
-        line-height: 1.0 !important;
+    /* பொதுவான அமைப்பு (கணினிக்காக) */
+    .aipsss-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px; /* லோகோ மற்றும் டெக்ஸ்ட் இடைவெளி */
+        padding: 20px;
+        flex-wrap: wrap; /* மொபைலில் தானாக கீழே வர உதவும் */
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
-    
-    /* Responsive Title Sizes */
-    @media only screen and (max-width: 600px) {
-        .main-title { font-size: 45px !important; }
-        .tagline { font-size: 14px !important; }
-        .quote { font-size: 13px !important; }
-        .developer { font-size: 12px !important; }
+
+    /* லோகோ அளவு */
+    .main-logo {
+        width: 200px; /* கணினியில் லோகோவின் அளவு */
+        height: auto;
+        transition: 0.3s;
     }
-    @media only screen and (min-width: 601px) {
-        .main-title { font-size: 65px !important; }
-        .tagline { font-size: 18px !important; }
-        .quote { font-size: 16px !important; }
-        .developer { font-size: 14px !important; }
+
+    .content-box {
+        text-align: left;
     }
-    
-    /* 🌟 Gold Color for Tagline & Quote */
-    .tagline { 
-        text-align: left; 
-        color: #FFD700;  /* Gold */
-        margin: 0 !important; 
-        line-height: 1.2 !important; 
-        font-weight: bold; 
-        padding-top: 8px; 
+
+    .main-title {
+        font-size: 4.5rem !important; /* தலைப்பு இன்னும் பெரிதாக */
+        color: #ff4d4d !important; /* சிகப்பு நிறம் */
+        margin: 0 !important;
+        font-weight: 900 !important;
+        line-height: 0.9 !important;
     }
-    .quote { 
-        font-size: 16px; 
-        color: #FFD700;  /* Gold */
-        font-style: italic; 
-        margin: 0 !important; 
-        line-height: 1.2 !important; 
-        padding-top: 6px; 
-        font-weight: 500; 
+
+    .subtitle {
+        font-size: 1.5rem !important;
+        color: #FFD700 !important; /* தங்க நிறம் */
+        margin: 5px 0 !important;
+        font-weight: bold !important;
     }
-    
-    /* ⚪ White Color for Developer Name */
-    .developer { 
-        font-size: 14px; 
-        color: #FFFFFF;  /* White */
-        text-align: left; 
-        margin: 0 !important; 
-        line-height: 1.2 !important; 
-        padding-top: 5px; 
+
+    .tagline {
+        font-style: italic !important;
+        color: #FFD700 !important; /* தங்க நிறம் */
+        margin-top: 10px !important;
+        font-weight: 500 !important;
     }
-    
-    /* Button Style - Responsive */
-    .stButton > button {
-        height: 75px !important;
-        width: 100% !important;
-        border-radius: 15px !important;
-        font-size: 20px !important;
-        background-color: #FF4B4B !important;
-        color: white !important;
+
+    .developer {
+        font-size: 1rem !important;
+        color: #FFFFFF !important; /* வெள்ளை நிறம் */
+        opacity: 0.9 !important;
+        margin-top: 5px !important;
     }
+
+    /* மொபைல் போன்களுக்கான மாற்றம் (Screen size < 768px) */
+    @media (max-width: 768px) {
+        .aipsss-header {
+            flex-direction: column; /* லோகோ மேலே, டெக்ஸ்ட் கீழே */
+            text-align: center;
+            gap: 15px;
+        }
+
+        .content-box {
+            text-align: center; /* மொபைலில் நடுவில் வர */
+        }
+
+        .main-logo {
+            width: 120px; /* மொபைலில் லோகோவின் அளவு */
+        }
+
+        .main-title {
+            font-size: 3rem !important;
+        }
+
+        .subtitle {
+            font-size: 1.2rem !important;
+        }
+    }
+
+    /* Chat & Button Styles */
+    .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
@@ -91,7 +106,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (Enlarged Logo & Bottom Aligned Texts) ---
+# --- 🖼️ 4. Header Logic (HTML Integration) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -104,42 +119,39 @@ def get_base64_image(image_path):
 base64_img = get_base64_image(img_path)
 
 if base64_img:
-    # லோகோ அளவு 200px ஆக அதிகரிக்கப்பட்டுள்ளது. 
-    # align-items: flex-end வரிகளை லோகோவின் அடிப்பகுதிக்கு நேராக அலைன் செய்யும்.
+    # நீங்கள் கொடுத்த HTML கட்டமைப்பு
     header_html = f'''
-        <div style="display: flex; align-items: flex-end; gap: 25px; margin-top: 35px; margin-bottom: 30px; padding-left: 10px;">
-            <img src="data:image/png;base64,{base64_img}" style="width: 200px; height: auto; object-fit: contain; margin-bottom: -5px;">
-            <div style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8px;">
-                <p class="main-title">AIPSSS</p>
-                <p class="tagline">AI Powered Student Support System</p>
-                <p class="quote">"Everyone has the right to education"</p>
+        <div class="aipsss-header">
+            <div class="logo-box">
+                <img src="data:image/png;base64,{base64_img}" alt="AIPSSS Logo" class="main-logo">
+            </div>
+            <div class="content-box">
+                <h1 class="main-title">AIPSSS</h1>
+                <p class="subtitle">AI Powered Student Support System</p>
+                <p class="tagline">"Everyone has the right to education"</p>
                 <p class="developer">Developed by Kannan</p>
             </div>
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 else:
-    # படம் இல்லை என்றால், வெறும் தலைப்பை மட்டும் காட்டவும்
-    st.markdown('<h1 style="color:#FF4B4B; margin-top:35px;">AIPSSS</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="color:#FF4B4B; text-align:center;">AIPSSS</h1>', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Core Logic (Educational Guardrails) ---
-def ai_response(q, pdf_text=""):
+# --- 🧠 5. AI Core Logic (Security & Education Focus) ---
+def ai_response(user_query, pdf_text=""):
     try:
-        # 🚫 கல்வி சாரா வார்த்தைகள் கட்டுப்பாடு
-        restricted = ["cinema", "movie", "actor", "actress", "song", "adult", "porn", "sexy", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்"]
-        
-        if any(word in q.lower() for word in restricted):
+        # 🚫 பாதுகாப்பு விதிமுறைகள்
+        restricted = ["cinema", "movie", "actor", "actress", "song", "adult", "porn", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்"]
+        if any(word in user_query.lower() for word in restricted):
             return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது."
 
-        # சிஸ்டம் விதிமுறைகள்
         system_instruction = """
         You are AIPSSS, a dedicated Educational and Career Mentor. 
-        - STRICTLY answer only queries related to: Education, Competitive Exams (TNPSC, UPSC, SSC), Career Guidance, Skill Development, and Academic subjects.
-        - STRICTLY refuse entertainment, movies, or illegal topics.
-        - Respond in Tamil for Tamil queries and English for English queries.
+        - Provide help ONLY for Education, Career, Skills, and Exams.
+        - Tone: Encouraging, Clear, and Professional.
+        - If query is non-educational, politely decline.
         """
 
-        # நினைவாற்றலுக்காக கடைசி 5 உரையாடல்கள்
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -150,21 +162,19 @@ def ai_response(q, pdf_text=""):
         return f"Error: {str(e)}"
 
 # --- 🎙️ 6. UI & Interaction ---
-# பழைய உரையாடல்களைக் காட்டுதல்
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# குரல் மற்றும் எழுத்து உள்ளீடு
 voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic_v3')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
+uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேட", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     pdf_context = "".join([page.get_text() for page in doc])
-    st.success("✅ PDF வெற்றிகரமாக இணைக்கப்பட்டது!")
+    st.success("✅ PDF இணைக்கப்பட்டது!")
 
 prompt = voice_input if voice_input else text_input
 
@@ -177,14 +187,5 @@ if prompt:
         with st.spinner("சிந்திக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
-            
-            # ஆடியோ பதில்
             try:
-                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-                tts.save("response.mp3")
-                st.audio("response.mp3", autoplay=True)
-            except:
-                pass
-            
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+                is_tamil = bool(
