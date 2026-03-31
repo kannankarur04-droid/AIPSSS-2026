@@ -21,7 +21,7 @@ st.markdown("""
     <style>
     .block-container { padding-top: 1rem !important; max-width: 1300px; }
     
-    /* Header Container - Side-by-Side */
+    /* Header Container - Side-by-Side on all screens */
     .aipsss-header {
         display: flex;
         flex-direction: row; 
@@ -35,7 +35,7 @@ st.markdown("""
         flex-wrap: nowrap;
     }
 
-    /* Logo Size - डेस्कटॉप */
+    /* Logo Size - Desktop */
     .main-logo {
         height: auto;
         width: 380px !important; 
@@ -86,7 +86,7 @@ st.markdown("""
         opacity: 0.9;
     }
 
-    /* Mobile View */
+    /* Mobile View Responsive */
     @media (max-width: 768px) {
         .aipsss-header { gap: 12px; padding: 12px; }
         .main-logo { width: 150px !important; }
@@ -103,12 +103,11 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (Syntax Fixed) ---
+# --- 🖼️ 4. Header Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
 def get_base64_image(path):
-    # இங்கிருந்த பிழை சரி செய்யப்பட்டது
     if os.path.exists(path):
         with open(path, "rb") as f:
             return base64.b64encode(f.read()).decode()
@@ -129,33 +128,42 @@ if b64_img:
         </div>
     ''', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine (Strict Educational Guardian) ---
+# --- 🧠 5. AI Engine (Zero Hallucination Control) ---
 def ai_response(q, pdf=""):
     try:
-        # 🚫 1. Keywords Filter (Immediate Block)
-        forbidden_list = ["game", "Adult", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா", "பாடல்", "படம்", "கேம்"]
+        # 🚫 1. Keywords Filter (உடனடித் தடை)
+        forbidden_list = ["game", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா", "பாடல்", "படம்", "கேம்"]
         
         if any(word in q.lower() for word in forbidden_list):
-            return "மன்னிக்கவும், நான் ஒரு கல்வி வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது. படிப்பு தொடர்பான கேள்விகளை மட்டும் கேட்கவும்."
+            return "மன்னிக்கவும் பிரம்மதேவன், நான் ஒரு கல்வி மற்றும் வேலைவாய்ப்பு வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது."
 
-        # 🎯 2. AI Prompt Constraints
+        # 🎯 2. System Instructions (கண்டிப்பான விதிகள்)
         sys_msg = """
-        You are AIPSSS, a professional Education and Career Mentor. 
-        Developed by Brammadevan.
-        CRITICAL RULES:
-        1. Answer ONLY questions related to Education, Jobs, Exams, and Career.
-        2. NEVER answer questions about mobile brands for gaming or movies.
-        3. If the user asks about non-educational topics, strictly but politely refuse.
-        4. Give accurate information only. No hallucinations.
+        ROLE: You are AIPSSS (AI Powered Student Support System), a professional Education Mentor developed by Brammadevan.
+        CORE MISSION: Help students with education, exams, career, and skills.
+        STRICT LIMITS: 
+        - DO NOT provide information on mobile phones for gaming, movies, or celebrities.
+        - If the query is outside Education/Career, politely state your limitation.
+        - NEVER make up information. If you don't know, say you don't know.
+        - Be factual and accurate.
         """
         
-        hist = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
-        ctx = f"PDF Context: {pdf[:1200]}\n" if pdf else ""
-        msgs = [{"role": "system", "content": sys_msg}] + hist + [{"role": "user", "content": ctx + q}]
+        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
+        context = f"PDF Content (Only answer from this if relevant): {pdf[:1500]}\n" if pdf else ""
         
-        # Temperature 0.0 to ensure zero hallucination
-        res = client.chat.completions.create(model="llama-3.1-8b-instant", messages=msgs, temperature=0.0)
-        return res.choices[0].message.content
+        messages = [{"role": "system", "content": sys_msg}] + history + [{"role": "user", "content": context + q}]
+        
+        # --- 🌡️ TEMPERATURE CONTROL SET TO 0.0 ---
+        # இது தவறான பதில்களைத் தவிர்க்கும் (Zero Creativity/Hallucination)
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=messages,
+            temperature=0.0, 
+            top_p=1,
+            stream=False,
+            stop=None,
+        )
+        return response.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -166,12 +174,12 @@ for m in st.session_state.messages:
 up_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
 pdf_txt = ""
 if up_pdf:
-    with st.spinner("Reading PDF..."):
+    with st.spinner("PDF படிக்கிறேன்..."):
         doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
         pdf_txt = "".join([p.get_text() for p in doc])
-    st.success(f"✅ PDF Ready!")
+    st.success(f"✅ PDF இணைக்கப்பட்டது!")
 
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_strict_final')
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_zero_temp_v1')
 t_in = st.chat_input("கல்வி தொடர்பான கேள்வியைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
