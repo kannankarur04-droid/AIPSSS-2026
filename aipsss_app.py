@@ -14,53 +14,83 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - நெருக்கமான மற்றும் கச்சிதமான வடிவமைப்பு ---
+# --- 🎨 2. Styling (CSS) - Ultra Tight Alignment ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; }
     
-    /* Title Styling */
+    /* AIPSSS Header Container */
+    .aipsss-header { 
+        display: flex; 
+        align-items: flex-end; /* பாதம் அருகில் அலைன் செய்ய */
+        justify-content: center; 
+        gap: 2px; /* மிகக் குறைந்த இடைவெளி - பெயர்கள் லோகோவை ஒட்டி வரும் */
+        padding: 10px; 
+        flex-wrap: nowrap; /* மொபைலில் உடையாமல் இருக்க */
+        margin-top: 20px; 
+        margin-bottom: 30px; 
+    }
+
+    /* Logo Size */
+    .main-logo { width: 210px; height: auto; transition: 0.3s; }
+
+    .content-box { text-align: left; margin-left: 0px; }
+
+    /* Title & Typography */
     .main-title { 
-        font-weight: 900; 
-        text-align: left; 
-        color: #FF4B4B; 
-        letter-spacing: -1px;
+        font-size: 4.5rem !important; 
+        color: #ff4d4d !important; 
         margin: 0 !important; 
-        line-height: 0.8 !important; /* வரிகளுக்கு இடையே மிகக் குறைந்த இடைவெளி */
+        font-weight: 900 !important; 
+        line-height: 0.8 !important; 
+        letter-spacing: -2px;
     }
-    
-    /* Responsive Sizes */
-    @media only screen and (max-width: 600px) {
-        .main-title { font-size: 38px !important; }
-        .tagline { font-size: 13px !important; }
-        .quote { font-size: 12px !important; }
-        .developer { font-size: 11px !important; }
+    .subtitle { 
+        font-size: 1.5rem !important; 
+        color: #FFD700 !important; 
+        margin: 0 !important; 
+        font-weight: bold !important; 
+        line-height: 1.0 !important;
+        padding-top: 5px;
     }
-    @media only screen and (min-width: 601px) {
-        .main-title { font-size: 65px !important; }
-        .tagline { font-size: 18px !important; }
-        .quote { font-size: 16px !important; }
-        .developer { font-size: 14px !important; }
+    .tagline { 
+        font-style: italic !important; 
+        color: #FFD700 !important; 
+        margin: 0 !important; 
+        line-height: 1.0 !important;
+        padding-top: 3px;
+        font-size: 1.1rem !important;
     }
-    
-    /* வரிகளுக்கு இடையே உள்ள இடைவெளியைக் குறைத்தல் */
-    .tagline { color: #FFD700; font-weight: bold; margin: 0 !important; line-height: 1.0 !important; padding-top: 4px; }
-    .quote { color: #FFD700; font-style: italic; margin: 0 !important; line-height: 1.0 !important; padding-top: 3px; font-weight: 500; }
-    .developer { color: #FFFFFF; margin: 0 !important; line-height: 1.0 !important; padding-top: 3px; opacity: 0.9; }
-    
-    /* Chat & Button Styles */
-    .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; font-size: 20px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; }
+    .developer { 
+        font-size: 0.9rem !important; 
+        color: #FFFFFF !important; 
+        opacity: 0.8 !important; 
+        margin: 0 !important; 
+        line-height: 1.0 !important;
+        padding-top: 3px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .aipsss-header { gap: 5px; }
+        .main-logo { width: 130px; }
+        .main-title { font-size: 3rem !important; }
+        .subtitle { font-size: 1.1rem !important; }
+    }
+
+    /* UI Components */
+    .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Memory ---
+# --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (பெயர்களை லோகோவுடன் ஒட்டி வைத்தல்) ---
+# --- 🖼️ 4. Header Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -71,16 +101,14 @@ def get_base64_image(image_path):
     return None
 
 base64_img = get_base64_image(img_path)
-
 if base64_img:
-    # gap: 8px - இது பெயர்களை லோகோவிற்கு மிக நெருக்கமாக கொண்டு வரும்
     header_html = f'''
-        <div style="display: flex; align-items: flex-end; gap: 8px; margin-top: 30px; margin-bottom: 30px; padding-left: 5px;">
-            <img src="data:image/png;base64,{base64_img}" style="width: 210px; height: auto; object-fit: contain; margin-bottom: -5px;">
-            <div style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 6px;">
-                <p class="main-title">AIPSSS</p>
-                <p class="tagline">AI Powered Student Support System</p>
-                <p class="quote">"Everyone has the right to education"</p>
+        <div class="aipsss-header">
+            <img src="data:image/png;base64,{base64_img}" alt="AIPSSS Logo" class="main-logo">
+            <div class="content-box">
+                <h1 class="main-title">AIPSSS</h1>
+                <p class="subtitle">AI Powered Student Support System</p>
+                <p class="tagline">"Everyone has the right to education"</p>
                 <p class="developer">Developed by Kannan</p>
             </div>
         </div>
@@ -90,11 +118,11 @@ if base64_img:
 # --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        restricted = ["cinema", "movie", "actor", "adult", "violence", "kill", "fight", "சினிமா", "படம்", "நடிகர்", "பாடல்"]
+        restricted = ["cinema", "movie", "actor", "adult", "violence", "kill", "fight", "சினிமா", "படம்", "நடிகர்", "ஆபாசம்"]
         if any(word in user_query.lower() for word in restricted):
             return "மன்னிக்கவும், நான் ஒரு கல்வி வழிகாட்டி. இது போன்ற கேள்விகளுக்கு என்னால் பதில் சொல்ல முடியாது. உங்கள் படிப்பு தொடர்பாக ஏதேனும் உதவி தேவையா?"
 
-        system_instruction = "You are AIPSSS, a helpful and direct Education Assistant. No long lectures. Be professional and natural."
+        system_instruction = "You are AIPSSS, a professional Education Assistant. Be natural and direct. Only education topics."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -104,12 +132,12 @@ def ai_response(user_query, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI & Chat Interaction ---
+# --- 🎙️ 6. UI Interaction ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic_final_v5')
+voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_final_v5_tight')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள்", type=["pdf"])
 
@@ -127,7 +155,7 @@ if prompt:
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("யோசிக்கிறேன்..."):
+        with st.spinner("சிந்திக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
             try:
