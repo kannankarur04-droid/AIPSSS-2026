@@ -14,7 +14,7 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Balanced Spacing & Large Logo ---
+# --- 🎨 2. Styling (CSS) - Single Line Subtitle & Large Logo ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
@@ -26,13 +26,13 @@ st.markdown("""
         display: flex;
         align-items: flex-end; 
         justify-content: flex-start;
-        gap: 20px; 
+        gap: 18px; 
         margin-bottom: 35px;
         margin-top: 25px;
         width: 100%;
     }
 
-    /* Logo Size - Extra Large */
+    /* Logo Size */
     .main-logo {
         width: 280px; 
         height: auto;
@@ -51,19 +51,24 @@ st.markdown("""
     @media (min-width: 769px) {
         .main-logo { width: 280px; }
         .main-title { font-size: 5rem !important; line-height: 0.85 !important; }
-        .subtitle { font-size: 1.6rem !important; line-height: 1.2 !important; padding-top: 8px; }
+        .subtitle { font-size: 1.5rem !important; line-height: 1.2 !important; padding-top: 8px; white-space: nowrap; }
         .quote-text { font-size: 1.2rem !important; line-height: 1.2 !important; padding-top: 5px; }
         .developer { font-size: 1.1rem !important; line-height: 1.2 !important; padding-top: 5px; }
     }
 
-    /* Mobile View - Logo now visible */
+    /* Mobile View - Single Line Fix */
     @media (max-width: 768px) {
-        .aipsss-header { gap: 12px; flex-wrap: nowrap; align-items: center; }
-        .main-logo { width: 130px !important; } /* மொபைலில் லோகோ அளவு உயர்த்தப்பட்டுள்ளது */
+        .aipsss-header { gap: 10px; flex-wrap: nowrap; align-items: center; }
+        .main-logo { width: 120px !important; }
         .main-title { font-size: 2.8rem !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 1rem !important; line-height: 1.1 !important; padding-top: 6px; }
-        .quote-text { font-size: 0.85rem !important; line-height: 1.1 !important; padding-top: 4px; }
-        .developer { font-size: 0.8rem !important; line-height: 1.1 !important; padding-top: 4px; }
+        .subtitle { 
+            font-size: 0.85rem !important; /* அளவை குறைத்துள்ளேன் */
+            line-height: 1.1 !important; 
+            padding-top: 4px; 
+            white-space: nowrap; /* இது வரியை பிரிக்காமல் தடுக்கும் */
+        }
+        .quote-text { font-size: 0.75rem !important; line-height: 1.1 !important; padding-top: 2px; white-space: nowrap; }
+        .developer { font-size: 0.75rem !important; line-height: 1.1 !important; padding-top: 2px; }
     }
 
     .main-title { font-weight: 900 !important; color: #ff4d4d !important; margin: 0 !important; letter-spacing: -1px; }
@@ -130,7 +135,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v25_balanced')
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v26_oneline')
 text_input = st.chat_input("கல்வி தொடர்பான கேள்வியைக் கேட்கவும்...")
 uploaded_pdf = st.file_uploader("📂 கல்வி சார்ந்த PDF", type=["pdf"])
 
