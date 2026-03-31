@@ -40,8 +40,24 @@ st.markdown("""
     }
 
     .tagline { color: #555; font-weight: bold; margin: 0 !important; line-height: 1.1 !important; padding-top: 8px; }
-    .quote { font-size: 15px; color: #444; font-style: italic; margin: 0 !important; line-height: 1.1 !important; padding-top: 5px; font-weight: 500; }
-    .developer { font-size: 13px; color: #888; margin: 0 !important; line-height: 1.1 !important; padding-top: 4px; }
+    
+    /* 🌟 தங்க நிறம் (Gold Color) மாற்றங்கள் */
+    .quote { 
+        font-size: 15px; 
+        color: #FFD700;  /* Gold Color */
+        font-style: italic; 
+        margin: 0 !important; 
+        line-height: 1.1 !important; 
+        padding-top: 5px; 
+        font-weight: 500; 
+    }
+    .developer { 
+        font-size: 13px; 
+        color: #FFD700;  /* Gold Color */
+        margin: 0 !important; 
+        line-height: 1.1 !important; 
+        padding-top: 4px; 
+    }
     
     /* Button Styling */
     .stButton > button {
@@ -73,7 +89,6 @@ def get_base64_image(image_path):
 base64_img = get_base64_image(img_path)
 
 if base64_img:
-    # லோகோ 200px. அனைத்து வரிகளும் லோகோவின் பாதம் அருகே அலைன் செய்யப்பட்டுள்ளன.
     header_html = f'''
         <div style="display: flex; align-items: flex-end; gap: 25px; margin-top: 35px; margin-bottom: 30px;">
             <img src="data:image/png;base64,{base64_img}" style="width: 200px; height: auto; object-fit: contain; margin-bottom: -5px;">
@@ -92,7 +107,7 @@ else:
 # --- 🧠 5. AI Logic (Educational Guardrails) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # கல்வி சாரா மற்றும் தேவையற்ற வார்த்தைகள் கட்டுப்பாடு
+        # 🚫 கல்வி சாரா மற்றும் தேவையற்ற வார்த்தைகள் கட்டுப்பாடு
         restricted = ["cinema", "movie", "actor", "song", "adult", "porn", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்"]
         if any(word in user_query.lower() for word in restricted):
             return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது."
@@ -118,7 +133,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic')
+voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic_v3')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
 
