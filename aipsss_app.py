@@ -137,7 +137,7 @@ for message in st.session_state.messages:
 
 voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v26_oneline')
 text_input = st.chat_input("கல்வி தொடர்பான கேள்வியைக் கேட்கவும்...")
-uploaded_pdf = st.file_uploader("📂 கல்வி சார்ந்த PDF", type=["pdf"])
+uploaded_pdf = st.file_uploader("📂 PDF தகவல்களை அறிய", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
