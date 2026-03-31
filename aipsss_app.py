@@ -14,34 +14,32 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Compact & Large Logo ---
+# --- 🎨 2. Styling (உங்களின் CSS & HTML கோட் இங்கே) ---
 st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
+# உங்கள் CSS-ஐ இங்கே உள்ள <style> டேக்கிற்குள் வைக்கவும்
 st.markdown("""
     <style>
-    .block-container { padding-top: 1rem !important; max-width: 1300px; }
+    .block-container { padding-top: 2rem !important; max-width: 1300px; }
     
-    /* Header Container */
+    /* உங்கள் CSS கோட் - மொபைல் மற்றும் டெஸ்க்டாப் அலைன்மென்ட் */
     .aipsss-header {
         display: flex;
         align-items: center; 
         justify-content: flex-start;
-        gap: 25px; 
+        gap: 30px; 
         margin-bottom: 30px;
-        background: rgba(255, 255, 255, 0.03); 
-        padding: 15px;
+        background: rgba(255, 255, 255, 0.05); 
+        padding: 20px;
         border-radius: 20px;
     }
 
-    /* லோகோ அளவு - இப்போது மிகப்பரிதாக (350px) */
     .main-logo {
-        width: 350px !important; 
-        max-width: 350px !important;
+        width: 320px !important; 
         height: auto;
         object-fit: contain;
     }
 
-    /* டெக்ஸ்ட் பாக்ஸ் - இடைவெளி குறைப்பு */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -49,61 +47,33 @@ st.markdown("""
         text-align: left;
     }
 
-    .main-title {
-        font-size: 4.5rem !important; /* அளவை சற்று குறைத்துள்ளேன் */
-        color: #ff4d4d !important;
-        margin: 0 !important;
-        font-weight: 900 !important;
-        line-height: 0.8 !important; /* வரிகளுக்கு இடையே மிகக் குறைந்த இடைவெளி */
-        letter-spacing: -2px;
-    }
+    .main-title { font-size: 4.5rem !important; color: #ff4d4d !important; margin: 0 !important; font-weight: 900; line-height: 0.9; }
+    .subtitle { font-size: 1.6rem !important; color: #FFD700 !important; margin: 0 !important; font-weight: bold; padding-top: 10px; }
+    .quote-text { font-size: 1.2rem !important; font-style: italic !important; color: #FFD700 !important; margin: 0 !important; padding-top: 5px; }
+    .developer { font-size: 1.1rem !important; color: #FFFFFF !important; margin: 0 !important; padding-top: 5px; opacity: 0.9; }
 
-    .subtitle {
-        font-size: 1.5rem !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        font-weight: bold !important;
-        line-height: 1.0 !important;
-        padding-top: 10px;
-        white-space: nowrap;
-    }
-
-    .quote-text {
-        font-size: 1.1rem !important;
-        font-style: italic !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        line-height: 1.0 !important;
-        padding-top: 5px;
-    }
-
-    .developer {
-        font-size: 1rem !important;
-        color: #FFFFFF !important; 
-        margin: 0 !important;
-        line-height: 1.0 !important;
-        padding-top: 5px;
-        opacity: 0.8;
-    }
-
-    /* மொபைல் வியூ - லோகோ மற்றும் டெக்ஸ்ட் அலைன்மென்ட் */
+    /* மொபைல் போன்களுக்கான பிரத்யேக மாற்றங்கள் */
     @media (max-width: 768px) {
-        .aipsss-header { flex-direction: column; text-align: center; gap: 10px; padding: 10px; }
-        .main-logo { width: 150px !important; }
+        .aipsss-header { 
+            flex-direction: column; 
+            text-align: center; 
+            gap: 15px; 
+            padding: 15px; 
+        }
+        .main-logo { width: 160px !important; margin: 0 auto; }
         .main-title { font-size: 2.8rem !important; }
-        .subtitle { font-size: 0.9rem !important; white-space: normal; }
-        .quote-text, .developer { font-size: 0.8rem !important; }
+        .subtitle { font-size: 1.1rem !important; white-space: normal; }
     }
-
-    .stButton > button { height: 65px !important; border-radius: 12px !important; background-color: #FF4B4B !important; font-size: 18px; }
+    
+    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; font-size: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Memory ---
+# --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header ---
+# --- 🖼️ 4. Header Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -116,6 +86,7 @@ def get_base64_image(path):
 b64_img = get_base64_image(img_path)
 
 if b64_img:
+    # உங்கள் HTML கோட் இங்கே
     st.markdown(f'''
         <div class="aipsss-header">
             <img src="data:image/png;base64,{b64_img}" class="main-logo">
@@ -128,7 +99,7 @@ if b64_img:
         </div>
     ''', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine ---
+# --- 🧠 5. AI Logic ---
 def ai_response(q, pdf=""):
     try:
         forbidden = ["game", "gaming", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
@@ -145,7 +116,7 @@ def ai_response(q, pdf=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI ---
+# --- 🎙️ 6. UI Interaction ---
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
@@ -155,9 +126,9 @@ if up_pdf:
     with st.spinner("Reading PDF..."):
         doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
         pdf_txt = "".join([p.get_text() for p in doc])
-    st.success(f"✅ '{up_pdf.name}' Ready!")
+    st.success(f"✅ PDF இணைக்கப்பட்டது!")
 
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v31')
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_custom_v1')
 t_in = st.chat_input("கேள்வியைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
