@@ -33,7 +33,7 @@ st.markdown("""
 
     /* Logo Size - சீரான அளவு */
     .main-logo {
-        width: 180px; 
+        width: 200px; 
         height: auto;
         object-fit: contain;
     }
@@ -128,7 +128,7 @@ if base64_img:
 def ai_response(user_query, pdf_text=""):
     try:
         # Strict Restriction
-        restricted = ["game", "cheat", "hack", "illegal", "adult", "சினிமா", "விளையாட்டு"]
+        restricted = ["Mobile Games" "cinema", "movie", "actor", "actress", "song", "adult", "porn", "sexy", "violence", "kill", "suicide", "illegal", "hack", "drug", "செல்போன் விளையாட்டு" "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்", "கொலை", "தற்கொலை"]
         if any(word in user_query.lower() for word in restricted):
             return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. தேவையற்ற தகவல்களை வழங்க முடியாது."
 
