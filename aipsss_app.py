@@ -14,26 +14,28 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - நீங்கள் கொடுத்த புதிய ஸ்டைல் ---
+# --- 🎨 2. Styling (CSS) - Responsive Design ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    /* பொதுவான அமைப்பு (கணினிக்காக) */
+    .block-container { padding-top: 1rem !important; }
+    
+    /* AIPSSS Header Container */
     .aipsss-header {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 30px; /* லோகோ மற்றும் டெக்ஸ்ட் இடைவெளி */
+        gap: 30px;
         padding: 20px;
-        flex-wrap: wrap; /* மொபைலில் தானாக கீழே வர உதவும் */
+        flex-wrap: wrap;
         margin-top: 20px;
         margin-bottom: 30px;
     }
 
-    /* லோகோ அளவு */
+    /* Logo Size */
     .main-logo {
-        width: 200px; /* கணினியில் லோகோவின் அளவு */
+        width: 200px;
         height: auto;
         transition: 0.3s;
     }
@@ -43,8 +45,8 @@ st.markdown("""
     }
 
     .main-title {
-        font-size: 4.5rem !important; /* தலைப்பு இன்னும் பெரிதாக */
-        color: #ff4d4d !important; /* சிகப்பு நிறம் */
+        font-size: 4.5rem !important;
+        color: #ff4d4d !important;
         margin: 0 !important;
         font-weight: 900 !important;
         line-height: 0.9 !important;
@@ -52,61 +54,46 @@ st.markdown("""
 
     .subtitle {
         font-size: 1.5rem !important;
-        color: #FFD700 !important; /* தங்க நிறம் */
+        color: #FFD700 !important; /* Gold */
         margin: 5px 0 !important;
         font-weight: bold !important;
     }
 
     .tagline {
         font-style: italic !important;
-        color: #FFD700 !important; /* தங்க நிறம் */
-        margin-top: 10px !important;
+        color: #FFD700 !important; /* Gold */
+        margin-top: 8px !important;
         font-weight: 500 !important;
+        font-size: 1.1rem !important;
     }
 
     .developer {
-        font-size: 1rem !important;
-        color: #FFFFFF !important; /* வெள்ளை நிறம் */
-        opacity: 0.9 !important;
+        font-size: 0.9rem !important;
+        color: #FFFFFF !important; /* White */
+        opacity: 0.8 !important;
         margin-top: 5px !important;
     }
 
-    /* மொபைல் போன்களுக்கான மாற்றம் (Screen size < 768px) */
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
-        .aipsss-header {
-            flex-direction: column; /* லோகோ மேலே, டெக்ஸ்ட் கீழே */
-            text-align: center;
-            gap: 15px;
-        }
-
-        .content-box {
-            text-align: center; /* மொபைலில் நடுவில் வர */
-        }
-
-        .main-logo {
-            width: 120px; /* மொபைலில் லோகோவின் அளவு */
-        }
-
-        .main-title {
-            font-size: 3rem !important;
-        }
-
-        .subtitle {
-            font-size: 1.2rem !important;
-        }
+        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; }
+        .content-box { text-align: center; }
+        .main-logo { width: 120px; }
+        .main-title { font-size: 3rem !important; }
+        .subtitle { font-size: 1.1rem !important; }
     }
 
-    /* Chat & Button Styles */
+    /* UI Components */
     .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Chat History (Memory) ---
+# --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (HTML Integration) ---
+# --- 🖼️ 4. Header Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -119,7 +106,6 @@ def get_base64_image(image_path):
 base64_img = get_base64_image(img_path)
 
 if base64_img:
-    # நீங்கள் கொடுத்த HTML கட்டமைப்பு
     header_html = f'''
         <div class="aipsss-header">
             <div class="logo-box">
@@ -137,21 +123,15 @@ if base64_img:
 else:
     st.markdown('<h1 style="color:#FF4B4B; text-align:center;">AIPSSS</h1>', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Core Logic (Security & Education Focus) ---
+# --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # 🚫 பாதுகாப்பு விதிமுறைகள்
-        restricted = ["cinema", "movie", "actor", "actress", "song", "adult", "porn", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்"]
+        # Guardrails
+        restricted = ["cinema", "movie", "actor", "song", "adult", "porn", "violence", "illegal", "hack", "சினிமா", "படம்", "நடிகர்", "ஆபாசம்"]
         if any(word in user_query.lower() for word in restricted):
             return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது."
 
-        system_instruction = """
-        You are AIPSSS, a dedicated Educational and Career Mentor. 
-        - Provide help ONLY for Education, Career, Skills, and Exams.
-        - Tone: Encouraging, Clear, and Professional.
-        - If query is non-educational, politely decline.
-        """
-
+        system_instruction = "You are AIPSSS, a dedicated Educational Mentor. Only help with studies and career."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -161,12 +141,12 @@ def ai_response(user_query, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI & Interaction ---
+# --- 🎙️ 6. UI Interaction ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic_v3')
+voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='aipsss_mic_final')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
 uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேட", type=["pdf"])
 
@@ -187,5 +167,14 @@ if prompt:
         with st.spinner("சிந்திக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
+            
+            # Audio response logic
             try:
-                is_tamil = bool(
+                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except Exception:
+                pass
+            
+    st.session_state.messages.append({"role": "assistant", "content": reply})
