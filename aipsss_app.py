@@ -14,34 +14,34 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Sidebar Logo Style ---
-st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓") # Wide layout for better side alignment
+# --- 🎨 2. Styling (CSS) - Professional Sidebar Layout ---
+st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
     
-    /* Header Container - லோகோ ஓரத்தில் வர */
+    /* Header Container - Logo on the Side */
     .aipsss-header {
         display: flex;
-        align-items: center; /* லோகோ மற்றும் டெக்ஸ்ட் மையமாக அலைன் ஆக */
+        align-items: center; 
         justify-content: flex-start;
         gap: 30px; 
         margin-bottom: 40px;
-        background: rgba(255, 255, 255, 0.05); /* ஒரு மெல்லிய பின்னணி */
-        padding: 20px;
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05); 
+        padding: 25px;
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* லோகோவை ஓரத்தில் பெரிதாக்க (300px) */
+    /* Large Logo on the Left (300px) */
     .main-logo {
         width: 300px; 
         height: auto;
         object-fit: contain;
-        filter: drop-shadow(0px 0px 10px rgba(255, 75, 75, 0.3));
     }
 
-    /* டெக்ஸ்ட் பாக்ஸ் */
+    /* Content Box */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -54,15 +54,17 @@ st.markdown("""
         color: #ff4d4d !important;
         margin: 0 !important;
         font-weight: 950 !important;
-        line-height: 1 !important;
+        line-height: 0.8 !important;
+        letter-spacing: -2px;
     }
 
     .subtitle {
         font-size: 1.8rem !important;
-        color: #FFD700 !important; /* Gold */
+        color: #FFD700 !important; 
         margin: 0 !important;
         font-weight: bold !important;
-        padding-top: 10px;
+        padding-top: 12px;
+        white-space: nowrap;
     }
 
     .quote-text {
@@ -70,30 +72,34 @@ st.markdown("""
         font-style: italic !important;
         color: #FFD700 !important; 
         margin: 0 !important;
-        padding-top: 5px;
+        padding-top: 6px;
     }
 
     .developer {
         font-size: 1.2rem !important;
         color: #FFFFFF !important; 
         margin: 0 !important;
-        padding-top: 5px;
-        font-weight: 500;
+        padding-top: 6px;
+        opacity: 0.9;
     }
 
-    /* Mobile View Fix */
+    /* Mobile View Responsive */
     @media (max-width: 768px) {
         .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
         .main-logo { width: 150px !important; }
-        .main-title { font-size: 3rem !important; }
-        .subtitle { font-size: 1.1rem !important; }
+        .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
+        .subtitle { font-size: 1.1rem !important; white-space: normal; }
+        .quote-text { font-size: 0.9rem !important; }
+        .developer { font-size: 0.9rem !important; }
     }
 
-    .stButton > button { height: 75px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
+    /* Chat & Button Styles */
+    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Memory ---
+# --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -123,49 +129,8 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine ---
+# --- 🧠 5. AI Engine (Fixed Logic) ---
 def ai_response(user_query, pdf_text=""):
     try:
         forbidden = ["game", "gaming", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
-        if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே."
-
-        system_instruction = "You are AIPSSS, a professional Education Mentor. Answer based on provided PDF or general knowledge. Strictly no gaming/entertainment."
-        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
-        context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
-        messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
-
-        completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
-        return completion.choices[0].message.content
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-# --- 🎙️ 6. Interaction ---
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
-
-pdf_extracted_text = ""
-if uploaded_pdf:
-    with st.spinner("PDF Reading..."):
-        doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-        pdf_extracted_text = "".join([page.get_text() for page in doc])
-    st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
-
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_sidebar_style')
-text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
-
-prompt = voice_input if voice_input else text_input
-
-if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-        with st.spinner("Searching..."):
-            reply = ai_response(prompt, pdf_extracted_text)
-            st.markdown(reply)
-            try:
+        if any(word
