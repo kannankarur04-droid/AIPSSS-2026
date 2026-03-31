@@ -21,7 +21,7 @@ st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
     
-    /* Header Container - Logo on the Side */
+    /* Header Container */
     .aipsss-header {
         display: flex;
         align-items: center; 
@@ -34,7 +34,7 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Large Logo on the Left (300px) */
+    /* Side Logo (300px) */
     .main-logo {
         width: 300px; 
         height: auto;
@@ -83,17 +83,16 @@ st.markdown("""
         opacity: 0.9;
     }
 
-    /* Mobile View Responsive */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
         .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
-        .main-logo { width: 150px !important; }
+        .main-logo { width: 140px !important; }
         .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 1.1rem !important; white-space: normal; }
-        .quote-text { font-size: 0.9rem !important; }
-        .developer { font-size: 0.9rem !important; }
+        .subtitle { font-size: 1rem !important; white-space: normal; }
+        .quote-text { font-size: 0.85rem !important; }
+        .developer { font-size: 0.85rem !important; }
     }
 
-    /* Chat & Button Styles */
     .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     .stChatMessage { border-radius: 15px; }
     </style>
@@ -103,7 +102,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic ---
+# --- 🖼️ 4. Header ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -129,8 +128,61 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine (Fixed Logic) ---
+# --- 🧠 5. AI Engine (Fixed Syntax) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        forbidden = ["game", "gaming", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
-        if any(word
+        # Keywords to block
+        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
+        
+        # Check if query is forbidden
+        if any(word in user_query.lower() for word in forbidden):
+            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
+
+        system_instruction = "You are AIPSSS, a professional Education Mentor. Answer based on provided PDF or general knowledge. Strictly no gaming/entertainment."
+        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
+        context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
+        messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
+
+        completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# --- 🎙️ 6. UI ---
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# PDF Input
+uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
+pdf_extracted_text = ""
+
+if uploaded_pdf:
+    with st.spinner("PDF Reading..."):
+        doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
+        pdf_extracted_text = "".join([page.get_text() for page in doc])
+    st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
+
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v30')
+text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
+
+prompt = voice_input if voice_input else text_input
+
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Searching..."):
+            reply = ai_response(prompt, pdf_extracted_text)
+            st.markdown(reply)
+            try:
+                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except:
+                pass
+            
+    st.session_state.messages.append({"role": "assistant", "content": reply})
