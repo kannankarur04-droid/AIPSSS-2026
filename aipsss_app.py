@@ -133,10 +133,10 @@ if b64_img:
 def ai_response(q, pdf=""):
     try:
         # 🚫 1. Keywords Filter (Immediate Block)
-        forbidden_list = ["game", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா", "பாடல்", "படம்", "கேம்"]
+        forbidden_list = ["game", "Adult", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா", "பாடல்", "படம்", "கேம்"]
         
         if any(word in q.lower() for word in forbidden_list):
-            return "மன்னிக்கவும் பிரம்மதேவன், நான் ஒரு கல்வி வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது. படிப்பு தொடர்பான கேள்விகளை மட்டும் கேட்கவும்."
+            return "மன்னிக்கவும், நான் ஒரு கல்வி வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது. படிப்பு தொடர்பான கேள்விகளை மட்டும் கேட்கவும்."
 
         # 🎯 2. AI Prompt Constraints
         sys_msg = """
