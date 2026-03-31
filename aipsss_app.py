@@ -142,9 +142,9 @@ if b64_img:
 def ai_response(q, pdf=""):
     try:
         # Gaming & Entertainment strictly blocked
-        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா"]
+        forbidden = ["game", "gaming", "Adult","play", "pubg", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா"]
         if any(w in q.lower() for w in forbidden):
-            return "மன்னிக்கவும் பிரம்மதேவன், நான் கல்வி மற்றும் வேலைவாய்ப்பு வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது."
+            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது."
 
         sys_msg = "You are AIPSSS, an Education Mentor developed by Brammadevan. Answer ONLY educational queries. No games or hallucinations."
         hist = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
