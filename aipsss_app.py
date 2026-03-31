@@ -14,33 +14,34 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (Final Alignment & Full Body Logo Fix) ---
+# --- 🎨 2. Styling (Desktop & Mobile Side-by-Side Fix) ---
 st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 1rem !important; max-width: 1300px; }
     
-    /* Header Container */
+    /* Header Container - Force Side-by-Side on all screens */
     .aipsss-header {
         display: flex;
+        flex-direction: row; /* எப்போதும் பக்கவாட்டில் இருக்க */
         align-items: center; 
         justify-content: flex-start;
-        gap: 20px; 
+        gap: 15px; 
         margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.05); 
         padding: 15px;
         border-radius: 20px;
-        overflow: visible; /* உடல் வெட்டப்படாமல் இருக்க */
+        flex-wrap: nowrap; /* அடுத்த வரிக்குச் செல்லாமல் தடுக்க */
     }
 
-    /* Logo Styling - Fixed for Full Body */
+    /* Logo Styling */
     .main-logo {
-        width: auto !important;
-        height: 280px !important; /* கம்ப்யூட்டரில் உயரம் */
-        max-width: 350px;
-        object-fit: contain; /* உடல் முழுமையாகத் தெரிய இது அவசியம் */
-        display: block;
+        height: auto;
+        width: 300px !important; /* கம்ப்யூட்டரில் அகலம் */
+        max-height: 250px;
+        object-fit: contain;
+        flex-shrink: 0; /* லோகோ சுருங்காமல் இருக்க */
     }
 
     /* Content Box - No Extra Spacing */
@@ -49,6 +50,7 @@ st.markdown("""
         flex-direction: column;
         justify-content: center;
         text-align: left;
+        overflow: hidden;
     }
 
     .main-title {
@@ -67,6 +69,7 @@ st.markdown("""
         font-weight: bold !important;
         line-height: 1.1 !important;
         padding-top: 8px;
+        white-space: nowrap; /* ஒரே வரியில் இருக்க */
     }
 
     .quote-text {
@@ -75,6 +78,7 @@ st.markdown("""
         color: #FFD700 !important; 
         margin: 0 !important;
         padding-top: 4px;
+        white-space: nowrap;
     }
 
     .developer {
@@ -85,27 +89,25 @@ st.markdown("""
         opacity: 0.9;
     }
 
-    /* Mobile Responsive - Total Fix */
+    /* Mobile Responsive - Strict Side-by-Side */
     @media (max-width: 768px) {
         .aipsss-header { 
-            flex-direction: column; 
-            text-align: center; 
             gap: 10px; 
-            padding: 15px 5px; 
+            padding: 10px;
+            margin-top: 10px;
         }
         .main-logo { 
-            height: 220px !important; /* மொபைலில் உடல் தெரிய உயரத்தை அதிகரித்துள்ளேன் */
-            width: auto !important;
-            margin: 0 auto !important;
-            object-fit: contain;
+            width: 100px !important; /* மொபைலில் லோகோவின் அகலம் குறைக்கப்பட்டுள்ளது */
+            height: auto !important;
         }
-        .main-title { font-size: 2.8rem !important; line-height: 1.0 !important; }
-        .subtitle { font-size: 1rem !important; white-space: normal; line-height: 1.2 !important; }
-        .quote-text, .developer { font-size: 0.85rem !important; }
-        .content-box { gap: 4px; padding-top: 5px; }
+        .main-title { font-size: 2.2rem !important; line-height: 0.9 !important; }
+        .subtitle { font-size: 0.8rem !important; padding-top: 4px; }
+        .quote-text { font-size: 0.7rem !important; }
+        .developer { font-size: 0.7rem !important; }
+        .content-box { gap: 2px; }
     }
 
-    .stButton > button { height: 65px !important; border-radius: 12px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; }
+    .stButton > button { height: 60px !important; border-radius: 12px !important; background-color: #FF4B4B !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -138,15 +140,14 @@ if b64_img:
         </div>
     ''', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Logic ---
+# --- 🧠 5. AI Engine (Strict Filter) ---
 def ai_response(q, pdf=""):
     try:
-        # Gaming & Entertainment strictly blocked
-        forbidden = ["game", "gaming", "Adult","play", "pubg", "cheat", "hack", "illegal", "movie", "cinema", "song", "விளையாட்டு", "சினிமா"]
+        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "movie", "cinema", "song", "விளையாட்டு", "சினிமா"]
         if any(w in q.lower() for w in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை என்னால் வழங்க முடியாது."
+            return "மன்னிக்கவும் பிரம்மதேவன், நான் கல்வி மற்றும் வேலைவாய்ப்பு வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களைத் தவிர்க்கவும்."
 
-        sys_msg = "You are AIPSSS, an Education Mentor developed by Brammadevan. Answer ONLY educational queries. No games or hallucinations."
+        sys_msg = "You are AIPSSS, an Education Mentor developed by Brammadevan. Answer ONLY educational queries. No games."
         hist = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         ctx = f"PDF Context: {pdf[:1200]}\n" if pdf else ""
         
@@ -156,7 +157,7 @@ def ai_response(q, pdf=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. Interaction ---
+# --- 🎙️ 6. UI Interaction ---
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
@@ -166,9 +167,9 @@ if up_pdf:
     with st.spinner("Reading PDF..."):
         doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
         pdf_txt = "".join([p.get_text() for p in doc])
-    st.success(f"✅ PDF இணைக்கப்பட்டது!")
+    st.success(f"✅ PDF Ready!")
 
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v42')
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_side_v1')
 t_in = st.chat_input("கல்வி தொடர்பான கேள்வியைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
