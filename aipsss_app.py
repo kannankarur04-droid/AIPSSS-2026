@@ -14,27 +14,77 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) ---
+# --- 🎨 2. Styling (CSS) - Responsive & Professional ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; }
-    .stChatMessage { border-radius: 15px; }
-    .stButton > button { height: 75px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     
-    /* Title Styles */
-    .title-text { font-size: 65px; font-weight: 900; color: #FF4B4B; margin: 0; line-height: 0.9; }
-    .gold-text { color: #FFD700; font-weight: bold; margin: 0; line-height: 1.2; padding-top: 5px; }
-    .quote-text { color: #FFD700; font-style: italic; margin: 0; line-height: 1.2; padding-top: 3px; font-size: 16px; }
-    .white-text { color: #FFFFFF; font-size: 14px; margin: 0; line-height: 1.2; padding-top: 5px; opacity: 0.9; }
-    
-    /* Responsive adjustment for Mobile */
-    @media (max-width: 600px) {
-        .title-text { font-size: 45px; }
-        .gold-text { font-size: 14px; }
-        .quote-text { font-size: 13px; }
+    /* AIPSSS Header - Computer & Mobile Friendly */
+    .aipsss-header { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 30px; 
+        padding: 20px; 
+        flex-wrap: wrap; 
+        margin-top: 20px; 
+        margin-bottom: 30px; 
     }
+
+    /* Logo Size */
+    .main-logo { width: 200px; height: auto; transition: 0.3s; }
+
+    .content-box { text-align: left; }
+
+    /* Title & Colors */
+    .main-title { 
+        font-size: 4.5rem !important; 
+        color: #ff4d4d !important; 
+        margin: 0 !important; 
+        font-weight: 900 !important; 
+        line-height: 0.9 !important; 
+    }
+    .subtitle { 
+        font-size: 1.5rem !important; 
+        color: #FFD700 !important; /* Gold */
+        margin: 5px 0 !important; 
+        font-weight: bold !important; 
+    }
+    .tagline { 
+        font-style: italic !important; 
+        color: #FFD700 !important; /* Gold */
+        margin-top: 10px !important; 
+        font-weight: 500 !important; 
+    }
+    .developer { 
+        font-size: 1rem !important; 
+        color: #FFFFFF !important; /* White */
+        opacity: 0.9 !important; 
+        margin-top: 5px !important; 
+    }
+
+    /* Mobile View Adjustments */
+    @media (max-width: 768px) {
+        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; }
+        .content-box { text-align: center; }
+        .main-logo { width: 120px; }
+        .main-title { font-size: 3rem !important; }
+        .subtitle { font-size: 1.2rem !important; }
+    }
+
+    /* Chat & Button UI */
+    .stButton > button { 
+        height: 75px !important; 
+        width: 100% !important; 
+        border-radius: 15px !important; 
+        background-color: #FF4B4B !important; 
+        color: white !important; 
+        font-weight: bold; 
+        font-size: 20px; 
+    }
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -42,7 +92,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Logic (Enlarged Logo & Precise Alignment) ---
+# --- 🖼️ 4. Header Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -53,50 +103,57 @@ def get_base64_image(image_path):
     return None
 
 base64_img = get_base64_image(img_path)
-
 if base64_img:
-    # லோகோ 220px ஆக பெரிதாக்கப்பட்டுள்ளது. 
-    # flex-end அலைன்மென்ட் மூலம் பெயர்கள் லோகோவின் பாதம் அருகில் அமையும்.
     header_html = f'''
-        <div style="display: flex; align-items: flex-end; gap: 25px; margin-top: 40px; margin-bottom: 35px;">
-            <img src="data:image/png;base64,{base64_img}" style="width: 220px; height: auto; object-fit: contain; margin-bottom: -5px;">
-            <div style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8px;">
-                <p class="title-text">AIPSSS</p>
-                <p class="gold-text">AI Powered Student Support System</p>
-                <p class="quote-text">"Everyone has the right to education"</p>
-                <p class="white-text">Developed by Kannan</p>
+        <div class="aipsss-header">
+            <div class="logo-box">
+                <img src="data:image/png;base64,{base64_img}" alt="AIPSSS Logo" class="main-logo">
+            </div>
+            <div class="content-box">
+                <h1 class="main-title">AIPSSS</h1>
+                <p class="subtitle">AI Powered Student Support System</p>
+                <p class="tagline">"Everyone has the right to education"</p>
+                <p class="developer">Developed by Kannan</p>
             </div>
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
-else:
-    st.markdown('<h1 style="color:#FF4B4B;">AIPSSS</h1>', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Logic (Strict Educational Rules) ---
+# --- 🧠 5. AI Engine (Natural Tone & Education Focus) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        restricted = ["cinema", "movie", "actor", "actress", "song", "adult", "porn", "sexy", "violence", "kill", "suicide", "illegal", "hack", "drug", "சினிமா", "படம்", "நடிகர்", "பாடல்", "ஆபாசம்", "கொலை", "தற்கொலை"]
+        # Restricted Keywords
+        restricted = ["cinema", "movie", "actor", "adult", "porn", "violence", "kill", "fight", "anger", "annoy", "சினிமா", "படம்", "நடிகர்", "சண்டை", "கோபம்", "பழிவாங்கு"]
+        
         if any(word in user_query.lower() for word in restricted):
-            return "மன்னிக்கவும், AIPSSS ஒரு கல்வி மற்றும் வேலைவாய்ப்பு சார்ந்த தளம் மட்டுமே. கல்வி சாரா அல்லது தேவையற்ற தகவல்களை என்னால் வழங்க முடியாது."
+            return "மன்னிக்கவும், நான் ஒரு கல்வி வழிகாட்டி. இது போன்ற கேள்விகளுக்கு என்னால் பதில் சொல்ல முடியாது. உங்கள் படிப்பு தொடர்பாக ஏதேனும் உதவி தேவையா?"
 
-        system_instruction = "You are AIPSSS, a dedicated Educational Mentor. Only help with studies and career."
+        # Natural Conversation Instruction
+        system_instruction = """
+        You are AIPSSS, a helpful and professional Education Assistant. 
+        - Talk naturally like a human mentor, not a robot or a monk.
+        - DO NOT give long moral lectures. Be direct.
+        - ONLY help with studies, career guidance, skills, and exams.
+        - For non-educational topics, say you can only help with education.
+        """
+
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
 
-        completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
+        completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.3)
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI Interaction ---
+# --- 🎙️ 6. UI & Interaction ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_aipsss_v3')
+voice_input = speech_to_text(start_prompt="🎤 பேச இங்கே அழுத்தவும்", stop_prompt="🛑 நிறுத்த அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_final_v4')
 text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேட", type=["pdf"])
+uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள்", type=["pdf"])
 
 pdf_context = ""
 if uploaded_pdf:
@@ -112,7 +169,7 @@ if prompt:
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("ஆராய்கிறேன்..."):
+        with st.spinner("யோசிக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
             try:
