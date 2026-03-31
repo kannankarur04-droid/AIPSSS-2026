@@ -14,7 +14,7 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Ultra Precise Responsive ---
+# --- 🎨 2. Styling (CSS) - Ultra Tight Spacing ---
 st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
@@ -26,20 +26,20 @@ st.markdown("""
         display: flex;
         align-items: flex-end; 
         justify-content: flex-start;
-        gap: 15px; 
-        margin-bottom: 35px;
+        gap: 12px; 
+        margin-bottom: 30px;
         margin-top: 20px;
         width: 100%;
     }
 
-    /* Logo Size - Enlarged to 250px */
+    /* Logo Size - Large */
     .main-logo {
         width: 250px; 
         height: auto;
         object-fit: contain;
     }
 
-    /* Content Box */
+    /* Content Box - Line spacing optimized */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -47,29 +47,30 @@ st.markdown("""
         text-align: left;
     }
 
-    /* Desktop View Sizes */
+    /* Desktop View */
     @media (min-width: 769px) {
         .main-logo { width: 250px; }
-        .main-title { font-size: 4.8rem !important; line-height: 0.8 !important; }
-        .subtitle { font-size: 1.6rem !important; }
-        .quote-text { font-size: 1.15rem !important; }
-        .developer { font-size: 1rem !important; }
+        .main-title { font-size: 4.8rem !important; line-height: 0.75 !important; }
+        .subtitle { font-size: 1.6rem !important; line-height: 0.9 !important; }
+        .quote-text { font-size: 1.15rem !important; line-height: 0.9 !important; }
+        .developer { font-size: 1rem !important; line-height: 0.9 !important; }
     }
 
-    /* Mobile View - Maintaining Left Alignment */
+    /* Mobile View */
     @media (max-width: 768px) {
-        .aipsss-header { gap: 10px; flex-wrap: nowrap; align-items: center; }
-        .main-logo { width: 110px !important; }
-        .main-title { font-size: 2.5rem !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 0.9rem !important; line-height: 1.1 !important; }
-        .quote-text { font-size: 0.8rem !important; }
-        .developer { font-size: 0.75rem !important; }
+        .aipsss-header { gap: 8px; flex-wrap: nowrap; align-items: center; }
+        .main-logo { width: 100px !important; }
+        .main-title { font-size: 2.3rem !important; line-height: 0.8 !important; }
+        .subtitle { font-size: 0.85rem !important; line-height: 0.95 !important; }
+        .quote-text { font-size: 0.75rem !important; line-height: 0.95 !important; }
+        .developer { font-size: 0.7rem !important; line-height: 0.95 !important; }
     }
 
-    .main-title { font-weight: 900 !important; color: #ff4d4d !important; margin: 0 !important; letter-spacing: -1px; }
-    .subtitle { color: #FFD700 !important; margin: 0 !important; font-weight: bold !important; padding-top: 5px; }
-    .quote-text { font-style: italic !important; color: #FFD700 !important; margin: 0 !important; padding-top: 3px; }
-    .developer { color: #FFFFFF !important; opacity: 0.8 !important; margin: 0 !important; padding-top: 3px; }
+    /* Text Colors & Styles */
+    .main-title { font-weight: 900 !important; color: #ff4d4d !important; margin: 0 !important; letter-spacing: -2px; }
+    .subtitle { color: #FFD700 !important; margin: 0 !important; font-weight: bold !important; padding-top: 2px !important; }
+    .quote-text { font-style: italic !important; color: #FFD700 !important; margin: 0 !important; padding-top: 1px !important; }
+    .developer { color: #FFFFFF !important; opacity: 0.8 !important; margin: 0 !important; padding-top: 1px !important; }
 
     /* UI Styles */
     .stButton > button { height: 70px !important; width: 100% !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
@@ -77,7 +78,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Chat History ---
+# --- 🧠 3. Memory ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -107,22 +108,16 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine (The Pure Educational Filter) ---
+# --- 🧠 5. AI Engine (Strictly Educational) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # Strict Block List
+        # Gaming & Illegal Block Filter
         forbidden = ["game", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "song", "actor", "விளையாட்டு", "கேம்", "சினிமா", "படம்"]
         
         if any(word in user_query.lower() for word in forbidden):
             return "மன்னிக்கவும் கண்ணன், நான் ஒரு கல்வி உதவியாளர். படிப்பு மற்றும் வேலைவாய்ப்பு தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதில் அளிக்க முடியும்."
 
-        system_instruction = """
-        YOU ARE AIPSSS, A STRICT EDUCATION ASSISTANT.
-        - Only answer Education, Careers, and Exams.
-        - Strictly refuse Gaming, Movies, and Entertainment.
-        - Tone: Professional mentor.
-        """
-
+        system_instruction = "You are AIPSSS, a strict Education Assistant. Only answer academic and career queries. Refuse entertainment topics."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1000]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -137,7 +132,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v23')
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v24_tight')
 text_input = st.chat_input("கல்வி தொடர்பான கேள்வியைக் கேட்கவும்...")
 uploaded_pdf = st.file_uploader("📂 கல்வி சார்ந்த PDF", type=["pdf"])
 
