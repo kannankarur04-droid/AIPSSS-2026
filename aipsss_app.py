@@ -14,58 +14,88 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (உங்களின் CSS & HTML கோட் இங்கே) ---
+# --- 🎨 2. Styling (Perfect Compact Alignment Fix) ---
 st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
-# உங்கள் CSS-ஐ இங்கே உள்ள <style> டேக்கிற்குள் வைக்கவும்
 st.markdown("""
     <style>
-    .block-container { padding-top: 2rem !important; max-width: 1300px; }
+    .block-container { padding-top: 1.5rem !important; max-width: 1300px; }
     
-    /* உங்கள் CSS கோட் - மொபைல் மற்றும் டெஸ்க்டாப் அலைன்மென்ட் */
+    /* Header Container */
     .aipsss-header {
         display: flex;
-        align-items: center; 
+        align-items: center; /* லோகோ மற்றும் டெக்ஸ்ட் பாக்ஸ் சென்டர் ஆக */
         justify-content: flex-start;
-        gap: 30px; 
-        margin-bottom: 30px;
+        gap: 25px; 
+        margin-bottom: 35px;
         background: rgba(255, 255, 255, 0.05); 
         padding: 20px;
         border-radius: 20px;
     }
 
-    .main-logo {
-        width: 320px !important; 
-        height: auto;
-        object-fit: contain;
-    }
-
+    /* டெக்ஸ்ட் பாக்ஸ் - வரிகளுக்கு இடையே சரியான இடைவெளி */
     .content-box {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: center; /* வரிகளை சென்டர் ஆக அடுக்க */
         text-align: left;
     }
 
-    .main-title { font-size: 4.5rem !important; color: #ff4d4d !important; margin: 0 !important; font-weight: 900; line-height: 0.9; }
-    .subtitle { font-size: 1.6rem !important; color: #FFD700 !important; margin: 0 !important; font-weight: bold; padding-top: 10px; }
-    .quote-text { font-size: 1.2rem !important; font-style: italic !important; color: #FFD700 !important; margin: 0 !important; padding-top: 5px; }
-    .developer { font-size: 1.1rem !important; color: #FFFFFF !important; margin: 0 !important; padding-top: 5px; opacity: 0.9; }
-
-    /* மொபைல் போன்களுக்கான பிரத்யேக மாற்றங்கள் */
-    @media (max-width: 768px) {
-        .aipsss-header { 
-            flex-direction: column; 
-            text-align: center; 
-            gap: 15px; 
-            padding: 15px; 
-        }
-        .main-logo { width: 160px !important; margin: 0 auto; }
-        .main-title { font-size: 2.8rem !important; }
-        .subtitle { font-size: 1.1rem !important; white-space: normal; }
+    /* லோகோ - டெக்ஸ்ட் பாக்ஸின் மொத்த உயரத்திற்குச் சமமாக கச்சிதமாக அமரும் */
+    .main-logo {
+        height: auto;
+        /* Desktop View - லோகோ உயரம் டெக்ஸ்ட் உயரத்திற்குச் சமமாக இருக்கும் */
+        width: 380px !important; 
+        object-fit: contain;
     }
-    
-    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; font-size: 20px; }
+
+    .main-title {
+        font-size: 5.5rem !important; /* அளவை மீண்டும் பெரிதாக்கியுள்ளேன் */
+        color: #ff4d4d !important;
+        margin: 0 !important;
+        font-weight: 950 !important;
+        line-height: 0.85 !important; /* அழகான நெருக்கமான இடைவெளி */
+        letter-spacing: -3px;
+    }
+
+    .subtitle {
+        font-size: 1.8rem !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        font-weight: bold !important;
+        line-height: 1.1 !important; /* சரியான இடைவெளி */
+        padding-top: 12px !important; /* Title-ல் இருந்து இடைவெளி */
+    }
+
+    .quote-text {
+        font-size: 1.3rem !important;
+        font-style: italic !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        line-height: 1.1 !important;
+        padding-top: 6px !important;
+    }
+
+    .developer {
+        font-size: 1.2rem !important;
+        color: #FFFFFF !important; 
+        margin: 0 !important;
+        font-weight: 500;
+        line-height: 1.1 !important;
+        padding-top: 6px !important;
+    }
+
+    /* Mobile View Responsive */
+    @media (max-width: 768px) {
+        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; }
+        .main-logo { width: 140px !important; margin: 0 auto; height: auto !important; }
+        .main-title { font-size: 3rem !important; line-height: 1.0 !important; }
+        .subtitle { font-size: 1.1rem !important; white-space: normal; line-height: 1.2 !important; }
+        .quote-text, .developer { font-size: 0.9rem !important; line-height: 1.2 !important; }
+        .content-box { gap: 8px; justify-content: center; padding: 10px 0; }
+    }
+
+    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -86,10 +116,9 @@ def get_base64_image(path):
 b64_img = get_base64_image(img_path)
 
 if b64_img:
-    # உங்கள் HTML கோட் இங்கே
     st.markdown(f'''
         <div class="aipsss-header">
-            <img src="data:image/png;base64,{b64_img}" class="main-logo">
+            <img src="data:image/png;base64,{b64_img}" alt="Logo" class="main-logo">
             <div class="content-box">
                 <h1 class="main-title">AIPSSS</h1>
                 <p class="subtitle">AI Powered Student Support System</p>
@@ -102,7 +131,7 @@ if b64_img:
 # --- 🧠 5. AI Logic ---
 def ai_response(q, pdf=""):
     try:
-        forbidden = ["game", "gaming", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
+        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "actor", "விளையாட்டு", "சினிமா"]
         if any(w in q.lower() for w in forbidden):
             return "மன்னிக்கவும், நான் கல்வி தொடர்பான உதவிகளை மட்டுமே வழங்க முடியும்."
         
@@ -126,9 +155,9 @@ if up_pdf:
     with st.spinner("Reading PDF..."):
         doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
         pdf_txt = "".join([p.get_text() for p in doc])
-    st.success(f"✅ PDF இணைக்கப்பட்டது!")
+    st.success(f"✅ PDF Ready!")
 
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_custom_v1')
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v_final_v1')
 t_in = st.chat_input("கேள்வியைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
