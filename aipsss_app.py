@@ -34,7 +34,7 @@ st.markdown("""
 
     /* Logo Size */
     .main-logo {
-        width: 280px; 
+        width: 300px; 
         height: auto;
         object-fit: contain;
     }
@@ -106,7 +106,7 @@ if base64_img:
                 <h1 class="main-title">AIPSSS</h1>
                 <p class="subtitle">AI Powered Student Support System</p>
                 <p class="quote-text">"Everyone has the right to education"</p>
-                <p class="developer">Developed by Kannan</p>
+                <p class="developer">Developed by Brammadevan</p>
             </div>
         </div>
     '''
@@ -115,7 +115,7 @@ if base64_img:
 # --- 🧠 5. AI Engine (Strictly Educational) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        forbidden = ["game", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "song", "actor", "விளையாட்டு", "கேம்", "சினிமா", "படம்"]
+        forbidden = ["game", "gaming", "play", "pubg", "free fire", "cheat", "hack", "illegal", "movie", "song", "actor" "Porn", "விளையாட்டு", "கேம்", "சினிமா", "படம்" "ஆபாசம்"]
         
         if any(word in user_query.lower() for word in forbidden):
             return "மன்னிக்கவும் கண்ணன், நான் ஒரு கல்வி உதவியாளர். படிப்பு மற்றும் வேலைவாய்ப்பு தொடர்பான கேள்விகளுக்கு மட்டுமே பதில் அளிப்பேன்."
