@@ -33,7 +33,7 @@ st.markdown("""
 
     /* Logo - BIG SIZE & NO GAP */
     .logo-img {
-        width: 300px;
+        width: 250px;
         height: auto;
         margin-right: 10px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
     }
