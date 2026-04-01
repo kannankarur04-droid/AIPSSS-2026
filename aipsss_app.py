@@ -14,74 +14,85 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) ---
-st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖")
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
+st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 2rem !important; }
     
-    /* Header Container */
+    /* Header Container - Flexible alignment */
     .header-container {
         display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
+        align-items: center; /* Vertically center content */
+        gap: 25px; /* Space between logo and text */
+        margin-bottom: 30px;
+        flex-wrap: nowrap; /* Avoid wrapping on small screens */
     }
 
-    /* Logo Style */
+    /* Logo Style - **PERITHAAKKAPPATTATHU** */
     .logo-img {
-        width: 100px;
+        width: 150px; /* Increased from 100px */
         height: auto;
+        object-fit: contain;
     }
 
     /* Text Content */
     .header-text {
         display: flex;
         flex-direction: column;
+        flex-grow: 1; /* Occupy remaining space */
     }
 
+    /* AIPSSS Title Style - **PERITHAAKKAPPATTATHU** */
     .main-title { 
-        font-size: 42px !important; 
         font-weight: 900; 
         color: #FF4B4B; 
+        text-transform: uppercase;
         margin: 0 !important;
         line-height: 1.1 !important;
-        text-transform: uppercase;
     }
 
+    /* Main Tagline - **PERITHAAKKAPPATTATHU** */
     .main-tagline {
-        font-size: 18px !important;
         font-style: italic;
         color: white;
-        margin: 5px 0 !important;
+        margin: 8px 0 !important; /* Slightly more space */
+        line-height: 1.2 !important;
     }
 
+    /* Developer Tag - **PERITHAAKKAPPATTATHU** */
     .developer-tag {
-        font-size: 14px !important;
         color: #FFD700; /* Yellow color */
         font-weight: bold;
         margin: 0 !important;
     }
 
-    /* Mobile responsiveness */
+    /* Responsive Sizes */
     @media only screen and (max-width: 600px) {
-        .main-title { font-size: 28px !important; }
-        .main-tagline { font-size: 14px !important; }
-        .logo-img { width: 70px; }
+        .logo-img { width: 100px; } /* Increased for mobile too */
+        .main-title { font-size: 38px !important; }
+        .main-tagline { font-size: 16px !important; }
+        .developer-tag { font-size: 14px !important; }
     }
-
-    /* Button & Chat UI */
+    @media only screen and (min-width: 601px) {
+        .logo-img { width: 150px; }
+        .main-title { font-size: 56px !important; } /* Big and bold */
+        .main-tagline { font-size: 20px !important; }
+        .developer-tag { font-size: 18px !important; }
+    }
+    
+    /* Input & PDF Styles (kept for functionality) */
     .stButton > button {
         border-radius: 12px !important;
         background-color: #FF4B4B !important;
         color: white !important;
     }
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic ---
-# உங்கள் லோகோ கோப்பு பெயர் 'final logo.jpg' என இருப்பதை உறுதி செய்யவும்
+# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -104,8 +115,13 @@ try:
         '''
         st.markdown(header_html, unsafe_allow_html=True)
     else:
-        st.error("Logo file not found! Please check 'final logo.jpg' path.")
+        # Fallback if logo not found
+        st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="color:white; font-style:italic;">"Everyone has the right to education"</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#FFD700; font-weight:bold;">Developed by Brammadevan</p>', unsafe_allow_html=True)
+
 except Exception as e:
+    # Generic fallback
     st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
 
 # --- 🎙️ 4. Interaction - Voice ---
