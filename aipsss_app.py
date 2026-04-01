@@ -21,7 +21,7 @@ st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; }
     
-    /* Header Container - பெட்டியின் உயரம் குறைக்கப்பட்டுள்ளது */
+    /* 1. ஹெட்டர் பெட்டி - Rectangle Box Size குறைக்கப்பட்டுள்ளது */
     .aipsss-header {
         display: flex;
         align-items: center; 
@@ -29,30 +29,32 @@ st.markdown("""
         gap: 35px; 
         margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.05); 
-        padding: 15px 35px; /* உயரத்தைக் குறைக்க 15px padding */
+        padding: 15px 40px; /* உயரத்தைக் குறைக்க 15px padding */
         border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Side Logo */
+    /* 2. லோகோ - பெரிதாக்கப்பட்டுள்ளது (Big Logo) */
     .main-logo {
-        width: 140px; /* லோகோ அளவு சீரமைக்கப்பட்டுள்ளது */
+        width: 180px !important; 
         height: auto;
         object-fit: contain;
+        flex-shrink: 0;
     }
 
-    /* Content Box - வரிகளை மேலே தள்ள alignment */
+    /* 3. எழுத்துக்கள் பெட்டி அலைன்மென்ட் */
     .content-box {
         display: flex;
         flex-direction: column;
         justify-content: center;
         text-align: left;
+        padding-bottom: 5px; 
     }
 
-    /* AI STUDENT MENTOR - Tight line space */
+    /* 4. AI STUDENT MENTOR - சிகப்பு நிறம் & நெருக்கமான இடைவெளி */
     .main-title { 
         font-weight: 950; 
-        color: #FF4B4B;
+        color: #FF4B4B !important; /* சிகப்பு நிறம் */
         text-transform: uppercase;
         margin: 0 !important; 
         line-height: 0.8 !important; 
@@ -60,49 +62,49 @@ st.markdown("""
         font-size: 52px !important;
     }
 
-    /* "Everyone..." - வெள்ளை நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
+    /* 5. பொன்மொழி - வெள்ளை நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
     .subtitle {
         font-size: 1.15rem !important;
         color: #FFFFFF !important; /* வெள்ளை நிறம் */
         margin: 0 !important;
-        font-weight: 500 !important;
-        padding-top: 2px !important; /* தலைப்புடன் நெருக்கமாக மேலே நகர்த்த */
+        padding-top: 2px !important; 
         font-style: italic;
         line-height: 1.0 !important;
     }
 
-    /* "Developed by..." - தங்க நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
+    /* 6. டெவலப்பர் - தங்க நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
     .developer {
         font-size: 1.05rem !important;
         color: #FFD700 !important; /* தங்க நிறம் */
         margin: 0 !important;
-        padding-top: 3px !important; /* பொன்மொழிக்கு மிக அருகில் */
+        padding-top: 3px !important; 
         font-weight: bold;
-        opacity: 0.9;
         line-height: 1.0 !important;
+        opacity: 0.9;
     }
 
-    /* Mobile Responsive */
+    /* மொபைல் சீரமைப்பு */
     @media (max-width: 768px) {
         .aipsss-header { gap: 15px; padding: 10px 15px; }
-        .main-logo { width: 80px !important; }
-        .main-title { font-size: 1.8rem !important; line-height: 0.85 !important; }
-        .subtitle { font-size: 0.9rem !important; }
-        .developer { font-size: 0.8rem !important; }
+        .main-logo { width: 90px !important; }
+        .main-title { font-size: 1.8rem !important; }
     }
-
-    /* UI Components */
-    .stButton > button { 
-        height: 65px !important; 
-        border-radius: 12px !important; 
-        background-color: #FF4B4B !important; 
-        color: white !important; 
-        font-weight: bold; 
-        font-size: 18px; 
-    }
-    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
+
+# --- 🖼️ ஹெட்டர் டிஸ்ப்ளே (HTML) ---
+if base64_img:
+    header_html = f'''
+        <div class="aipsss-header">
+            <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
+            <div class="content-box">
+                <h1 class="main-title">AI STUDENT MENTOR</h1>
+                <p class="subtitle">Everyone has the right to education</p>
+                <p class="developer">Developed by Brammadevan</p>
+            </div>
+        </div>
+    '''
+    st.markdown(header_html, unsafe_allow_html=True)
 
 # --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
