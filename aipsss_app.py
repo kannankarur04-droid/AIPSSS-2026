@@ -43,7 +43,7 @@ st.markdown("""
 
     /* பிரதான தலைப்பு - நிறம் சிவப்பாக மாற்றப்பட்டுள்ளது மற்றும் கூடுதல் இடம் நீக்கப்பட்டுள்ளது */
     .main-title { 
-        font-weight: 900; 
+        font-weight: 600; 
         color: #FF4B4B !important; /* Streamlit சிவப்பு நிறம் */
         text-transform: uppercase;
         margin: 0 !important; 
@@ -73,7 +73,7 @@ st.markdown("""
     /* Mobile Responsive */
     @media (max-width: 768px) {
         .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
-        .main-logo { width: 140px !important; }
+        .main-logo { width: 70px !important; }
         .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
         .subtitle { font-size: 1rem !important; white-space: normal; }
         .quote-text { font-size: 0.85rem !important; }
