@@ -17,7 +17,6 @@ else:
 # --- 🎨 2. Styling (CSS) - 'Final Logo' Design ---
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
-# CSS - இங்கேதான் வரிசை 20 தொடங்குகிறது
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -41,7 +40,7 @@ st.markdown("""
         z-index: 10;
     }
 
-    /* Header Text Box - Tight Line Spacing */
+    /* Header Text Box - Tight Line Spacing (நீங்கள் கொடுத்த புதிய அளவுகள்) */
     .header-text {
         display: flex;
         flex-direction: column;
@@ -49,7 +48,7 @@ st.markdown("""
         padding-bottom: 25px; 
     }
 
-    /* AI STUDENT MENTOR - RED */
+    /* AI STUDENT MENTOR - RED (நீங்கள் கொடுத்த புதிய அளவுகள்) */
     .header-text h1 {
         font-family: 'Lexend', sans-serif;
         font-size: 55px !important; 
@@ -82,16 +81,22 @@ st.markdown("""
         line-height: 1.0 !important;
     }
 
-    /* Chat Input Styling */
+    /* Chat Input Styling (Border logic updated) */
     .stChatInputContainer {
         border-radius: 15px !important;
         border: 1px solid rgba(255,255,255,0.1) !important;
     }
 
-    /* Buttons */
-    .stButton > button { height: 60px !important; border-radius: 12px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; }
+    /* Buttons (Red & Bold) */
+    .stButton > button { 
+        height: 60px !important; 
+        border-radius: 12px !important; 
+        background-color: #FF4B4B !important; 
+        color: white !important; 
+        font-weight: bold; 
+    }
     </style>
-    """, unsafe_allow_html=True) # <--- இங்கே வரிசை 61-ல் சரியாக மூடப்பட்டுள்ளது
+    """, unsafe_allow_html=True)
 
 # --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
@@ -124,9 +129,9 @@ if base64_img:
 # --- 🤖 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        system_instruction = "You are AI Student Mentor. Be precise."
+        system_instruction = "You are AI Student Mentor. Be precise and professional."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
-        context = f"PDF Context: {pdf_extracted_text[:1200]}\n" if pdf_text else ""
+        context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
         completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
         return completion.choices[0].message.content
