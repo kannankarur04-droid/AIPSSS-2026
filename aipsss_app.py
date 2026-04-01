@@ -14,73 +14,74 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Professional Sidebar Layout ---
-st.set_page_config(page_title="AI STDENT MENTOR", layout="wide", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) - Optimized for Slim Look ---
+st.set_page_config(page_title="AI STUDENTS MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
+    /* Background Color */
+    .stApp { background-color: #0E1117; }
     
-.aipsss-header {
+    .block-container { padding-top: 1rem !important; max-width: 1200px; }
+    
+    /* Slim Header Container */
+    .aipsss-header {
         display: flex;
         align-items: center; 
         justify-content: flex-start;
-        gap: 30px; 
-        margin-bottom: 20px; /* வெளியேயுள்ள இடைவெளி குறைப்பு */
+        gap: 25px; 
+        margin-bottom: 20px;
         background: rgba(255, 255, 255, 0.05); 
-        padding: 15px 25px; /* மேலே மற்றும் கீழே padding 25px லிருந்து 15px ஆகக் குறைக்கப்பட்டுள்ளது */
-        border-radius: 25px;
+        padding: 10px 25px; /* Height reduced significantly */
+        border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* உரைப் பெட்டி - வரிகளை மேலே நகர்த்த செங்குத்து சீரமைப்பு */
+    /* Smaller Logo */
+    .main-logo {
+        width: 100px !important; /* Smaller logo as requested */
+        height: auto;
+    }
+
+    /* Content Box with minimal line spacing */
     .content-box {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* உள்ளடக்கம் மேலே இருந்து தொடங்கும் */
+        justify-content: center;
         text-align: left;
     }
 
-    /* பிரதான தலைப்பு - நிறம் சிவப்பாக மாற்றப்பட்டுள்ளது மற்றும் கூடுதல் இடம் நீக்கப்பட்டுள்ளது */
+    /* Title in one line and Red color */
     .main-title { 
-        font-weight: 900; 
-        color: #FF4B4B !important; /* Streamlit சிவப்பு நிறம் */
+        font-size: 2.2rem !important;
+        font-weight: 800; 
+        color: #FF4B4B !important;
         text-transform: uppercase;
         margin: 0 !important; 
         padding: 0 !important;
-        line-height: 1.1 !important; /* தலைப்பு மற்றும் துணைத் தலைப்புக்கு இடையே உள்ள இடைவெளியைக் குறைக்க */
-    }
-
-    /* துணைத் தலைப்பு - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
-    .subtitle {
-        font-size: 1.1rem !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        font-weight: bold !important;
-        padding-top: 5px !important; /* 12px லிருந்து 5px ஆகக் குறைக்கப்பட்டுள்ளது */
+        line-height: 1.0 !important;
         white-space: nowrap;
     }
 
-    /* டெவலப்பர் பெயர் - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
+    /* Subtitle and Developer with very low spacing */
+    .subtitle {
+        font-size: 1.0rem !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        padding-top: 2px !important;
+        font-weight: bold !important;
+    }
+
     .developer {
-        font-size: 1.2rem !important;
+        font-size: 0.9rem !important;
         color: #FFFFFF !important; 
         margin: 0 !important;
-        padding-top: 3px !important; /* 6px லிருந்து 3px ஆகக் குறைக்கப்பட்டுள்ளது */
-        opacity: 0.9;
+        padding-top: 0px !important;
+        opacity: 0.8;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
-        .main-logo { width: 140px !important; }
-        .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 1rem !important; white-space: normal; }
-        .quote-text { font-size: 0.85rem !important; }
-        .developer { font-size: 0.85rem !important; }
-    }
-
-    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
+    /* Button and Input Styling */
+    .stButton > button { height: 50px !important; border-radius: 10px !important; background-color: #1E1E1E !important; color: white !important; border: 1px solid #333 !important; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
@@ -106,7 +107,7 @@ if base64_img:
         <div class="aipsss-header">
             <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
             <div class="content-box">
-                <h1 class="main-title">AI STUDENT MENTOR</h1>
+                <h1 class="main-title">AI STUDENTS MENTOR</h1>
                 <p class="subtitle">Everyone has the right to education</p>
                 <p class="developer">Developed by Brammadevan</p>
             </div>
@@ -114,17 +115,14 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine (Fixed Syntax) ---
+# --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # Keywords to block
         forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
-        
-        # Check if query is forbidden
         if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
+            return "மன்னிக்கவும், நான் கல்வி தொடர்பான வழிகாட்டி மட்டுமே."
 
-        system_instruction = "You are AIPSSS, a professional Education Mentor. Answer based on provided PDF or general knowledge. Strictly no gaming/entertainment."
+        system_instruction = "You are AIPSSS, a professional Education Mentor for students. Answer clearly."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -134,24 +132,29 @@ def ai_response(user_query, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI ---
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# --- 🎙️ 6. UI Implementation ---
 
-# PDF Input
-uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
+# PDF Section
+st.markdown("📂 **PDF மூலம் தேடுவதற்கு**")
+uploaded_pdf = st.file_uploader("", type=["pdf"], label_visibility="collapsed")
 pdf_extracted_text = ""
 
 if uploaded_pdf:
     with st.spinner("PDF Reading..."):
         doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
         pdf_extracted_text = "".join([page.get_text() for page in doc])
-    st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
+    st.success(f"✅ {uploaded_pdf.name} Loaded!")
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v30')
+# Voice Input Button
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_vfinal')
+
+# Chat messages display
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Input Logic
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
-
 prompt = voice_input if voice_input else text_input
 
 if prompt:
