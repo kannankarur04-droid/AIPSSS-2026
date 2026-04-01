@@ -4,7 +4,6 @@ from gtts import gTTS
 from streamlit_mic_recorder import speech_to_text
 import os
 import re
-from PIL import Image
 import fitz  # PyMuPDF
 import base64
 
@@ -15,60 +14,75 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
-st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) ---
+st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; }
+    .block-container { padding-top: 2rem !important; }
     
-    /* AIPSSS Title Style - Fixed Clipping */
-    .main-title { 
-        font-weight: 900; 
-        text-align: left; 
-        color: #FF4B4B;
-        letter-spacing: 1px;
-        margin: 0 !important; 
-        display: block !important;
-        overflow: visible !important; /* வெட்டப்படுவதைத் தவிர்க்க */
+    /* Header Container */
+    .header-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
     }
 
-    /* Responsive Sizes */
-    @media only screen and (max-width: 600px) {
-        .main-title { font-size: 32px !important; line-height: 1.3 !important; }
-        .main-tagline { font-size: 12px !important; }
+    /* Logo Style */
+    .logo-img {
+        width: 100px;
+        height: auto;
     }
-    @media only screen and (min-width: 601px) {
-        .main-title { font-size: 52px !important; line-height: 1.5 !important; }
-        .main-tagline { font-size: 16px !important; }
+
+    /* Text Content */
+    .header-text {
+        display: flex;
+        flex-direction: column;
     }
-    
+
+    .main-title { 
+        font-size: 42px !important; 
+        font-weight: 900; 
+        color: #FF4B4B; 
+        margin: 0 !important;
+        line-height: 1.1 !important;
+        text-transform: uppercase;
+    }
+
     .main-tagline {
-        text-align: left; 
-        color: #555; 
-        margin-top: 0px !important;
-        line-height: 1.2 !important;
-        font-weight: bold;
-        display: block;
+        font-size: 18px !important;
+        font-style: italic;
+        color: white;
+        margin: 5px 0 !important;
     }
-    
-    /* Button Style */
-    .stButton > button {
-        height: 75px !important;
-        width: 100% !important;
-        border-radius: 15px !important;
-        font-size: 20px !important;
+
+    .developer-tag {
+        font-size: 14px !important;
+        color: #FFD700; /* Yellow color */
         font-weight: bold;
+        margin: 0 !important;
+    }
+
+    /* Mobile responsiveness */
+    @media only screen and (max-width: 600px) {
+        .main-title { font-size: 28px !important; }
+        .main-tagline { font-size: 14px !important; }
+        .logo-img { width: 70px; }
+    }
+
+    /* Button & Chat UI */
+    .stButton > button {
+        border-radius: 12px !important;
         background-color: #FF4B4B !important;
         color: white !important;
-        box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
     }
-    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
-img_name = 'aipsss_robot_final.png' 
+# --- 🖼️ 3. Header Logic ---
+# உங்கள் லோகோ கோப்பு பெயர் 'final logo.jpg' என இருப்பதை உறுதி செய்யவும்
+img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
 def get_base64_image(image_path):
@@ -78,22 +92,21 @@ def get_base64_image(image_path):
 try:
     if os.path.exists(img_path):
         base64_img = get_base64_image(img_path)
-        # HTML Flexbox - தலைப்பு மேலே ஏறாமல் இருக்க margin-top: 0px
         header_html = f'''
-            <div style="display: flex; align-items: center; gap: 15px; margin-top: 0px; margin-bottom: 25px; padding-top: 5px;">
-                <img src="data:image/png;base64,{base64_img}" style="width: 70px; height: auto; object-fit: contain;">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <p class="main-title">AIPSSS</p>
-                    <p class="main-tagline">AI Powered Student Support System</p>
+            <div class="header-container">
+                <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
+                <div class="header-text">
+                    <p class="main-title">AI STUDENT MENTOR</p>
+                    <p class="main-tagline">"Everyone has the right to education"</p>
+                    <p class="developer-tag">Developed by Brammadevan</p>
                 </div>
             </div>
         '''
         st.markdown(header_html, unsafe_allow_html=True)
     else:
-        st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
-        st.markdown('<p style="color:#555; font-weight:bold; margin:0;">AI Powered Student Support System</p>', unsafe_allow_html=True)
-except Exception:
-    st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
+        st.error("Logo file not found! Please check 'final logo.jpg' path.")
+except Exception as e:
+    st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
 
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
@@ -111,7 +124,7 @@ def ai_response(q, pdf_text=""):
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AIPSSS, a helpful Education Assistant."},
+                {"role": "system", "content": "You are AI Student Mentor, a helpful Education Assistant. Keep answers concise and supportive."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
@@ -141,7 +154,7 @@ if prompt:
     with st.chat_message("assistant"):
         with st.spinner("யோசிக்கிறேன்..."):
             reply = ai_response(prompt, pdf_context)
-            st.success(reply)
+            st.markdown(reply)
             
             # Audio Output
             try:
