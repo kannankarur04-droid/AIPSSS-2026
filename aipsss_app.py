@@ -15,7 +15,7 @@ else:
     st.stop()
 
 # --- 🎨 2. Styling (CSS) ---
-st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖")
+st.set_page_config(page_title="AI Student Support System", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
@@ -102,7 +102,7 @@ try:
             <div class="header-banner">
                 <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
                 <div class="header-text">
-                    <p class="main-title">AI STUDENT MENTOR</p>
+                    <p class="main-title">AI Student Support System</p>
                     <p class="main-tagline">"Everyone has the right to education"</p>
                     <p class="developer-tag">Developed by Brammadevan</p>
                 </div>
@@ -110,7 +110,7 @@ try:
         '''
         st.markdown(header_html, unsafe_allow_html=True)
 except:
-    st.title("AI STUDENT MENTOR")
+    st.title("AI Student Support System")
 
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
