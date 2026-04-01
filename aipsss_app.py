@@ -14,85 +14,80 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
-st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) ---
+st.set_page_config(page_title="AI Student Mentor", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 2rem !important; }
+    .stApp { background-color: #0E1117; }
     
-    /* Header Container - Flexible alignment */
-    .header-container {
+    /* Header Banner */
+    .header-banner {
         display: flex;
-        align-items: center; /* Vertically center content */
-        gap: 25px; /* Space between logo and text */
-        margin-bottom: 30px;
-        flex-wrap: nowrap; /* Avoid wrapping on small screens */
+        align-items: center;
+        background-color: #000000;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 25px;
     }
 
-    /* Logo Style - **PERITHAAKKAPPATTATHU** */
+    /* Logo - BIG SIZE & NO GAP */
     .logo-img {
-        width: 150px; /* Increased from 100px */
+        width: 200px;
         height: auto;
-        object-fit: contain;
+        margin-right: 10px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
     }
 
-    /* Text Content */
+    /* Text Column - TIGHT LINE SPACING */
     .header-text {
         display: flex;
         flex-direction: column;
-        flex-grow: 1; /* Occupy remaining space */
+        justify-content: center;
     }
 
-    /* AIPSSS Title Style - **PERITHAAKKAPPATTATHU** */
     .main-title { 
+        font-size: 50px !important; 
         font-weight: 900; 
         color: #FF4B4B; 
-        text-transform: uppercase;
         margin: 0 !important;
-        line-height: 1.1 !important;
+        line-height: 0.9 !important; /* நெருக்கமான இடைவெளி */
+        letter-spacing: -1px;
     }
 
-    /* Main Tagline - **PERITHAAKKAPPATTATHU** */
     .main-tagline {
+        font-size: 18px !important;
         font-style: italic;
-        color: white;
-        margin: 8px 0 !important; /* Slightly more space */
-        line-height: 1.2 !important;
+        color: #E0E0E0;
+        margin: 2px 0 !important; /* மிகக் குறைந்த இடைவெளி */
+        line-height: 1 !important;
     }
 
-    /* Developer Tag - **PERITHAAKKAPPATTATHU** */
     .developer-tag {
-        color: #FFD700; /* Yellow color */
+        font-size: 16px !important;
+        color: #FFD700; 
         font-weight: bold;
         margin: 0 !important;
+        line-height: 1 !important;
     }
 
-    /* Responsive Sizes */
     @media only screen and (max-width: 600px) {
-        .logo-img { width: 100px; } /* Increased for mobile too */
-        .main-title { font-size: 38px !important; }
-        .main-tagline { font-size: 16px !important; }
-        .developer-tag { font-size: 14px !important; }
+        .header-banner { flex-direction: row; padding: 10px; }
+        .logo-img { width: 100px; }
+        .main-title { font-size: 28px !important; }
+        .main-tagline { font-size: 12px !important; }
+        .developer-tag { font-size: 11px !important; }
     }
-    @media only screen and (min-width: 601px) {
-        .logo-img { width: 150px; }
-        .main-title { font-size: 56px !important; } /* Big and bold */
-        .main-tagline { font-size: 20px !important; }
-        .developer-tag { font-size: 18px !important; }
-    }
-    
-    /* Input & PDF Styles (kept for functionality) */
+
     .stButton > button {
-        border-radius: 12px !important;
+        border-radius: 10px !important;
         background-color: #FF4B4B !important;
         color: white !important;
+        font-weight: bold;
     }
-    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
+# --- 🖼️ 3. Header Logic ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -104,7 +99,7 @@ try:
     if os.path.exists(img_path):
         base64_img = get_base64_image(img_path)
         header_html = f'''
-            <div class="header-container">
+            <div class="header-banner">
                 <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
                 <div class="header-text">
                     <p class="main-title">AI STUDENT MENTOR</p>
@@ -114,15 +109,8 @@ try:
             </div>
         '''
         st.markdown(header_html, unsafe_allow_html=True)
-    else:
-        # Fallback if logo not found
-        st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
-        st.markdown('<p style="color:white; font-style:italic;">"Everyone has the right to education"</p>', unsafe_allow_html=True)
-        st.markdown('<p style="color:#FFD700; font-weight:bold;">Developed by Brammadevan</p>', unsafe_allow_html=True)
-
-except Exception as e:
-    # Generic fallback
-    st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
+except:
+    st.title("AI STUDENT MENTOR")
 
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
@@ -130,17 +118,17 @@ voice_input = speech_to_text(
     stop_prompt="🛑 நிறுத்த அழுத்தவும்",
     language='ta-IN',
     use_container_width=True,
-    key='aipsss_mic_v2'
+    key='aipsss_mic_v3'
 )
 
-# --- 🧠 5. AI Core Logic ---
+# --- 🧠 5. AI Logic ---
 def ai_response(q, pdf_text=""):
     try:
         context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AI Student Mentor, a helpful Education Assistant. Keep answers concise and supportive."},
+                {"role": "system", "content": "You are AI Student Mentor. Help students with their education questions."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
@@ -172,7 +160,6 @@ if prompt:
             reply = ai_response(prompt, pdf_context)
             st.markdown(reply)
             
-            # Audio Output
             try:
                 is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
                 tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
