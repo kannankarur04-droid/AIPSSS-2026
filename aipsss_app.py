@@ -7,23 +7,25 @@ import re
 import fitz  # PyMuPDF
 import base64
 
-# --- 🔐 1. API அமைப்பு ---
+# --- 🔐 1. Setup ---
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("GROQ_API_KEY இல்லை! தயவுசெய்து Secrets-ல் சரிபார்க்கவும்.")
+    st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. டிசைன் மற்றும் லேஅவுட் (Kannan's Gentle View) ---
+# --- 🎨 2. UI/UX Design (New Modern Color Palette) ---
 st.set_page_config(page_title="AI Smart Mentor", layout="wide", page_icon="🤖🎓")
 
-# நவீன Lexend ஃபான்ட் மற்றும் கச்சிதமான CSS அலைன்மென்ட்
+# நவீன Lexend ஃபான்ட் மற்றும் புதிய வண்ணங்கள்
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+    /* முழுத் திரையின் பின்புல நிறம் */
+    .stApp { background-color: #0e1117; }
     .block-container { padding-top: 1.5rem !important; max-width: 1300px; }
     
-    /* ஹெட்டர் கண்டெய்னர் */
+    /* ஹெட்டர் பெட்டி - நவீன டிசைன் */
     .aipsss-header {
         display: flex;
         flex-direction: row; 
@@ -31,24 +33,24 @@ st.markdown("""
         justify-content: flex-start;
         gap: 40px; 
         margin-bottom: 35px;
-        background: rgba(255, 255, 255, 0.05); 
+        background: linear-gradient(135deg, rgba(30, 64, 175, 0.2), rgba(30, 58, 138, 0.1));
         padding: 30px 45px;
         border-radius: 20px;
         flex-wrap: nowrap;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
         font-family: 'Lexend', sans-serif;
     }
 
-    /* லோகோ - பெரிய அளவில் */
+    /* லோகோ */
     .main-logo {
         height: auto;
-        width: 320px !important; 
-        max-height: 250px;
+        width: 250px !important; 
+        max-height: 200px;
         object-fit: contain;
         flex-shrink: 0;
     }
 
-    /* எழுத்துக்கள் இருக்கும் பெட்டி */
+    /* எழுத்துக்கள் பெட்டி */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -56,10 +58,10 @@ st.markdown("""
         text-align: left;
     }
 
-    /* AI Smart Mentor - ஒரே வரியில் கச்சிதமாக */
+    /* AI Smart Mentor - புதிய 'Royal Blue' வண்ணம் */
     .main-title {
         font-size: 3.8rem !important; 
-        color: #ff4d4d !important;
+        color: #60a5fa !important; /* Soft Blue */
         margin: 0 !important;
         font-weight: 900 !important;
         line-height: 0.9 !important;
@@ -67,30 +69,31 @@ st.markdown("""
         white-space: nowrap;
     }
 
-    /* பொன்மொழி - தங்கம் மற்றும் வெள்ளை கலவையில் */
+    /* பொன்மொழி - 'Creamy White' வண்ணம் */
     .quote-text {
         font-size: 1.5rem !important;
-        color: #FFD700 !important; 
+        color: #e5e7eb !important; /* Light Greyish White */
         margin: 0 !important;
-        font-weight: 500 !important;
+        font-weight: 400 !important;
         line-height: 1.1 !important;
         padding-top: 10px;
         font-style: italic;
     }
 
-    /* டெவலப்பர் பெயர் */
+    /* டெவலப்பர் பெயர் - 'Soft Gold' வண்ணம் */
     .developer {
         font-size: 1.1rem !important;
-        color: #ffffff !important; 
+        color: #fbbf24 !important; /* Gold */
         margin: 0 !important;
         padding-top: 5px;
-        opacity: 0.8;
+        font-weight: 600;
+        opacity: 0.9;
     }
 
-    /* மொபைல் போன் வியூ - Responsive */
+    /* மொபைல் வியூ - Responsive */
     @media (max-width: 768px) {
         .aipsss-header { gap: 15px; padding: 15px; }
-        .main-logo { width: 100px !important; }
+        .main-logo { width: 90px !important; }
         .main-title { font-size: 1.8rem !important; letter-spacing: -1px; }
         .quote-text { font-size: 0.8rem !important; padding-top: 5px; }
         .developer { font-size: 0.75rem !important; }
@@ -98,11 +101,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. மெமரி மேனேஜ்மென்ட் ---
+# --- 🧠 3. Logic & Assets ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# லோகோ கோப்பினைப் பதிவேற்றுதல்
 img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
 
 def get_base64_image(path):
@@ -113,7 +115,7 @@ def get_base64_image(path):
 
 b64_img = get_base64_image(img_path)
 
-# --- 🖼️ 4. ஹெட்டர் திரையில் காட்டுதல் ---
+# --- 🖼️ 4. Header Display ---
 if b64_img:
     st.markdown(f'''
         <div class="aipsss-header">
@@ -126,40 +128,29 @@ if b64_img:
         </div>
     ''', unsafe_allow_html=True)
 
-# --- 🤖 5. AI இன்ஜின் (துல்லியமான பதில்களுக்கு) ---
+# --- 🤖 5. AI Engine ---
 def ai_response(q, pdf=""):
     try:
-        sys_msg = """
-        ROLE: You are AI Smart Mentor, a professional Educational Assistant developed by Brammadevan.
-        CORE PRINCIPLE: Clear Subject Separation. 
-        - If the user asks about Auditing, provide technical commerce definitions.
-        - If the user asks about a student's personal responsibilities, answer based on ethics and study habits.
-        - DO NOT mix subjects. Temperature: 0.0.
-        """
-        # முந்தைய 3 உரையாடல்களை மட்டும் நினைவில் கொள்ளும் (குழப்பத்தைத் தவிர்க்க)
+        sys_msg = "You are AI Smart Mentor, a professional Educational Assistant. Temperature: 0.0."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
-        context = f"PDF Context: {pdf[:1200]}\n" if pdf else ""
-        
+        context = f"PDF Data: {pdf[:1000]}\n" if pdf else ""
         msgs = [{"role": "system", "content": sys_msg}] + history + [{"role": "user", "content": context + q}]
-        
         res = client.chat.completions.create(model="llama-3.1-8b-instant", messages=msgs, temperature=0.0)
         return res.choices[0].message.content
     except Exception as e:
-        return f"AI பிழை: {str(e)}"
+        return f"AI Error: {str(e)}"
 
-# --- 🎙️ 6. பயனர் இடைமுகம் (Interaction) ---
+# --- 🎙️ 6. UI Interaction ---
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
-up_pdf = st.file_uploader("📂 PDF கோப்புகளை இங்கே பதிவேற்றலாம்", type=["pdf"])
+up_pdf = st.file_uploader("📂 PDF கோப்புகளை பதிவேற்ற", type=["pdf"])
 pdf_txt = ""
 if up_pdf:
     doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
     pdf_txt = "".join([p.get_text() for p in doc])
-    st.success("✅ PDF தயாராக உள்ளது!")
 
-# வாய்ஸ் மற்றும் டெக்ஸ்ட் இன்புட்
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_kannan')
+v_in = speech_to_text(start_prompt="🎤 பேச", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v')
 t_in = st.chat_input("கல்வி தொடர்பான கேள்விகளைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
@@ -167,13 +158,12 @@ if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"): st.markdown(prompt)
     with st.chat_message("assistant"):
-        with st.spinner("சிந்திக்கிறேன்..."):
-            rep = ai_response(prompt, pdf_txt)
-            st.markdown(rep)
-            try:
-                is_ta = bool(re.search(r'[\u0b80-\u0bff]', rep))
-                tts = gTTS(text=rep[:300], lang='ta' if is_ta else 'en')
-                tts.save("res.mp3")
-                st.audio("res.mp3", autoplay=True)
-            except: pass
+        rep = ai_response(prompt, pdf_txt)
+        st.markdown(rep)
+        try:
+            is_ta = bool(re.search(r'[\u0b80-\u0bff]', rep))
+            tts = gTTS(text=rep[:300], lang='ta' if is_ta else 'en')
+            tts.save("res.mp3")
+            st.audio("res.mp3", autoplay=True)
+        except: pass
     st.session_state.messages.append({"role": "assistant", "content": rep})
