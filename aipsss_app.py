@@ -14,87 +14,71 @@ else:
     st.error("Missing GROQ_API_KEY! Please check your Streamlit secrets.")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - 'Final Logo' Design ---
+# --- 🎨 2. Styling (CSS) ---
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com" rel="stylesheet">
     <style>
     .stApp { background-color: #0e1117; }
-    .block-container { padding-top: 1rem !important; max-width: 1100px; }
+    .block-container { padding-top: 1rem !important; max-width: 1200px; }
 
-    /* Custom Header Container - லோகோவும் எழுத்தும் இணையும் இடம் */
+    /* லோகோ மற்றும் எழுத்துக்களை இணைக்கும் மெயின் கண்டெய்னர் */
     .mentor-header {
         display: flex;
-        align-items: flex-end; 
-        gap: 30px;
-        margin-bottom: -15px; 
-        padding-left: 20px;
+        align-items: center; /* செங்குத்தாக நடுவில் வைக்க */
+        gap: 20px;
+        padding: 10px 0;
+        margin-bottom: 10px;
     }
 
-    /* Logo - பெரிதாக்கப்பட்டது & பெட்டியை மிதிக்கும் அலைன்மென்ட் */
+    /* லோகோ அளவு */
     .header-logo {
-        width: 320px !important; 
+        width: 120px !important; 
         height: auto;
-        margin-bottom: -12px; 
-        z-index: 10;
     }
 
-    /* Header Text Box - நீங்கள் கேட்ட கச்சிதமான இடைவெளி */
+    /* எழுத்துக்களின் பெட்டி */
     .header-text {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-        padding-bottom: 25px; 
+        justify-content: center;
     }
 
-    /* AI STUDENT MENTOR - சிகப்பு நிறம் (Red) */
+    /* AI STUDENT MENTOR - சிகப்பு நிறம் */
     .header-text h1 {
         font-family: 'Lexend', sans-serif;
-        font-size: 55px !important; 
+        font-size: 45px !important; 
         color: #FF4B4B !important; 
         margin: 0 !important;
         font-weight: 900 !important;
-        line-height: 0.8 !important; 
-        letter-spacing: -2px;
+        line-height: 1.0 !important; 
         text-transform: uppercase;
-        white-space: nowrap;
+        letter-spacing: -1px;
     }
 
-    /* Tagline - தூய வெள்ளை (White) */
+    /* Tagline - வெள்ளை நிறம் */
     .tagline {
         font-family: 'Lexend', sans-serif;
-        font-size: 20px !important;
+        font-size: 18px !important;
         color: #FFFFFF !important; 
-        margin: 6px 0 0 0 !important;
+        margin: 5px 0 2px 0 !important;
         font-style: italic;
-        line-height: 1.0 !important;
+        line-height: 1.2 !important;
     }
 
-    /* Developer - தங்க நிறம் (Gold) */
+    /* Developer - தங்க நிறம் */
     .developer {
         font-family: 'Lexend', sans-serif;
-        font-size: 16px !important;
+        font-size: 14px !important;
         color: #FFD700 !important; 
-        margin: 4px 0 0 0 !important;
+        margin: 0 !important;
         font-weight: bold;
         line-height: 1.0 !important;
     }
 
-    /* கேள்வி பெட்டி அலைன்மென்ட் (Chat Input) */
-    .stChatInputContainer {
-        border-radius: 15px !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-    }
-
-    /* பட்டன் ஸ்டைல் */
-    .stButton > button { 
-        height: 60px !important; 
-        border-radius: 12px !important; 
-        background-color: #FF4B4B !important; 
-        color: white !important; 
-        font-weight: bold; 
-    }
+    /* Chat Input Styling */
+    .stChatInputContainer { border-radius: 15px !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -103,35 +87,40 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # --- 🖼️ 4. Header Display Logic ---
-base64_img = None 
-img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
-
 def get_base64_image(path):
     if os.path.exists(path):
         with open(path, "rb") as f:
             return base64.b64encode(f.read()).decode()
     return None
 
+img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
 base64_img = get_base64_image(img_path)
 
 if base64_img:
     st.markdown(f'''
-        <header class="mentor-header">
-            <img src="data:image/png;base64,{base64_img}" alt="Logo" class="header-logo">
+        <div class="mentor-header">
+            <img src="data:image/png;base64,{base64_img}" class="header-logo">
             <div class="header-text">
                 <h1>AI STUDENT MENTOR</h1>
                 <p class="tagline">"Everyone has the right to education"</p>
                 <p class="developer">Developed by Brammadevan</p>
             </div>
-        </header>
+        </div>
     ''', unsafe_allow_html=True)
 else:
-    st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
+    # லோகோ படம் இல்லை என்றால் மட்டும் இது தெரியும்
+    st.markdown('''
+        <div style="padding-left:20px;">
+            <h1 style="color:#FF4B4B; margin:0;">AI STUDENT MENTOR</h1>
+            <p style="color:white; font-style:italic; margin:0;">"Everyone has the right to education"</p>
+            <p style="color:#FFD700; font-weight:bold; margin:0;">Developed by Brammadevan</p>
+        </div>
+    ''', unsafe_allow_html=True)
 
 # --- 🤖 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        system_instruction = "You are AI Student Mentor, a professional Education Mentor. Answer precisely."
+        system_instruction = "You are AI Student Mentor. Answer precisely."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -149,7 +138,7 @@ if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     pdf_extracted_text = "".join([page.get_text() for page in doc])
 
-voice_input = speech_to_text(start_prompt="🎤 பேச", language='ta-IN', use_container_width=True, key='mic_final_v100')
+voice_input = speech_to_text(start_prompt="🎤 பேச", language='ta-IN', use_container_width=True, key='mic_v1')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
 prompt = voice_input if voice_input else text_input
 
