@@ -14,79 +14,72 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - 'Gentle View' Fix ---
+# --- 🎨 2. Styling (CSS) - அலைன்மென்ட் திருத்தம் ---
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    /* 1. எழுத்துக்கள் இருக்கும் பெட்டி அலைன்மென்ட் */
-    .content-box { 
-        display: flex; 
+    .stApp { background-color: #0e1117; }
+    .block-container { padding-top: 1rem !important; }
+
+    /* Header Container - முற்றிலும் சீரமைக்கப்பட்டது */
+    .aipsss-header {
+        display: flex;
         flex-direction: column; 
-        justify-content: center; 
-        padding-top: 5px; 
+        align-items: flex-start; /* இடது பக்கமாக அலைன் செய்ய */
+        justify-content: flex-start;
+        padding-left: 50px;
+        margin-bottom: -10px; /* கேள்வி பெட்டிக்கு மிக அருகில் கொண்டு வர */
     }
 
-    /* 2. AI STUDENT MENTOR - சிகப்பு நிறம் & நெருக்கமான இடைவெளி */
-    .main-title { 
-        font-family: 'Lexend', sans-serif; 
-        font-size: 52px !important; 
+    /* லோகோ - பெரிய அளவில், கேள்வி பெட்டியை மிதிப்பது போன்ற தோற்றம் */
+    .main-logo {
+        width: 320px !important; 
+        height: auto;
+        margin-bottom: -20px; /* கால்கள் பெட்டியைத் தொட */
+    }
+
+    /* Content Box - மாணவனின் காலுக்கு நேராக அமைய */
+    .content-box {
+        padding-left: 20px; /* மாணவனின் காலுக்கு நேராக வர இந்த padding உதவும் */
+    }
+
+    /* AI STUDENT MENTOR - RED Color */
+    .main-title {
+        font-family: 'Lexend', sans-serif;
+        font-size: 55px !important; 
         color: #FF4B4B !important; 
-        margin: 0 !important; 
-        font-weight: 900 !important; 
-        line-height: 0.8 !important; 
-        letter-spacing: -2px; 
-        text-transform: uppercase; 
-        white-space: nowrap; 
+        margin: 0 !important;
+        font-weight: 900 !important;
+        line-height: 1.0 !important;
+        text-transform: uppercase;
     }
 
-    /* 3. பொன்மொழி - வெள்ளை நிறம் & நெருக்கமான இடைவெளி */
-    .subtitle { 
-        font-family: 'Lexend', sans-serif; 
-        font-size: 20px !important; 
+    /* Tagline - White */
+    .subtitle {
+        font-family: 'Lexend', sans-serif;
+        font-size: 20px !important;
         color: #FFFFFF !important; 
-        margin: 5px 0 0 0 !important; 
-        font-weight: 500; 
-        font-style: italic; 
-        line-height: 1.0 !important; 
+        margin: 5px 0 0 0 !important;
+        font-style: italic;
     }
 
-    /* 4. டெவலப்பர் - தங்க நிறம் & நெருக்கமான இடைவெளி */
-    .developer { 
-        font-family: 'Lexend', sans-serif; 
-        font-size: 16px !important; 
+    /* Developer - Gold (மாணவனின் காலுக்கு நேராக அமைய) */
+    .developer {
+        font-family: 'Lexend', sans-serif;
+        font-size: 16px !important;
         color: #FFD700 !important; 
-        margin: 4px 0 0 0 !important; 
-        font-weight: 600; 
-        opacity: 0.9; 
-        line-height: 1.0 !important; 
+        margin: 2px 0 0 0 !important;
+        font-weight: 600;
     }
 
-    /* மொபைல் சீரமைப்பு */
-    @media (max-width: 768px) { 
-        .main-title { font-size: 26px !important; } 
-    }
-
-    /* பட்டன் ஸ்டைல் */
-    .stButton > button { 
-        height: 60px !important; 
-        border-radius: 12px !important; 
-        background-color: #FF4B4B !important; 
-        color: white !important; 
-        font-weight: bold; 
-    }
+    /* Input Box Alignment */
+    .stChatInputContainer { margin-top: 0px !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Chat History ---
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# --- 🖼️ 4. Header Display Logic (THE BOSS FIX) ---
-
-# 1. முதலில் வேரியபிளை காலியாக (None) அறிவியுங்கள்
+# --- 🖼️ 4. Header Display Logic ---
 base64_img = None 
-
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -96,63 +89,44 @@ def get_base64_image(image_path):
             return base64.b64encode(img_file.read()).decode()
     return None
 
-# 2. இப்போது வேரியபிளுக்கு வேல்யூ கொடுக்கிறோம்
 base64_img = get_base64_image(img_path)
 
-# 3. இப்போது செக் செய்யும்போது எரர் வராது
 if base64_img:
     header_html = f'''
         <div class="aipsss-header">
             <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
             <div class="content-box">
                 <h1 class="main-title">AI STUDENT MENTOR</h1>
-                <p class="subtitle">Everyone has the right to education</p>
+                <p class="subtitle">"Everyone has the right to education"</p>
                 <p class="developer">Developed by Brammadevan</p>
             </div>
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
-else:
-    st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine ---
-def ai_response(user_query, pdf_text=""):
+# --- 🧠 5. Chat History & Engine ---
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+def ai_response(user_query):
     try:
-        system_instruction = "You are AI Student Mentor, a professional Education Mentor. Answer precisely. Strictly no gaming/entertainment stuff."
+        system_instruction = "You are AI Student Mentor. Be precise."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
-        context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
-        messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
+        messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": user_query}]
         completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
         return completion.choices[0].message.content
-    except Exception as e:
-        return f"Error: {str(e)}"
+    except Exception as e: return f"Error: {str(e)}"
 
 # --- 🎙️ 6. UI Interaction ---
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    with st.chat_message(message["role"]): st.markdown(message["content"])
 
-uploaded_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
-pdf_extracted_text = ""
-if uploaded_pdf:
-    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-    pdf_extracted_text = "".join([page.get_text() for page in doc])
-
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_v7_final')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
-prompt = voice_input if voice_input else text_input
 
-if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"): st.markdown(prompt)
+if text_input:
+    st.session_state.messages.append({"role": "user", "content": text_input})
+    with st.chat_message("user"): st.markdown(text_input)
     with st.chat_message("assistant"):
-        with st.spinner("சிந்திக்கிறேன்..."):
-            reply = ai_response(prompt, pdf_extracted_text)
-            st.markdown(reply)
-            try:
-                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-                tts.save("response.mp3")
-                st.audio("response.mp3", autoplay=True)
-            except: pass
+        reply = ai_response(text_input)
+        st.markdown(reply)
     st.session_state.messages.append({"role": "assistant", "content": reply})
