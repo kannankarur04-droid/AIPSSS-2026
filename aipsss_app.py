@@ -15,7 +15,7 @@ else:
     st.stop()
 
 # --- 🎨 2. Styling (CSS) - Professional Sidebar Layout ---
-st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
+st.set_page_config(page_title="AI STDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
@@ -119,9 +119,8 @@ if base64_img:
         <div class="aipsss-header">
             <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
             <div class="content-box">
-                <h1 class="main-title">AIPSSS</h1>
-                <p class="subtitle">AI Powered Student Support System</p>
-                <p class="quote-text">"Everyone has the right to education"</p>
+                <h1 class="main-title">AI STUDENT MENTOR</h1>
+                <p class="subtitle">Everyone has the right to education</p>
                 <p class="developer">Developed by Brammadevan</p>
             </div>
         </div>
