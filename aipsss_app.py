@@ -38,12 +38,26 @@ st.markdown("""
         margin-right: 5px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
     }
 
-    /* Text Column - TIGHT LINE SPACING */
-    .header-text {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+    /* Text Column - TIGHT LINE SPACING & BOTTOM ALIGNMENT */
+.header-text {
+    display: flex;
+    flex-direction: column;
+    
+    /* வரிகள் லோகோவின் அடிப்பகுதிக்கு நேராக வர 'flex-end' சிறந்தது */
+    justify-content: flex-end; 
+    
+    /* மூன்று வரிகளுக்கு இடையே உள்ள இடைவெளியைக் குறைக்க (முக்கியம்!) */
+    gap: 2px; 
+    
+    /* வரிகள் பெட்டியின் ஓரத்தோடு ஒட்டாமல் இருக்க */
+    padding-bottom: 10px; 
+}
+
+/* வரிகளுக்குள் இருக்கும் கூடுதல் இடைவெளியை நீக்க */
+.header-text h1, .header-text p {
+    margin: 0 !important;
+    line-height: 1.0 !important;
+}
 
     .main-title { 
         font-size: 32px !important; 
@@ -100,13 +114,14 @@ try:
         base64_img = get_base64_image(img_path)
         header_html = f'''
             <div class="header-banner">
-                <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
-                <div class="header-text">
-                    <p class="main-title">AI Student Support System</p>
-                    <p class="main-tagline">"Everyone has the right to education"</p>
-                    <p class="developer-tag">Developed by Brammadevan</p>
-                </div>
-            </div>
+    <img src="YOUR_IMAGE_DATA" class="logo-img">
+    
+    <div class="header-text">
+        <h1 class="main-title">AI STUDENT SUPPORT SYSTEM</h1>
+        <p class="main-tagline">"Everyone has the right to education"</p>
+        <p class="developer-tag">Developed by Brammadevan</p>
+    </div>
+</div>
         '''
         st.markdown(header_html, unsafe_allow_html=True)
 except:
