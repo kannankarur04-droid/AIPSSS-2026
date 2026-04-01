@@ -14,34 +14,34 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Professional Sidebar Layout ---
-st.set_page_config(page_title="AI STDENT MENTOR", layout="wide", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) - Professional & Tight Layout ---
+st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; }
     
-    /* Header Container */
+    /* Header Container - பெட்டியின் உயரம் குறைக்கப்பட்டுள்ளது */
     .aipsss-header {
         display: flex;
         align-items: center; 
         justify-content: flex-start;
-        gap: 30px; 
-        margin-bottom: 40px;
+        gap: 35px; 
+        margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.05); 
-        padding: 25px;
-        border-radius: 25px;
+        padding: 15px 35px; /* உயரத்தைக் குறைக்க 15px padding */
+        border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Side Logo (350px) */
+    /* Side Logo */
     .main-logo {
-        width: 350px; 
+        width: 140px; /* லோகோ அளவு சீரமைக்கப்பட்டுள்ளது */
         height: auto;
         object-fit: contain;
     }
 
-    /* Content Box */
+    /* Content Box - வரிகளை மேலே தள்ள alignment */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -49,52 +49,49 @@ st.markdown("""
         text-align: left;
     }
 
-    main-title { 
+    /* AI STUDENT MENTOR - Tight line space */
+    .main-title { 
         font-weight: 950; 
         color: #FF4B4B;
         text-transform: uppercase;
         margin: 0 !important; 
-        line-height: 0.8 !important; /* மிகக் குறைவான இடைவெளி */
-        letter-spacing: -2px; /* எழுத்துக்களை நெருக்கமாக்க */
+        line-height: 0.8 !important; 
+        letter-spacing: -2px;
         font-size: 52px !important;
     }
 
+    /* "Everyone..." - வெள்ளை நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
     .subtitle {
-        font-size: 1.1rem !important;
-        color: #FFD700 !important; 
+        font-size: 1.15rem !important;
+        color: #FFFFFF !important; /* வெள்ளை நிறம் */
         margin: 0 !important;
-        font-weight: bold !important;
-        padding-top: 12px;
-        white-space: nowrap;
-    }
-
-    ..quote-text {
-        font-size: 1.2rem !important;
-        font-style: italic !important;
-        color: #FFFFFF !important; 
-        margin: 0 !important;
-        padding-top: 2px !important; /* இடைவெளி குறைப்பு */
+        font-weight: 500 !important;
+        padding-top: 2px !important; /* தலைப்புடன் நெருக்கமாக மேலே நகர்த்த */
+        font-style: italic;
         line-height: 1.0 !important;
     }
 
-    ..developer {
-        font-size: 1.1rem !important;
-        color: #FFD700 !important; 
+    /* "Developed by..." - தங்க நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
+    .developer {
+        font-size: 1.05rem !important;
+        color: #FFD700 !important; /* தங்க நிறம் */
         margin: 0 !important;
-        padding-top: 2px !important; /* இடைவெளி குறைப்பு */
+        padding-top: 3px !important; /* பொன்மொழிக்கு மிக அருகில் */
         font-weight: bold;
         opacity: 0.9;
         line-height: 1.0 !important;
     }
 
-   /* Mobile Responsive - மொபைல் போனுக்கான சீரமைப்பு */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .main-title { font-size: 2.2rem !important; line-height: 0.85 !important; }
-        .quote-text { font-size: 0.9rem !important; }
-        .developer { font-size: 0.85rem !important; }
+        .aipsss-header { gap: 15px; padding: 10px 15px; }
+        .main-logo { width: 80px !important; }
+        .main-title { font-size: 1.8rem !important; line-height: 0.85 !important; }
+        .subtitle { font-size: 0.9rem !important; }
+        .developer { font-size: 0.8rem !important; }
     }
 
-    /* பட்டன் மற்றும் சாட் ஸ்டைல் */
+    /* UI Components */
     .stButton > button { 
         height: 65px !important; 
         border-radius: 12px !important; 
@@ -111,7 +108,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header ---
+# --- 🖼️ 4. Header Assets ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -136,17 +133,14 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine (Fixed Syntax) ---
+# --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        # Keywords to block
         forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
-        
-        # Check if query is forbidden
         if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
+            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
 
-        system_instruction = "You are AIPSSS, a professional Education Mentor. Answer based on provided PDF or general knowledge. Strictly no gaming/entertainment."
+        system_instruction = "You are AI Student Mentor, a professional Education Mentor. Answer precisely. Strictly no gaming/entertainment stuff."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -156,30 +150,27 @@ def ai_response(user_query, pdf_text=""):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI ---
+# --- 🎙️ 6. UI Interaction ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# PDF Input
 uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
 pdf_extracted_text = ""
 
 if uploaded_pdf:
-    with st.spinner("PDF Reading..."):
-        doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-        pdf_extracted_text = "".join([page.get_text() for page in doc])
+    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
+    pdf_extracted_text = "".join([page.get_text() for page in doc])
     st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v30')
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v40')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
 
 prompt = voice_input if voice_input else text_input
 
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    with st.chat_message("user"): st.markdown(prompt)
 
     with st.chat_message("assistant"):
         with st.spinner("Searching..."):
@@ -190,7 +181,5 @@ if prompt:
                 tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
                 tts.save("response.mp3")
                 st.audio("response.mp3", autoplay=True)
-            except:
-                pass
-            
+            except: pass
     st.session_state.messages.append({"role": "assistant", "content": reply})
