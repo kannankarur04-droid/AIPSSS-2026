@@ -24,59 +24,57 @@ st.markdown("""
     .block-container { padding-top: 1rem !important; max-width: 1200px; }
 
     /* லோகோ மற்றும் எழுத்துக்களை இணைக்கும் மெயின் கண்டெய்னர் */
-    .mentor-header {
-        display: flex;
-        align-items: center; /* செங்குத்தாக நடுவில் வைக்க */
-        gap: 20px;
-        padding: 10px 0;
-        margin-bottom: 10px;
-    }
+    /* லோகோ மற்றும் எழுத்துக்களை இணைக்கும் மெயின் கண்டெய்னர் */
+.mentor-header {
+    display: flex;
+    flex-direction: row; /* பக்கவாட்டில் வர */
+    align-items: center; /* செங்குத்தாக சரியாக நடுவில் அமைய */
+    gap: 15px;           /* லோகோவுக்கும் எழுத்துக்கும் இடையே உள்ள இடைவெளி */
+    padding: 10px 0;
+    margin-left: 10px;   /* இடதுபுற ஓரத்தில் இருந்து சிறிது தள்ளி இருக்க */
+}
 
-    /* லோகோ அளவு */
-    .header-logo {
-        width: 120px !important; 
-        height: auto;
-    }
+/* லோகோ அளவு - உங்கள் படத்தில் உள்ளது போன்ற சிறிய அளவு */
+.header-logo {
+    width: 90px !important; 
+    height: auto;
+}
 
-    /* எழுத்துக்களின் பெட்டி */
-    .header-text {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+/* எழுத்துக்களின் பெட்டி */
+.header-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-    /* AI STUDENT MENTOR - சிகப்பு நிறம் */
-    .header-text h1 {
-        font-family: 'Lexend', sans-serif;
-        font-size: 45px !important; 
-        color: #FF4B4B !important; 
-        margin: 0 !important;
-        font-weight: 900 !important;
-        line-height: 1.0 !important; 
-        text-transform: uppercase;
-        letter-spacing: -1px;
-    }
+/* AI STUDENT MENTOR - சிகப்பு நிறம் & தடிமனான எழுத்து */
+.header-text h1 {
+    font-family: 'Lexend', sans-serif;
+    font-size: 38px !important; /* உங்கள் படத்திற்கு ஏற்ற அளவு */
+    color: #FF4B4B !important; 
+    margin: 0 !important;
+    font-weight: 900 !important;
+    line-height: 1.0 !important; 
+    text-transform: uppercase;
+}
 
-    /* Tagline - வெள்ளை நிறம் */
-    .tagline {
-        font-family: 'Lexend', sans-serif;
-        font-size: 18px !important;
-        color: #FFFFFF !important; 
-        margin: 5px 0 2px 0 !important;
-        font-style: italic;
-        line-height: 1.2 !important;
-    }
+/* Tagline - வெள்ளை நிறம் */
+.tagline {
+    font-family: 'Lexend', sans-serif;
+    font-size: 16px !important;
+    color: #FFFFFF !important; 
+    margin: 4px 0 2px 0 !important;
+    font-style: italic;
+}
 
-    /* Developer - தங்க நிறம் */
-    .developer {
-        font-family: 'Lexend', sans-serif;
-        font-size: 14px !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        font-weight: bold;
-        line-height: 1.0 !important;
-    }
-
+/* Developer - தங்க நிறம் */
+.developer {
+    font-family: 'Lexend', sans-serif;
+    font-size: 13px !important;
+    color: #FFD700 !important; 
+    margin: 0 !important;
+    font-weight: bold;
+}
     /* Chat Input Styling */
     .stChatInputContainer { border-radius: 15px !important; }
     </style>
