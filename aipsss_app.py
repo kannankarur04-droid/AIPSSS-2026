@@ -21,65 +21,52 @@ st.markdown("""
     <style>
     .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
     
-    /* Header Container */
-    .aipsss-header {
+.aipsss-header {
         display: flex;
         align-items: center; 
         justify-content: flex-start;
         gap: 30px; 
-        margin-bottom: 40px;
+        margin-bottom: 20px; /* வெளியேயுள்ள இடைவெளி குறைப்பு */
         background: rgba(255, 255, 255, 0.05); 
-        padding: 25px;
+        padding: 15px 25px; /* மேலே மற்றும் கீழே padding 25px லிருந்து 15px ஆகக் குறைக்கப்பட்டுள்ளது */
         border-radius: 25px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Side Logo (350px) */
-    .main-logo {
-        width: 350px; 
-        height: auto;
-        object-fit: contain;
-    }
-
-    /* Content Box */
+    /* உரைப் பெட்டி - வரிகளை மேலே நகர்த்த செங்குத்து சீரமைப்பு */
     .content-box {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; /* உள்ளடக்கம் மேலே இருந்து தொடங்கும் */
         text-align: left;
     }
 
+    /* பிரதான தலைப்பு - நிறம் சிவப்பாக மாற்றப்பட்டுள்ளது மற்றும் கூடுதல் இடம் நீக்கப்பட்டுள்ளது */
     .main-title { 
-    font-weight: 900; 
-    color: #FF4B4B;
-    text-transform: uppercase;
-    margin: 0 !important; 
-    line-height: 0.8 !important; /* மிகக் குறைவான இடைவெளி */
-    letter-spacing: -1.5px; /* எழுத்துக்களையும் நெருக்கமாக்க */
-  }
+        font-weight: 900; 
+        color: #FF4B4B !important; /* Streamlit சிவப்பு நிறம் */
+        text-transform: uppercase;
+        margin: 0 !important; 
+        padding: 0 !important;
+        line-height: 1.1 !important; /* தலைப்பு மற்றும் துணைத் தலைப்புக்கு இடையே உள்ள இடைவெளியைக் குறைக்க */
+    }
 
+    /* துணைத் தலைப்பு - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
     .subtitle {
         font-size: 1.1rem !important;
         color: #FFD700 !important; 
         margin: 0 !important;
         font-weight: bold !important;
-        padding-top: 12px;
+        padding-top: 5px !important; /* 12px லிருந்து 5px ஆகக் குறைக்கப்பட்டுள்ளது */
         white-space: nowrap;
     }
 
-    .quote-text {
-        font-size: 1.0rem !important;
-        font-style: italic !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        padding-top: 6px;
-    }
-
+    /* டெவலப்பர் பெயர் - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
     .developer {
         font-size: 1.2rem !important;
         color: #FFFFFF !important; 
         margin: 0 !important;
-        padding-top: 6px;
+        padding-top: 3px !important; /* 6px லிருந்து 3px ஆகக் குறைக்கப்பட்டுள்ளது */
         opacity: 0.9;
     }
 
