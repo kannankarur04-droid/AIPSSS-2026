@@ -18,86 +18,63 @@ else:
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-    .stApp { background-color: #0e1117; }
-    .block-container { padding-top: 1.5rem !important; }
-
-    /* Rectangle Box Size Reduced */
-    .aipsss-header {
-        display: flex;
-        flex-direction: row; 
-        align-items: center; 
-        justify-content: flex-start;
-        gap: 35px; 
-        margin-bottom: 30px;
-        background: rgba(255, 255, 255, 0.04); 
-        padding: 15px 45px; 
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Logo - BIGGER Logo */
-    .main-logo {
-        width: 180px !important; 
-        height: auto;
-        object-fit: contain;
-        flex-shrink: 0;
-    }
-
-    /* Content Box */
-    .content-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    /* 1. எழுத்துக்கள் இருக்கும் பெட்டி அலைன்மென்ட் */
+    .content-box { 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
         padding-top: 5px; 
     }
 
-    /* AI STUDENT MENTOR - RED Color & Tight Spacing */
-    .main-title {
-        font-family: 'Lexend', sans-serif;
+    /* 2. AI STUDENT MENTOR - சிகப்பு நிறம் & நெருக்கமான இடைவெளி */
+    .main-title { 
+        font-family: 'Lexend', sans-serif; 
         font-size: 52px !important; 
         color: #FF4B4B !important; 
-        margin: 0 !important;
-        font-weight: 900 !important;
+        margin: 0 !important; 
+        font-weight: 900 !important; 
         line-height: 0.8 !important; 
-        letter-spacing: -2px;
-        text-transform: uppercase;
-        white-space: nowrap;
+        letter-spacing: -2px; 
+        text-transform: uppercase; 
+        white-space: nowrap; 
     }
 
-    /* Tagline - Pure White & Tight */
-    .subtitle {
-        font-family: 'Lexend', sans-serif;
-        font-size: 20px !important;
+    /* 3. பொன்மொழி - வெள்ளை நிறம் & நெருக்கமான இடைவெளி */
+    .subtitle { 
+        font-family: 'Lexend', sans-serif; 
+        font-size: 20px !important; 
         color: #FFFFFF !important; 
-        margin: 5px 0 0 0 !important;
-        font-weight: 500;
-        font-style: italic;
-        line-height: 1.0 !important;
+        margin: 5px 0 0 0 !important; 
+        font-weight: 500; 
+        font-style: italic; 
+        line-height: 1.0 !important; 
     }
 
-    /* Developer - Gold Color & Tight */
-    .developer {
-        font-family: 'Lexend', sans-serif;
-        font-size: 16px !important;
+    /* 4. டெவலப்பர் - தங்க நிறம் & நெருக்கமான இடைவெளி */
+    .developer { 
+        font-family: 'Lexend', sans-serif; 
+        font-size: 16px !important; 
         color: #FFD700 !important; 
-        margin: 4px 0 0 0 !important;
-        font-weight: 600;
-        opacity: 0.9;
-        line-height: 1.0 !important;
+        margin: 4px 0 0 0 !important; 
+        font-weight: 600; 
+        opacity: 0.9; 
+        line-height: 1.0 !important; 
     }
 
-    /* Mobile Logic */
-    @media (max-width: 768px) {
-        .aipsss-header { gap: 15px; padding: 10px 15px; }
-        .main-logo { width: 90px !important; }
-        .main-title { font-size: 26px !important; }
+    /* மொபைல் சீரமைப்பு */
+    @media (max-width: 768px) { 
+        .main-title { font-size: 26px !important; } 
     }
 
-    /* Buttons */
-    .stButton > button { height: 60px !important; border-radius: 12px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; }
-    .stChatMessage { border-radius: 15px; }
+    /* பட்டன் ஸ்டைல் */
+    .stButton > button { 
+        height: 60px !important; 
+        border-radius: 12px !important; 
+        background-color: #FF4B4B !important; 
+        color: white !important; 
+        font-weight: bold; 
+    }
     </style>
     """, unsafe_allow_html=True)
 
