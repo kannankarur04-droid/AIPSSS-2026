@@ -11,30 +11,33 @@ import base64
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Missing GROQ_API_KEY!")
+    st.error("Missing GROQ_API_KEY! Please check your Streamlit secrets.")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Professional & Tight Layout ---
+# --- 🎨 2. Styling (CSS) - Professional Designer Layout ---
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+    .stApp { background-color: #0e1117; }
     .block-container { padding-top: 1.5rem !important; }
-    
-    /* 1. ஹெட்டர் பெட்டி - Rectangle Box Size குறைக்கப்பட்டுள்ளது */
+
+    /* Header Container - Rectangle Box Size Reduced */
     .aipsss-header {
         display: flex;
+        flex-direction: row; 
         align-items: center; 
         justify-content: flex-start;
-        gap: 35px; 
+        gap: 40px; 
         margin-bottom: 30px;
-        background: rgba(255, 255, 255, 0.05); 
-        padding: 15px 40px; /* உயரத்தைக் குறைக்க 15px padding */
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04); 
+        padding: 15px 45px; /* பெட்டியின் உயரத்தைக் குறைக்க 15px */
+        border-radius: 25px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* 2. லோகோ - பெரிதாக்கப்பட்டுள்ளது (Big Logo) */
+    /* Logo - LARGE Logo as requested */
     .main-logo {
         width: 180px !important; 
         height: auto;
@@ -42,75 +45,74 @@ st.markdown("""
         flex-shrink: 0;
     }
 
-    /* 3. எழுத்துக்கள் பெட்டி அலைன்மென்ட் */
+    /* Text Content Box - Lowered for perfect vertical alignment */
     .content-box {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        text-align: left;
-        padding-bottom: 5px; 
+        padding-top: 5px; 
     }
 
-    /* 4. AI STUDENT MENTOR - சிகப்பு நிறம் & நெருக்கமான இடைவெளி */
-    .main-title { 
-        font-weight: 950; 
-        color: #FF4B4B !important; /* சிகப்பு நிறம் */
-        text-transform: uppercase;
-        margin: 0 !important; 
-        line-height: 0.8 !important; 
-        letter-spacing: -2px;
-        font-size: 52px !important;
-    }
-
-    /* 5. பொன்மொழி - வெள்ளை நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
-    .subtitle {
-        font-size: 1.15rem !important;
-        color: #FFFFFF !important; /* வெள்ளை நிறம் */
+    /* AI STUDENT MENTOR - RED Color & Tight Line Space */
+    .main-title {
+        font-family: 'Lexend', sans-serif;
+        font-size: 52px !important; 
+        color: #FF4B4B !important; /* RED COLOR */
         margin: 0 !important;
-        padding-top: 2px !important; 
+        font-weight: 900 !important;
+        line-height: 0.85 !important; /* Very Tight Spacing */
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    /* Tagline - Pure White & Tight */
+    .subtitle {
+        font-family: 'Lexend', sans-serif;
+        font-size: 20px !important;
+        color: #FFFFFF !important; /* PURE WHITE */
+        margin: 8px 0 0 0 !important;
+        font-weight: 500;
         font-style: italic;
         line-height: 1.0 !important;
     }
 
-    /* 6. டெவலப்பர் - தங்க நிறம் & மேலே நகர்த்தப்பட்டுள்ளது */
+    /* Developer - Gold Color & Tight */
     .developer {
-        font-size: 1.05rem !important;
-        color: #FFD700 !important; /* தங்க நிறம் */
-        margin: 0 !important;
-        padding-top: 3px !important; 
-        font-weight: bold;
-        line-height: 1.0 !important;
+        font-family: 'Lexend', sans-serif;
+        font-size: 16px !important;
+        color: #FFD700 !important; /* GOLD COLOR */
+        margin: 5px 0 0 0 !important;
+        font-weight: 600;
         opacity: 0.9;
+        line-height: 1.0 !important;
     }
 
-    /* மொபைல் சீரமைப்பு */
+    /* Mobile Responsive Logic */
     @media (max-width: 768px) {
         .aipsss-header { gap: 15px; padding: 10px 15px; }
         .main-logo { width: 90px !important; }
-        .main-title { font-size: 1.8rem !important; }
+        .main-title { font-size: 26px !important; line-height: 0.9 !important; }
+        .subtitle { font-size: 13px !important; }
     }
+
+    /* UI Components */
+    .stButton > button {
+        height: 65px !important;
+        border-radius: 12px !important;
+        background-color: #FF4B4B !important;
+        color: white !important;
+        font-weight: bold;
+    }
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ ஹெட்டர் டிஸ்ப்ளே (HTML) ---
-if base64_img:
-    header_html = f'''
-        <div class="aipsss-header">
-            <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
-            <div class="content-box">
-                <h1 class="main-title">AI STUDENT MENTOR</h1>
-                <p class="subtitle">Everyone has the right to education</p>
-                <p class="developer">Developed by Brammadevan</p>
-            </div>
-        </div>
-    '''
-    st.markdown(header_html, unsafe_allow_html=True)
-
-# --- 🧠 3. Chat History ---
+# --- 🧠 3. Chat Memory ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Assets ---
+# --- 🖼️ 4. Header Display Logic (Fixed NameError) ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -134,16 +136,18 @@ if base64_img:
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
+else:
+    st.markdown('<h1 style="color:#FF4B4B;">AI STUDENT MENTOR</h1>', unsafe_allow_html=True)
 
 # --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
+        forbidden = ["game", "play", "pubg", "cheat", "movie", "song", "விளையாட்டு", "சினிமா"]
         if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
+            return "மன்னிக்கவும், நான் கல்வி தொடர்பான வழிகாட்டி மட்டுமே. பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
 
         system_instruction = "You are AI Student Mentor, a professional Education Mentor. Answer precisely. Strictly no gaming/entertainment stuff."
-        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
+        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
 
@@ -165,7 +169,7 @@ if uploaded_pdf:
     pdf_extracted_text = "".join([page.get_text() for page in doc])
     st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v40')
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v60')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
 
 prompt = voice_input if voice_input else text_input
