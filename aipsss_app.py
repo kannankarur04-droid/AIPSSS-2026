@@ -34,9 +34,9 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Side Logo (300px) */
+    /* Side Logo (350px) */
     .main-logo {
-        width: 300px; 
+        width: 350px; 
         height: auto;
         object-fit: contain;
     }
@@ -53,13 +53,13 @@ st.markdown("""
         font-size: 3.5rem !important;
         color: #ff4d4d !important;
         margin: 0 !important;
-        font-weight: 950 !important;
+        font-weight: 750 !important;
         line-height: 0.8 !important;
         letter-spacing: -2px;
     }
 
     .subtitle {
-        font-size: 1.8rem !important;
+        font-size: 1.1rem !important;
         color: #FFD700 !important; 
         margin: 0 !important;
         font-weight: bold !important;
@@ -68,7 +68,7 @@ st.markdown("""
     }
 
     .quote-text {
-        font-size: 1.3rem !important;
+        font-size: 1.0rem !important;
         font-style: italic !important;
         color: #FFD700 !important; 
         margin: 0 !important;
