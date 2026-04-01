@@ -21,26 +21,29 @@ st.markdown("""
     <style>
     /* Background Color */
     .stApp { background-color: #0E1117; }
-    
-    .block-container { padding-top: 1rem !important; max-width: 1200px; }
+    block-container { 
+        padding-top: 5rem !important; /* 1rem லிருந்து 5rem ஆக உயர்த்தப்பட்டுள்ளது */
+        max-width: 1200px; 
+    }
     
     /* Slim Header Container */
     .aipsss-header {
         display: flex;
         align-items: center; 
         justify-content: flex-start;
-        gap: 25px; 
-        margin-bottom: 20px;
+        gap: 30px; 
+        margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.05); 
-        padding: 10px 25px; /* Height reduced significantly */
+        padding: 20px 30px; /* Padding சற்று கூட்டப்பட்டுள்ளது */
         border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Smaller Logo */
-    .main-logo {
-        width: 100px !important; /* Smaller logo as requested */
+    main-logo {
+        width: 160px !important; /* 100px லிருந்து 160px ஆக உயர்த்தப்பட்டுள்ளது */
         height: auto;
+        object-fit: contain;
     }
 
     /* Content Box with minimal line spacing */
