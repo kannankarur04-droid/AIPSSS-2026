@@ -14,39 +14,39 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (The Perfect Design) ---
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Professional ---
 st.set_page_config(page_title="AI Smart Mentor", layout="centered", page_icon="🤖🎓")
 
-# இந்த ஒரு ப்ளாக் (Block) தான் அந்தத் தேவையற்ற எழுத்துக்களை டிசைனாக மாற்றும்
+# இந்த ஒரு ப்ளாக் தான் அந்தத் தேவையற்ற எழுத்துக்களை டிசைனாக மாற்றும்
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
     .stApp { background-color: #0e1117; }
     .block-container { padding-top: 2rem !important; }
 
-    /* Header Container - Flexible & Centered Alignment */
+    /* Header Container */
     .header-container {
         display: flex;
         flex-direction: row; 
-        align-items: center; /* லோகோ மற்றும் எழுத்துக்களை மையப்படுத்த */
+        align-items: center; 
         justify-content: flex-start;
         gap: 40px; 
-        margin-bottom: 40px;
+        margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.03); 
         padding: 40px;
         border-radius: 25px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* லோகோ - கம்பீரமாகப் பெரிதாக்கப்பட்டுள்ளது */
+    /* லோகோ - பெரிதாக்கப்பட்டுள்ளது */
     .logo-img {
-        width: 200px !important; 
+        width: 180px !important; 
         height: auto;
         object-fit: contain;
         flex-shrink: 0;
     }
 
-    /* எழுத்துக்கள் இருக்கும் பெட்டி - லோகோவிற்கு நிகராகக் கீழே இறக்கப்பட்டுள்ளது */
+    /* எழுத்துக்கள் பெட்டி - லோகோவிற்கு நிகராகக் கீழே இறக்கப்பட்டுள்ளது */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -61,7 +61,7 @@ st.markdown("""
         color: #FF4B4B !important;
         margin: 0 !important;
         font-weight: 900 !important;
-        line-height: 0.8 !important; /* மிகக் குறைவான இடைவெளி */
+        line-height: 0.8 !important; 
         letter-spacing: -2px;
         text-transform: uppercase;
         white-space: nowrap;
@@ -75,6 +75,7 @@ st.markdown("""
         margin: 8px 0 0 0 !important;
         font-weight: 500;
         font-style: italic;
+        line-height: 1.1 !important;
     }
 
     /* டெவலப்பர் - கண்ணியமான தங்க நிறம் (Gold) */
@@ -86,16 +87,13 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Mobile View - Responsive Fix */
+    /* Mobile View Fix */
     @media (max-width: 768px) {
         .header-container { gap: 15px; padding: 15px; }
         .logo-img { width: 100px !important; }
-        .main-title { font-size: 26px !important; line-height: 0.9 !important; }
-        .main-tagline { font-size: 13px !important; }
+        .main-title { font-size: 28px !important; line-height: 0.9 !important; }
+        .main-tagline { font-size: 14px !important; }
     }
-
-    /* Input Box Styling */
-    .stChatInputContainer { border-radius: 15px !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -136,12 +134,12 @@ def ai_response(q, pdf=""):
     except Exception as e:
         return f"AI Error: {str(e)}"
 
-# --- 🎙️ 5. Interaction UI ---
+# --- 🎙️ 5. UI Interaction ---
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
 up_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_final')
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_final_v100')
 t_in = st.chat_input("கல்வி தொடர்பான கேள்விகளைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
