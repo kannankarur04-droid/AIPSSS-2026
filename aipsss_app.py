@@ -14,74 +14,74 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - White Theme based on "My Idea" ---
-st.set_page_config(page_title="AIPSSS - Student Support", layout="wide", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) - Professional Sidebar Layout ---
+st.set_page_config(page_title="AI STDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    /* White Background */
-    .stApp { background-color: #FFFFFF; }
+    .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
     
-    .block-container { padding-top: 2rem !important; max-width: 1200px; }
-    
-    /* Header Layout */
-    /* Header layout - லோகோ மற்றும் டெவலப்பர் பெயர்களைச் சீரமைக்க */
-    .aipsss-header {
+.aipsss-header {
         display: flex;
-        align-items: flex-end; /* அனைத்தையும் லோகோவின் கால்களுக்கு நேராகக் கீழே சீரமைக்கும் */
+        align-items: center; 
         justify-content: flex-start;
-        gap: 20px; 
-        margin-bottom: 30px;
+        gap: 30px; 
+        margin-bottom: 20px; /* வெளியேயுள்ள இடைவெளி குறைப்பு */
         background: rgba(255, 255, 255, 0.05); 
-        padding: 20px;
-        border-radius: 20px;
+        padding: 15px 25px; /* மேலே மற்றும் கீழே padding 25px லிருந்து 15px ஆகக் குறைக்கப்பட்டுள்ளது */
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .main-logo {
-        width: 150px !important; 
-        height: auto;
-    }
-
-    /* அடுக்குகளுக்கு இடையிலான இடைவெளியைக் குறைக்க */
+    /* உரைப் பெட்டி - வரிகளை மேலே நகர்த்த செங்குத்து சீரமைப்பு */
     .content-box {
         display: flex;
-        flex-direction: column-reverse; /* தலைகீழாக அடுக்கும்: கீழே டெவலப்பர், மேலே தலைப்பு */
+        flex-direction: column;
+        justify-content: flex-start; /* உள்ளடக்கம் மேலே இருந்து தொடங்கும் */
         text-align: left;
     }
 
+    /* பிரதான தலைப்பு - நிறம் சிவப்பாக மாற்றப்பட்டுள்ளது மற்றும் கூடுதல் இடம் நீக்கப்பட்டுள்ளது */
     .main-title { 
-        font-size: 2.8rem !important;
-        font-weight: 800; 
-        color: #FF4B4B !important;
+        font-weight: 900; 
+        color: #FF4B4B !important; /* Streamlit சிவப்பு நிறம் */
+        text-transform: uppercase;
         margin: 0 !important; 
-        line-height: 1.0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important; /* தலைப்பு மற்றும் துணைத் தலைப்புக்கு இடையே உள்ள இடைவெளியைக் குறைக்க */
     }
 
+    /* துணைத் தலைப்பு - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
     .subtitle {
         font-size: 1.1rem !important;
         color: #FFD700 !important; 
         margin: 0 !important;
-        padding-bottom: 5px !important; /* தலைப்புக்கும் இதற்கும் உள்ள இடைவெளி */
-        font-weight: bold;
+        font-weight: bold !important;
+        padding-top: 5px !important; /* 12px லிருந்து 5px ஆகக் குறைக்கப்பட்டுள்ளது */
+        white-space: nowrap;
     }
 
+    /* டெவலப்பர் பெயர் - மேலே நகர்த்துவதற்காக padding குறைக்கப்பட்டுள்ளது */
     .developer {
-        font-size: 1rem !important;
+        font-size: 1.2rem !important;
         color: #FFFFFF !important; 
         margin: 0 !important;
-        padding-bottom: 5px !important; /* ஸ்லோகனுக்கும் இதற்கும் உள்ள இடைவெளி */
-        opacity: 0.8;
+        padding-top: 3px !important; /* 6px லிருந்து 3px ஆகக் குறைக்கப்பட்டுள்ளது */
+        opacity: 0.9;
     }
 
-    /* UI Elements visibility */
-    .stMarkdown, p, label { color: #000000 !important; }
-    .stButton > button { background-color: #F0F2F6 !important; color: black !important; border: 1px solid #CCC !important; }
-    
-    /* Chat bubbles for white theme */
-    [data-testid="stChatMessage"] {
-        background-color: #F8F9FA !important;
-        border: 1px solid #EEE !important;
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
+        .main-logo { width: 140px !important; }
+        .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
+        .subtitle { font-size: 1rem !important; white-space: normal; }
+        .quote-text { font-size: 0.85rem !important; }
+        .developer { font-size: 0.85rem !important; }
     }
+
+    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
+    .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -89,7 +89,7 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Implementation ---
+# --- 🖼️ 4. Header ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -106,24 +106,25 @@ if base64_img:
         <div class="aipsss-header">
             <img src="data:image/png;base64,{base64_img}" alt="Logo" class="main-logo">
             <div class="content-box">
-                <h1 class="main-title">AIPSSS</h1>
-                <div class="subtitle-container">
-                    <p class="subtitle-text">AI Powered Student Support System</p>
-                    <p class="subtitle-text">"Everyone has the right to education"</p>
-                </div>
+                <h1 class="main-title">AI STUDENT MENTOR</h1>
+                <p class="subtitle">Everyone has the right to education</p>
+                <p class="developer">Developed by Brammadevan</p>
             </div>
         </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 
-# --- 🧠 5. AI Engine ---
+# --- 🧠 5. AI Engine (Fixed Syntax) ---
 def ai_response(user_query, pdf_text=""):
     try:
-        forbidden = ["game", "play", "movie", "song", "விளையாட்டு", "சினிமா"]
+        # Keywords to block
+        forbidden = ["game", "gaming", "play", "pubg", "cheat", "hack", "illegal", "movie", "song", "விளையாட்டு", "சினிமா"]
+        
+        # Check if query is forbidden
         if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி தொடர்பான உதவியாளர் மட்டுமே."
+            return "மன்னிக்கவும், நான் கல்வி மற்றும் வேலைவாய்ப்பு தொடர்பான வழிகாட்டி மட்டுமே. விளையாட்டு அல்லது பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
 
-        system_instruction = "You are AIPSSS, an AI Powered Student Support System. Provide helpful and academic guidance."
+        system_instruction = "You are AIPSSS, a professional Education Mentor. Answer based on provided PDF or general knowledge. Strictly no gaming/entertainment."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-5:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
@@ -134,27 +135,23 @@ def ai_response(user_query, pdf_text=""):
         return f"Error: {str(e)}"
 
 # --- 🎙️ 6. UI ---
-
-# PDF Section
-st.write("📂 **PDF மூலம் தேடுவதற்கு**")
-uploaded_pdf = st.file_uploader("", type=["pdf"], label_visibility="collapsed")
-pdf_extracted_text = ""
-
-if uploaded_pdf:
-    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-    pdf_extracted_text = "".join([page.get_text() for page in doc])
-    st.success(f"✅ {uploaded_pdf.name} Loaded")
-
-# Mic Button
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final')
-
-# Chat Display
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Interaction
+# PDF Input
+uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
+pdf_extracted_text = ""
+
+if uploaded_pdf:
+    with st.spinner("PDF Reading..."):
+        doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
+        pdf_extracted_text = "".join([page.get_text() for page in doc])
+    st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
+
+voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v30')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
+
 prompt = voice_input if voice_input else text_input
 
 if prompt:
