@@ -50,7 +50,7 @@ st.markdown("""
     }
 
     .main-title {
-        font-size: 5.5rem !important;
+        font-size: 3.5rem !important;
         color: #ff4d4d !important;
         margin: 0 !important;
         font-weight: 950 !important;
