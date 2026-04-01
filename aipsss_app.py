@@ -4,7 +4,6 @@ from gtts import gTTS
 from streamlit_mic_recorder import speech_to_text
 import os
 import re
-from PIL import Image
 import fitz  # PyMuPDF
 import base64
 
@@ -15,139 +14,117 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
-st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
+# --- 🎨 2. UI/UX Design (Kannan's Gentle View Layout) ---
+st.set_page_config(page_title="AIPSSS", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; }
+    .block-container { padding-top: 1rem !important; max-width: 1300px; }
     
-    /* AIPSSS Title Style - Fixed Clipping */
-    .main-title { 
-        font-weight: 900; 
-        text-align: left; 
-        color: #FF4B4B;
-        letter-spacing: 1px;
-        margin: 0 !important; 
-        display: block !important;
-        overflow: visible !important; /* வெட்டப்படுவதைத் தவிர்க்க */
+    /* Header Box - Reverse Row for Logo on Right */
+    .aipsss-header {
+        display: flex;
+        flex-direction: row-reverse; /* லோகோவை வலது பக்கம் நகர்த்த */
+        align-items: center; 
+        justify-content: space-between; /* எழுத்துக்களுக்கும் லோகோவுக்கும் இடையே இடைவெளி */
+        gap: 40px; 
+        margin-bottom: 30px;
+        background: rgba(255, 255, 255, 0.07); 
+        padding: 35px 50px;
+        border-radius: 20px;
+        flex-wrap: nowrap;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Responsive Sizes */
-    @media only screen and (max-width: 600px) {
-        .main-title { font-size: 32px !important; line-height: 1.3 !important; }
-        .main-tagline { font-size: 12px !important; }
+    /* Logo - Right Side */
+    .main-logo {
+        height: auto;
+        width: 320px !important; 
+        max-height: 280px;
+        object-fit: contain;
+        flex-shrink: 0;
     }
-    @media only screen and (min-width: 601px) {
-        .main-title { font-size: 52px !important; line-height: 1.5 !important; }
-        .main-tagline { font-size: 16px !important; }
+
+    /* Content Box - Left side but moved slightly right */
+    .content-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+        padding-left: 20px; /* எழுத்துக்களைச் சிறிது வலதுபுறம் நகர்த்த */
     }
-    
-    .main-tagline {
-        text-align: left; 
-        color: #555; 
-        margin-top: 0px !important;
-        line-height: 1.2 !important;
-        font-weight: bold;
-        display: block;
+
+    .main-title {
+        font-size: 5.5rem !important;
+        color: #ff4d4d !important;
+        margin: 0 !important;
+        font-weight: 950 !important;
+        line-height: 0.75 !important; /* லைன் ஸ்பேஸ் குறைக்கப்பட்டுள்ளது */
+        letter-spacing: -3px;
     }
-    
-    /* Button Style */
-    .stButton > button {
-        height: 75px !important;
-        width: 100% !important;
-        border-radius: 15px !important;
-        font-size: 20px !important;
-        font-weight: bold;
-        background-color: #FF4B4B !important;
-        color: white !important;
-        box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
+
+    .subtitle {
+        font-size: 1.8rem !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        font-weight: 700 !important;
+        line-height: 1.0 !important; /* லைன் ஸ்பேஸ் குறைக்கப்பட்டுள்ளது */
+        padding-top: 12px;
     }
-    .stChatMessage { border-radius: 15px; }
+
+    .quote-text {
+        font-size: 1.2rem !important;
+        font-style: italic !important;
+        color: #ffffff !important; 
+        margin: 0 !important;
+        padding-top: 5px; /* இடைவெளி குறைப்பு */
+        opacity: 0.8;
+    }
+
+    .developer {
+        font-size: 1.1rem !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        padding-top: 3px;
+        font-weight: 600;
+    }
+
+    /* Mobile Responsive - Strict Design */
+    @media (max-width: 768px) {
+        .aipsss-header { 
+            flex-direction: row-reverse; /* மொபைலிலும் லோகோ வலதுபுறம் */
+            gap: 15px; 
+            padding: 15px; 
+        }
+        .main-logo { width: 110px !important; }
+        .content-box { padding-left: 5px; }
+        .main-title { font-size: 2.2rem !important; line-height: 0.8 !important; }
+        .subtitle { font-size: 0.8rem !important; line-height: 1.0 !important; }
+        .quote-text, .developer { font-size: 0.65rem !important; }
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
-img_name = 'aipsss_robot_final.png' 
-img_path = os.path.join(os.getcwd(), img_name)
+# --- 🖼️ 3. Header Display Logic ---
+img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
 
-def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+def get_base64_image(path):
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return None
 
-try:
-    if os.path.exists(img_path):
-        base64_img = get_base64_image(img_path)
-        # HTML Flexbox - தலைப்பு மேலே ஏறாமல் இருக்க margin-top: 0px
-        header_html = f'''
-            <div style="display: flex; align-items: center; gap: 15px; margin-top: 0px; margin-bottom: 25px; padding-top: 5px;">
-                <img src="data:image/png;base64,{base64_img}" style="width: 70px; height: auto; object-fit: contain;">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <p class="main-title">AIPSSS</p>
-                    <p class="main-tagline">AI Powered Student Support System</p>
-                </div>
+b64_img = get_base64_image(img_path)
+
+if b64_img:
+    st.markdown(f'''
+        <div class="aipsss-header">
+            <img src="data:image/png;base64,{b64_img}" class="main-logo">
+            <div class="content-box">
+                <h1 class="main-title">AIPSSS</h1>
+                <p class="subtitle">AI Powered Student Support System</p>
+                <p class="quote-text">"Everyone has the right to education"</p>
+                <p class="developer">Developed by KANNAN (Brammadevan)</p>
             </div>
-        '''
-        st.markdown(header_html, unsafe_allow_html=True)
-    else:
-        st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
-        st.markdown('<p style="color:#555; font-weight:bold; margin:0;">AI Powered Student Support System</p>', unsafe_allow_html=True)
-except Exception:
-    st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
-
-# --- 🎙️ 4. Interaction - Voice ---
-voice_input = speech_to_text(
-    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
-    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
-    language='ta-IN',
-    use_container_width=True,
-    key='aipsss_mic_v2'
-)
-
-# --- 🧠 5. AI Core Logic ---
-def ai_response(q, pdf_text=""):
-    try:
-        context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
-        completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant", 
-            messages=[
-                {"role": "system", "content": "You are AIPSSS, a helpful Education Assistant."},
-                {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
-            ],
-            temperature=0.1
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-# --- ⌨️ 6. Input & PDF ---
-text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
-uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
-
-pdf_context = ""
-if uploaded_pdf:
-    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
-    for page in doc:
-        pdf_context += page.get_text()
-    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
-
-# --- 🚀 7. Output ---
-prompt = voice_input if voice_input else text_input
-
-if prompt:
-    with st.chat_message("user"):
-        st.write(prompt)
-    
-    with st.chat_message("assistant"):
-        with st.spinner("யோசிக்கிறேன்..."):
-            reply = ai_response(prompt, pdf_context)
-            st.success(reply)
-            
-            # Audio Output
-            try:
-                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
-                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
-                tts.save("response.mp3")
-                st.audio("response.mp3", autoplay=True)
-            except:
-                pass
+        </div>
+    ''', unsafe_allow_html=True)
