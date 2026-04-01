@@ -41,7 +41,7 @@ st.markdown("""
 
     /* Smaller Logo */
     main-logo {
-        width: 100px !important; /* 100px லிருந்து 160px ஆக உயர்த்தப்பட்டுள்ளது */
+        width: 80px !important; /* 100px லிருந்து 160px ஆக உயர்த்தப்பட்டுள்ளது */
         height: auto;
         object-fit: contain;
     }
