@@ -25,52 +25,52 @@ st.markdown("""
     .block-container { padding-top: 2rem !important; max-width: 1200px; }
     
     /* Header Layout */
+    /* Header layout - லோகோ மற்றும் டெவலப்பர் பெயர்களைச் சீரமைக்க */
     .aipsss-header {
         display: flex;
-        align-items: center; 
+        align-items: flex-end; /* அனைத்தையும் லோகோவின் கால்களுக்கு நேராகக் கீழே சீரமைக்கும் */
         justify-content: flex-start;
         gap: 20px; 
         margin-bottom: 30px;
-        padding: 10px;
+        background: rgba(255, 255, 255, 0.05); 
+        padding: 20px;
+        border-radius: 20px;
     }
 
-    /* Logo size */
     .main-logo {
-        width: 120px !important; 
+        width: 150px !important; 
         height: auto;
     }
 
-    /* Content Box with strict line spacing */
+    /* அடுக்குகளுக்கு இடையிலான இடைவெளியைக் குறைக்க */
     .content-box {
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse; /* தலைகீழாக அடுக்கும்: கீழே டெவலப்பர், மேலே தலைப்பு */
         text-align: left;
     }
 
-    /* Red Title AIPSSS */
     .main-title { 
-        font-size: 3rem !important;
+        font-size: 2.8rem !important;
         font-weight: 800; 
-        color: #FF0000 !important; /* Pure Red */
+        color: #FF4B4B !important;
         margin: 0 !important; 
-        padding: 0 !important;
-        line-height: 0.9 !important;
+        line-height: 1.0 !important;
     }
 
-    /* Yellow Background for Subtitles */
-    .subtitle-container {
-        background-color: #FFFF00; /* Bright Yellow */
-        padding: 5px;
-        margin-top: 5px;
-        display: inline-block;
-    }
-
-    .subtitle-text {
-        font-size: 1.2rem !important;
-        color: #000000 !important; 
+    .subtitle {
+        font-size: 1.1rem !important;
+        color: #FFD700 !important; 
         margin: 0 !important;
-        font-weight: 600 !important;
-        line-height: 1.2 !important;
+        padding-bottom: 5px !important; /* தலைப்புக்கும் இதற்கும் உள்ள இடைவெளி */
+        font-weight: bold;
+    }
+
+    .developer {
+        font-size: 1rem !important;
+        color: #FFFFFF !important; 
+        margin: 0 !important;
+        padding-bottom: 5px !important; /* ஸ்லோகனுக்கும் இதற்கும் உள்ள இடைவெளி */
+        opacity: 0.8;
     }
 
     /* UI Elements visibility */
