@@ -19,7 +19,7 @@ st.set_page_config(page_title="AI STDENT MENTOR", layout="wide", page_icon="🤖
 
 st.markdown("""
     <style>
-    .block-container { padding-top: 1.5rem !important; max-width: 1200px; }
+    .block-container { padding-top: 1.5rem !important; }
     
     /* Header Container */
     .aipsss-header {
@@ -49,13 +49,14 @@ st.markdown("""
         text-align: left;
     }
 
-    .main-title {
-        font-size: 3.5rem !important;
-        color: #ff4d4d !important;
-        margin: 0 !important;
-        font-weight: 750 !important;
-        line-height: 0.8 !important;
-        letter-spacing: -2px;
+    main-title { 
+        font-weight: 950; 
+        color: #FF4B4B;
+        text-transform: uppercase;
+        margin: 0 !important; 
+        line-height: 0.8 !important; /* மிகக் குறைவான இடைவெளி */
+        letter-spacing: -2px; /* எழுத்துக்களை நெருக்கமாக்க */
+        font-size: 52px !important;
     }
 
     .subtitle {
@@ -67,33 +68,41 @@ st.markdown("""
         white-space: nowrap;
     }
 
-    .quote-text {
-        font-size: 1.0rem !important;
-        font-style: italic !important;
-        color: #FFD700 !important; 
-        margin: 0 !important;
-        padding-top: 6px;
-    }
-
-    .developer {
+    ..quote-text {
         font-size: 1.2rem !important;
+        font-style: italic !important;
         color: #FFFFFF !important; 
         margin: 0 !important;
-        padding-top: 6px;
-        opacity: 0.9;
+        padding-top: 2px !important; /* இடைவெளி குறைப்பு */
+        line-height: 1.0 !important;
     }
 
-    /* Mobile Responsive */
+    ..developer {
+        font-size: 1.1rem !important;
+        color: #FFD700 !important; 
+        margin: 0 !important;
+        padding-top: 2px !important; /* இடைவெளி குறைப்பு */
+        font-weight: bold;
+        opacity: 0.9;
+        line-height: 1.0 !important;
+    }
+
+   /* Mobile Responsive - மொபைல் போனுக்கான சீரமைப்பு */
     @media (max-width: 768px) {
-        .aipsss-header { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
-        .main-logo { width: 140px !important; }
-        .main-title { font-size: 3rem !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 1rem !important; white-space: normal; }
-        .quote-text { font-size: 0.85rem !important; }
+        .main-title { font-size: 2.2rem !important; line-height: 0.85 !important; }
+        .quote-text { font-size: 0.9rem !important; }
         .developer { font-size: 0.85rem !important; }
     }
 
-    .stButton > button { height: 70px !important; border-radius: 15px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; font-size: 20px; }
+    /* பட்டன் மற்றும் சாட் ஸ்டைல் */
+    .stButton > button { 
+        height: 65px !important; 
+        border-radius: 12px !important; 
+        background-color: #FF4B4B !important; 
+        color: white !important; 
+        font-weight: bold; 
+        font-size: 18px; 
+    }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
