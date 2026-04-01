@@ -46,7 +46,7 @@ st.markdown("""
     }
 
     .main-title { 
-        font-size: 50px !important; 
+        font-size: 32px !important; 
         font-weight: 900; 
         color: #FF4B4B; 
         margin: 0 !important;
