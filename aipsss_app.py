@@ -33,9 +33,9 @@ st.markdown("""
 
     /* Logo - BIG SIZE & NO GAP */
     .logo-img {
-        width: 250px;
+        width: 200px;
         height: auto;
-        margin-right: 10px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
+        margin-right: 5px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
     }
 
     /* Text Column - TIGHT LINE SPACING */
