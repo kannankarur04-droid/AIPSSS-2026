@@ -14,38 +14,41 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. UI/UX Design (Kannan's 100% Satisfied Layout) ---
+# --- 🎨 2. UI/UX Design (Modern Typography & Kannan's Gentle View) ---
 st.set_page_config(page_title="AI Smart Mentor", layout="wide", page_icon="🤖🎓")
 
+# கூகுள் ஃபான்ட் 'Lexend' இணைக்கப்பட்டுள்ளது (Clean & Modern)
 st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
     .block-container { padding-top: 1.5rem !important; max-width: 1300px; }
     
-    /* Header Box - Designed for "Gentle View" */
+    /* Header Box */
     .aipsss-header {
         display: flex;
         flex-direction: row; 
         align-items: center; 
         justify-content: flex-start;
-        gap: 40px; 
+        gap: 35px; 
         margin-bottom: 35px;
-        background: rgba(255, 255, 255, 0.06); 
-        padding: 40px 50px;
-        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.05); 
+        padding: 30px 45px;
+        border-radius: 20px;
         flex-wrap: nowrap;
         border: 1px solid rgba(255, 255, 255, 0.1);
+        font-family: 'Lexend', sans-serif; /* நவீன ஃபான்ட் */
     }
 
-    /* Logo - Enlarged as requested */
+    /* Logo - Scaled to fit single line text */
     .main-logo {
         height: auto;
-        width: 400px !important; /* லோகோ இன்னும் பெரிதாக்கப்பட்டுள்ளது */
-        max-height: 320px;
+        width: 250px !important; 
+        max-height: 200px;
         object-fit: contain;
         flex-shrink: 0;
     }
 
-    /* Content Box - Right Side Typography with reduced line spacing */
+    /* Content Box */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -53,56 +56,46 @@ st.markdown("""
         text-align: left;
     }
 
+    /* AI Smart Mentor - ஒரே வரியில் வர அளவு குறைக்கப்பட்டுள்ளது */
     .main-title {
-        font-size: 5.8rem !important; /* AI Smart Mentor Title */
+        font-size: 3.8rem !important; 
         color: #ff4d4d !important;
         margin: 0 !important;
-        font-weight: 950 !important;
-        line-height: 0.85 !important; /* கச்சிதமான லைன் ஸ்பேஸ் */
-        letter-spacing: -3px;
-        text-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+        font-weight: 900 !important;
+        line-height: 1.0 !important;
+        letter-spacing: -1.5px;
+        white-space: nowrap; /* இதுதான் ஒரே வரியில் வைக்கும் */
     }
 
     .quote-text {
-        font-size: 1.6rem !important; /* "Everyone has the right to education" */
+        font-size: 1.3rem !important;
         color: #FFD700 !important; 
         margin: 0 !important;
-        font-weight: 600 !important;
-        line-height: 1.1 !important;
-        padding-top: 15px;
-        font-style: italic;
+        font-weight: 400 !important;
+        line-height: 1.2 !important;
+        padding-top: 8px;
     }
 
     .developer {
-        font-size: 1.2rem !important; /* Developed by Brammadevan */
+        font-size: 1rem !important;
         color: #ffffff !important; 
         margin: 0 !important;
-        padding-top: 8px;
-        font-weight: 500;
-        opacity: 0.9;
+        padding-top: 4px;
+        opacity: 0.8;
     }
 
-    /* Mobile Responsive Logic */
+    /* Mobile View - Responsive */
     @media (max-width: 768px) {
-        .aipsss-header { gap: 20px; padding: 20px; }
-        .main-logo { width: 140px !important; }
-        .main-title { font-size: 2.6rem !important; line-height: 0.9 !important; }
-        .quote-text { font-size: 0.9rem !important; padding-top: 8px; }
-        .developer { font-size: 0.8rem !important; padding-top: 4px; }
-    }
-
-    /* Professional Button */
-    .stButton > button { 
-        height: 65px !important; 
-        border-radius: 15px !important; 
-        background-color: #FF4B4B !important; 
-        font-weight: bold;
-        font-size: 1.1rem;
+        .aipsss-header { gap: 15px; padding: 15px; }
+        .main-logo { width: 90px !important; }
+        .main-title { font-size: 1.8rem !important; letter-spacing: -0.5px; }
+        .quote-text { font-size: 0.75rem !important; padding-top: 5px; }
+        .developer { font-size: 0.7rem !important; }
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic ---
+# --- 🖼️ 3. Header Display Logic ---
 img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
 
 def get_base64_image(path):
@@ -124,17 +117,3 @@ if b64_img:
             </div>
         </div>
     ''', unsafe_allow_html=True)
-
-# --- 🧠 4. AI Engine (The Knowledge Hub) ---
-def ai_response(q, pdf=""):
-    try:
-        sys_msg = "You are AI Smart Mentor, an Education Expert. Answer all subjects precisely. Temperature: 0.0."
-        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
-        context = f"PDF Context: {pdf[:1200]}\n" if pdf else ""
-        msgs = [{"role": "system", "content": sys_msg}] + history + [{"role": "user", "content": context + q}]
-        res = client.chat.completions.create(model="llama-3.1-8b-instant", messages=msgs, temperature=0.0)
-        return res.choices[0].message.content
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-# Rest of the Speech-to-Text and UI code follows same logic as before...
