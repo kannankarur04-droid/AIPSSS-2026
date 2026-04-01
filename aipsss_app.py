@@ -4,6 +4,7 @@ from gtts import gTTS
 from streamlit_mic_recorder import speech_to_text
 import os
 import re
+from PIL import Image
 import fitz  # PyMuPDF
 import base64
 
@@ -14,156 +15,139 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. UI/UX Design (The CSS Fix) ---
-st.set_page_config(page_title="AI Smart Mentor", layout="wide", page_icon="🤖🎓")
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Responsive ---
+st.set_page_config(page_title="AIPSSS", layout="centered", page_icon="🤖🎓")
 
-# இந்த ஒரு ப்ளாக் (Block) தான் அந்த எழுத்துக்களை டிசைனாக மாற்றும்
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-    /* முழுத் திரையின் பின்புலம் */
-    .stApp { background-color: #0e1117; }
-    .block-container { padding-top: 1.5rem !important; max-width: 1300px; }
+    .block-container { padding-top: 1.5rem !important; }
     
-    /* ஹெட்டர் பெட்டி - நவீன டிசைன் */
-    .aipsss-header {
-        display: flex;
-        flex-direction: row; 
-        align-items: center; 
-        justify-content: flex-start;
-        gap: 40px; 
-        margin-bottom: 35px;
-        background: linear-gradient(135deg, rgba(30, 64, 175, 0.2), rgba(30, 58, 138, 0.1));
-        padding: 30px 45px;
-        border-radius: 20px;
-        flex-wrap: nowrap;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        font-family: 'Lexend', sans-serif;
+    /* AIPSSS Title Style - Fixed Clipping */
+    .main-title { 
+        font-weight: 900; 
+        text-align: left; 
+        color: #FF4B4B;
+        letter-spacing: 1px;
+        margin: 0 !important; 
+        display: block !important;
+        overflow: visible !important; /* வெட்டப்படுவதைத் தவிர்க்க */
     }
 
-    .main-logo {
-        height: auto;
-        width: 280px !important; 
-        max-height: 220px;
-        object-fit: contain;
-        flex-shrink: 0;
+    /* Responsive Sizes */
+    @media only screen and (max-width: 600px) {
+        .main-title { font-size: 32px !important; line-height: 1.3 !important; }
+        .main-tagline { font-size: 12px !important; }
     }
-
-    .content-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: left;
+    @media only screen and (min-width: 601px) {
+        .main-title { font-size: 52px !important; line-height: 1.5 !important; }
+        .main-tagline { font-size: 16px !important; }
     }
-
-    /* AI Smart Mentor - Soft Blue */
-    .main-title {
-        font-size: 3.8rem !important; 
-        color: #60a5fa !important; 
-        margin: 0 !important;
-        font-weight: 900 !important;
-        line-height: 0.9 !important;
-        letter-spacing: -2px;
-        white-space: nowrap;
+    
+    .main-tagline {
+        text-align: left; 
+        color: #555; 
+        margin-top: 0px !important;
+        line-height: 1.2 !important;
+        font-weight: bold;
+        display: block;
     }
-
-    /* பொன்மொழி - Creamy White */
-    .quote-text {
-        font-size: 1.5rem !important;
-        color: #e5e7eb !important; 
-        margin: 0 !important;
-        font-weight: 400 !important;
-        line-height: 1.1 !important;
-        padding-top: 10px;
-        font-style: italic;
+    
+    /* Button Style */
+    .stButton > button {
+        height: 75px !important;
+        width: 100% !important;
+        border-radius: 15px !important;
+        font-size: 20px !important;
+        font-weight: bold;
+        background-color: #FF4B4B !important;
+        color: white !important;
+        box-shadow: 0px 4px 15px rgba(255, 75, 75, 0.3);
     }
-
-    /* டெவலப்பர் - Soft Gold */
-    .developer {
-        font-size: 1.1rem !important;
-        color: #fbbf24 !important; 
-        margin: 0 !important;
-        padding-top: 5px;
-        font-weight: 600;
-        opacity: 0.9;
-    }
-
-    /* Mobile View Optimization */
-    @media (max-width: 768px) {
-        .aipsss-header { gap: 15px; padding: 15px; }
-        .main-logo { width: 90px !important; }
-        .main-title { font-size: 1.8rem !important; letter-spacing: -1px; }
-        .quote-text { font-size: 0.8rem !important; padding-top: 5px; }
-        .developer { font-size: 0.75rem !important; }
-    }
+    .stChatMessage { border-radius: 15px; }
     </style>
-    """, unsafe_allow_html=True) # இந்த வரிதான் மிக முக்கியம்
+    """, unsafe_allow_html=True)
 
-# --- 🧠 3. Logic & Assets ---
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# --- 🖼️ 3. Header Logic (Fixed Alignment & Clipping) ---
+img_name = 'aipsss_robot_final.png' 
+img_path = os.path.join(os.getcwd(), img_name)
 
-img_path = os.path.join(os.getcwd(), 'aipsss_robot_final.png')
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
-def get_base64_image(path):
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    return None
-
-b64_img = get_base64_image(img_path)
-
-# --- 🖼️ 4. Header Display ---
-if b64_img:
-    st.markdown(f'''
-        <div class="aipsss-header">
-            <img src="data:image/png;base64,{b64_img}" class="main-logo">
-            <div class="content-box">
-                <h1 class="main-title">AI Smart Mentor</h1>
-                <p class="quote-text">"Everyone has the right to education"</p>
-                <p class="developer">Developed by Brammadevan</p>
+try:
+    if os.path.exists(img_path):
+        base64_img = get_base64_image(img_path)
+        # HTML Flexbox - தலைப்பு மேலே ஏறாமல் இருக்க margin-top: 0px
+        header_html = f'''
+            <div style="display: flex; align-items: center; gap: 15px; margin-top: 0px; margin-bottom: 25px; padding-top: 5px;">
+                <img src="data:image/png;base64,{base64_img}" style="width: 70px; height: auto; object-fit: contain;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <p class="main-title">AI Smart Mentor</p>
+                    <p class="main-tagline">"Everyone has the right to education"</p>
+                </div>
             </div>
-        </div>
-    ''', unsafe_allow_html=True)
+        '''
+        st.markdown(header_html, unsafe_allow_html=True)
+    else:
+        st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#555; font-weight:bold; margin:0;">AI Powered Student Support System</p>', unsafe_allow_html=True)
+except Exception:
+    st.markdown('<h1 style="color:#FF4B4B; margin:0;">AIPSSS</h1>', unsafe_allow_html=True)
 
-# --- 🤖 5. AI Engine ---
-def ai_response(q, pdf=""):
+# --- 🎙️ 4. Interaction - Voice ---
+voice_input = speech_to_text(
+    start_prompt="🎤 பேச இங்கே அழுத்தவும்",
+    stop_prompt="🛑 நிறுத்த அழுத்தவும்",
+    language='ta-IN',
+    use_container_width=True,
+    key='aipsss_mic_v2'
+)
+
+# --- 🧠 5. AI Core Logic ---
+def ai_response(q, pdf_text=""):
     try:
-        sys_msg = "You are AI Smart Mentor, a professional Educational Assistant. Temperature: 0.0."
-        history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
-        context = f"PDF Context: {pdf[:1200]}\n" if pdf else ""
-        msgs = [{"role": "system", "content": sys_msg}] + history + [{"role": "user", "content": context + q}]
-        res = client.chat.completions.create(model="llama-3.1-8b-instant", messages=msgs, temperature=0.0)
-        return res.choices[0].message.content
+        context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant", 
+            messages=[
+                {"role": "system", "content": "You are AIPSSS, a helpful Education Assistant."},
+                {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
+            ],
+            temperature=0.1
+        )
+        return completion.choices[0].message.content
     except Exception as e:
-        return f"AI Error: {str(e)}"
+        return f"Error: {str(e)}"
 
-# --- 🎙️ 6. UI Interaction ---
-for m in st.session_state.messages:
-    with st.chat_message(m["role"]): st.markdown(m["content"])
+# --- ⌨️ 6. Input & PDF ---
+text_input = st.chat_input("கேள்வியைத் தட்டச்சு செய்யவும்...")
+uploaded_pdf = st.file_uploader("📂 கோப்புகள் மூலம் தேட (PDF)", type=["pdf"])
 
-up_pdf = st.file_uploader("📂 PDF கோப்புகளை இங்கே பதிவேற்றலாம்", type=["pdf"])
-pdf_txt = ""
-if up_pdf:
-    doc = fitz.open(stream=up_pdf.read(), filetype="pdf")
-    pdf_txt = "".join([p.get_text() for p in doc])
-    st.success("✅ PDF Ready!")
+pdf_context = ""
+if uploaded_pdf:
+    doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
+    for page in doc:
+        pdf_context += page.get_text()
+    st.success("✅ PDF இணைக்கப்பட்டுள்ளது!")
 
-v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_kannan')
-t_in = st.chat_input("கல்வி தொடர்பான கேள்விகளைக் கேட்கவும்...")
-prompt = v_in if v_in else t_in
+# --- 🚀 7. Output ---
+prompt = voice_input if voice_input else text_input
 
 if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"): st.markdown(prompt)
+    with st.chat_message("user"):
+        st.write(prompt)
+    
     with st.chat_message("assistant"):
-        with st.spinner("சிந்திக்கிறேன்..."):
-            rep = ai_response(prompt, pdf_txt)
-            st.markdown(rep)
+        with st.spinner("யோசிக்கிறேன்..."):
+            reply = ai_response(prompt, pdf_context)
+            st.success(reply)
+            
+            # Audio Output
             try:
-                is_ta = bool(re.search(r'[\u0b80-\u0bff]', rep))
-                tts = gTTS(text=rep[:300], lang='ta' if is_ta else 'en')
-                tts.save("res.mp3")
-                st.audio("res.mp3", autoplay=True)
-            except: pass
-    st.session_state.messages.append({"role": "assistant", "content": rep})
+                is_tamil = bool(re.search(r'[\u0b80-\u0bff]', reply))
+                tts = gTTS(text=reply[:300], lang='ta' if is_tamil else 'en')
+                tts.save("response.mp3")
+                st.audio("response.mp3", autoplay=True)
+            except:
+                pass
