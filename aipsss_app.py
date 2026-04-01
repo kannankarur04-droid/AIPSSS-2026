@@ -11,10 +11,10 @@ import base64
 if "GROQ_API_KEY" in st.secrets:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
-    st.error("Missing GROQ_API_KEY! Please check your Streamlit secrets.")
+    st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (CSS) - Professional Designer Layout ---
+# --- 🎨 2. Styling (CSS) ---
 st.set_page_config(page_title="AI STUDENT MENTOR", layout="wide", page_icon="🤖🎓")
 
 st.markdown("""
@@ -23,21 +23,21 @@ st.markdown("""
     .stApp { background-color: #0e1117; }
     .block-container { padding-top: 1.5rem !important; }
 
-    /* Header Container - Rectangle Box Size Reduced */
+    /* Rectangle Box Size Reduced */
     .aipsss-header {
         display: flex;
         flex-direction: row; 
         align-items: center; 
         justify-content: flex-start;
-        gap: 40px; 
+        gap: 35px; 
         margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.04); 
-        padding: 15px 45px; /* பெட்டியின் உயரத்தைக் குறைக்க 15px */
-        border-radius: 25px;
+        padding: 15px 45px; 
+        border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Logo - LARGE Logo as requested */
+    /* Logo - BIGGER Logo */
     .main-logo {
         width: 180px !important; 
         height: auto;
@@ -45,7 +45,7 @@ st.markdown("""
         flex-shrink: 0;
     }
 
-    /* Text Content Box - Lowered for perfect vertical alignment */
+    /* Content Box */
     .content-box {
         display: flex;
         flex-direction: column;
@@ -53,14 +53,14 @@ st.markdown("""
         padding-top: 5px; 
     }
 
-    /* AI STUDENT MENTOR - RED Color & Tight Line Space */
+    /* AI STUDENT MENTOR - RED Color & Tight Spacing */
     .main-title {
         font-family: 'Lexend', sans-serif;
         font-size: 52px !important; 
-        color: #FF4B4B !important; /* RED COLOR */
+        color: #FF4B4B !important; 
         margin: 0 !important;
         font-weight: 900 !important;
-        line-height: 0.85 !important; /* Very Tight Spacing */
+        line-height: 0.8 !important; 
         letter-spacing: -2px;
         text-transform: uppercase;
         white-space: nowrap;
@@ -70,8 +70,8 @@ st.markdown("""
     .subtitle {
         font-family: 'Lexend', sans-serif;
         font-size: 20px !important;
-        color: #FFFFFF !important; /* PURE WHITE */
-        margin: 8px 0 0 0 !important;
+        color: #FFFFFF !important; 
+        margin: 5px 0 0 0 !important;
         font-weight: 500;
         font-style: italic;
         line-height: 1.0 !important;
@@ -81,38 +81,31 @@ st.markdown("""
     .developer {
         font-family: 'Lexend', sans-serif;
         font-size: 16px !important;
-        color: #FFD700 !important; /* GOLD COLOR */
-        margin: 5px 0 0 0 !important;
+        color: #FFD700 !important; 
+        margin: 4px 0 0 0 !important;
         font-weight: 600;
         opacity: 0.9;
         line-height: 1.0 !important;
     }
 
-    /* Mobile Responsive Logic */
+    /* Mobile Logic */
     @media (max-width: 768px) {
         .aipsss-header { gap: 15px; padding: 10px 15px; }
         .main-logo { width: 90px !important; }
-        .main-title { font-size: 26px !important; line-height: 0.9 !important; }
-        .subtitle { font-size: 13px !important; }
+        .main-title { font-size: 26px !important; }
     }
 
-    /* UI Components */
-    .stButton > button {
-        height: 65px !important;
-        border-radius: 12px !important;
-        background-color: #FF4B4B !important;
-        color: white !important;
-        font-weight: bold;
-    }
+    /* Buttons */
+    .stButton > button { height: 60px !important; border-radius: 12px !important; background-color: #FF4B4B !important; color: white !important; font-weight: bold; }
     .stChatMessage { border-radius: 15px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🧠 3. Chat Memory ---
+# --- 🧠 3. Chat History ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 🖼️ 4. Header Display Logic (Fixed NameError) ---
+# --- 🖼️ 4. Header Display Logic ---
 img_name = 'aipsss_robot_final.png' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -142,15 +135,10 @@ else:
 # --- 🧠 5. AI Engine ---
 def ai_response(user_query, pdf_text=""):
     try:
-        forbidden = ["game", "play", "pubg", "cheat", "movie", "song", "விளையாட்டு", "சினிமா"]
-        if any(word in user_query.lower() for word in forbidden):
-            return "மன்னிக்கவும், நான் கல்வி தொடர்பான வழிகாட்டி மட்டுமே. பொழுதுபோக்கு தொடர்பான தகவல்களை வழங்க முடியாது."
-
         system_instruction = "You are AI Student Mentor, a professional Education Mentor. Answer precisely. Strictly no gaming/entertainment stuff."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
         context = f"PDF Context: {pdf_text[:1200]}\n" if pdf_text else ""
         messages = [{"role": "system", "content": system_instruction}] + history + [{"role": "user", "content": context + user_query}]
-
         completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0.1)
         return completion.choices[0].message.content
     except Exception as e:
@@ -161,23 +149,19 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-uploaded_pdf = st.file_uploader("📂 PDF மூலம் தேடுவதற்கு", type=["pdf"])
+uploaded_pdf = st.file_uploader("📂 PDF", type=["pdf"])
 pdf_extracted_text = ""
-
 if uploaded_pdf:
     doc = fitz.open(stream=uploaded_pdf.read(), filetype="pdf")
     pdf_extracted_text = "".join([page.get_text() for page in doc])
-    st.success(f"✅ '{uploaded_pdf.name}' Loaded!")
 
-voice_input = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_v60')
+voice_input = speech_to_text(start_prompt="🎤 பேச", stop_prompt="🛑 நிறுத்த", language='ta-IN', use_container_width=True, key='mic_final_fixed')
 text_input = st.chat_input("கேள்வியைக் கேட்கவும்...")
-
 prompt = voice_input if voice_input else text_input
 
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"): st.markdown(prompt)
-
     with st.chat_message("assistant"):
         with st.spinner("Searching..."):
             reply = ai_response(prompt, pdf_extracted_text)
