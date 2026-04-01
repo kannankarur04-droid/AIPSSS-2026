@@ -24,9 +24,9 @@ st.markdown("""
     /* Header Banner */
     .header-banner {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         background-color: #000000;
-        padding: 15px;
+        padding: 30px;
         border-radius: 12px;
         margin-bottom: 25px;
     }
@@ -128,7 +128,7 @@ def ai_response(q, pdf_text=""):
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AI Student Mentor. Help students with their education questions."},
+                {"role": "system", "content": "You are AI Assistant. Help students with their education questions."},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
