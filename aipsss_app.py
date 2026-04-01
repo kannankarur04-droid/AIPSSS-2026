@@ -14,53 +14,54 @@ else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
 
-# --- 🎨 2. Styling (Perfect Alignment) ---
+# --- 🎨 2. Styling (CSS) - Mobile Friendly & Professional ---
 st.set_page_config(page_title="AI Smart Mentor", layout="centered", page_icon="🤖🎓")
 
+# இந்த ஒரு ப்ளாக் தான் அந்தத் தேவையற்ற எழுத்துக்களை டிசைனாக மாற்றும்
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
     .stApp { background-color: #0e1117; }
     .block-container { padding-top: 2rem !important; }
 
-    /* Header Container - முற்றிலும் சீரமைக்கப்பட்டது */
+    /* Header Container */
     .header-container {
         display: flex;
         flex-direction: row; 
         align-items: center; 
         justify-content: flex-start;
-        gap: 45px; 
-        margin-bottom: 40px;
+        gap: 40px; 
+        margin-bottom: 30px;
         background: rgba(255, 255, 255, 0.03); 
-        padding: 45px;
-        border-radius: 30px;
+        padding: 40px;
+        border-radius: 25px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* லோகோ - பெரிய அளவில் கம்பீரமாக */
+    /* லோகோ - பெரிதாக்கப்பட்டுள்ளது */
     .logo-img {
-        width: 160px !important; 
+        width: 180px !important; 
         height: auto;
         object-fit: contain;
         flex-shrink: 0;
     }
 
-    /* எழுத்துக்கள் பெட்டி - கச்சிதமான அலைன்மென்ட் */
+    /* எழுத்துக்கள் பெட்டி - லோகோவிற்கு நிகராகக் கீழே இறக்கப்பட்டுள்ளது */
     .content-box {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        text-align: left;
+        padding-top: 15px; 
     }
 
-    /* AI SMART MENTOR - Capitalized & Tight Line Space */
+    /* AI SMART MENTOR - Capitalized & Very Tight Line Space */
     .main-title {
         font-family: 'Lexend', sans-serif;
         font-size: 52px !important; 
         color: #FF4B4B !important;
         margin: 0 !important;
         font-weight: 900 !important;
-        line-height: 0.85 !important;
+        line-height: 0.8 !important; 
         letter-spacing: -2px;
         text-transform: uppercase;
         white-space: nowrap;
@@ -71,28 +72,27 @@ st.markdown("""
         font-family: 'Lexend', sans-serif;
         font-size: 20px !important;
         color: #FFFFFF !important; 
-        margin: 10px 0 0 0 !important;
+        margin: 8px 0 0 0 !important;
         font-weight: 500;
         font-style: italic;
+        line-height: 1.1 !important;
     }
 
-    /* டெவலப்பர் - தங்க நிறம் (Gold) */
+    /* டெவலப்பர் - கண்ணியமான தங்க நிறம் (Gold) */
     .dev-text {
         font-family: 'Lexend', sans-serif;
-        font-size: 17px !important;
+        font-size: 16px !important;
         color: #FFD700 !important; 
-        margin: 8px 0 0 0 !important;
+        margin: 5px 0 0 0 !important;
         font-weight: 600;
-        letter-spacing: 0.5px;
     }
 
-    /* Mobile Responsive Logic */
+    /* Mobile View Fix */
     @media (max-width: 768px) {
-        .header-container { gap: 20px; padding: 20px; flex-direction: row; }
-        .logo-img { width: 90px !important; }
-        .main-title { font-size: 24px !important; line-height: 0.9 !important; }
-        .main-tagline { font-size: 12px !important; }
-        .dev-text { font-size: 11px !important; }
+        .header-container { gap: 15px; padding: 15px; }
+        .logo-img { width: 100px !important; }
+        .main-title { font-size: 28px !important; line-height: 0.9 !important; }
+        .main-tagline { font-size: 14px !important; }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -120,25 +120,27 @@ if b64_img:
         </div>
     ''', unsafe_allow_html=True)
 
-# --- 🤖 4. AI Engine & Interface ---
+# --- 🤖 4. AI Engine ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 def ai_response(q, pdf=""):
     try:
-        sys_msg = "You are AI Smart Mentor, an Education Expert. Be factual. Temp: 0.0."
+        sys_msg = "You are AI Smart Mentor, a professional Educational Assistant. Be precise. Temp: 0.0."
         history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages[-3:]]
         msgs = [{"role": "system", "content": sys_msg}] + history + [{"role": "user", "content": q}]
         res = client.chat.completions.create(model="llama-3.1-8b-instant", messages=msgs, temperature=0.0)
         return res.choices[0].message.content
-    except Exception as e: return f"Error: {str(e)}"
+    except Exception as e:
+        return f"AI Error: {str(e)}"
 
+# --- 🎙️ 5. UI Interaction ---
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
-up_pdf = st.file_uploader("📂 PDF", type=["pdf"])
-v_in = speech_to_text(start_prompt="🎤 பேச", language='ta-IN', use_container_width=True, key='mic_v_final')
-t_in = st.chat_input("கேள்வியைக் கேட்கவும்...")
+up_pdf = st.file_uploader("📂 PDF கோப்புகள் மூலம் தேட", type=["pdf"])
+v_in = speech_to_text(start_prompt="🎤 பேச அழுத்தவும்", language='ta-IN', use_container_width=True, key='mic_final_v100')
+t_in = st.chat_input("கல்வி தொடர்பான கேள்விகளைக் கேட்கவும்...")
 prompt = v_in if v_in else t_in
 
 if prompt:
