@@ -121,16 +121,19 @@ with col1:
         st.markdown("<h1 style='font-size: 50px;'>🤖</h1>", unsafe_allow_html=True)
 
 with col2:
+    # வரிகளுக்கு இடையே இடைவெளி (Line Spacing) குறைக்கப் பட்டுள்ளது
     st.markdown(f"""
-        <div style="margin-top: 10px;">
-            <h1 style="color: #FF4B4B; margin-bottom: 0; font-size: 45px; font-weight: 900; line-height: 1.0;">AIPSSS</h1>
-            <p style="color: #FFFFFF; font-size: 20px; font-weight: 500; margin: 5px 0;">
+        <div style="margin-top: 5px; display: flex; flex-direction: column; justify-content: center;">
+            <h1 style="color: #FF4B4B; margin: 0px 0px -5px 0px !important; font-size: 45px; font-weight: 900; line-height: 0.8 !important;">
+                AIPSSS
+            </h1>
+            <p style="color: #FFFFFF; font-size: 20px; font-weight: 500; margin: 0px 0px 2px 0px !important; line-height: 1.0 !important;">
                 AI Powered Student Support System
             </p>
-            <p style="color: #E0E0E0; font-size: 18px; font-style: italic; margin-bottom: 10px;">
+            <p style="color: #E0E0E0; font-size: 18px; font-style: italic; margin: 0px 0px 5px 0px !important; line-height: 1.0 !important;">
                 "Everyone has the right to education"
             </p>
-            <p style="color: #FFD700; font-size: 16px; font-weight: bold;">
+            <p style="color: #FFD700; font-size: 16px; font-weight: bold; margin: 0px !important; line-height: 1.0 !important;">
                 Developed by Brammadevan
             </p>
         </div>
