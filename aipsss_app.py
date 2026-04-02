@@ -108,36 +108,87 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 🖼️ 3. Header Logic (Final Line Spacing Fix) ---
-img_name = 'final logo.jpg' 
+# --- 🖼️ 3. Header (Concept Style - Clean & Tight) ---
+
+img_name = 'final logo.jpg'
 img_path = os.path.join(os.getcwd(), img_name)
 
-# லோகோ மற்றும் உரையை பிரிக்க இரு காலம்கள்
-col1, col2 = st.columns([1, 3])
-
-with col1:
+# Convert image to base64
+def get_base64(img_path):
     if os.path.exists(img_path):
-        st.image(img_path, width=200)
-    else:
-        st.markdown("<h1 style='font-size: 60px; margin:0;'>🤖</h1>", unsafe_allow_html=True)
+        with open(img_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return None
 
-with col2:
-    # வரிகளுக்கு இடையே இடைவெளியைக் குறைக்க line-height: 0.7 மற்றும் margin: 0px பயன்படுத்தப்பட்டுள்ளது
-    st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 0px; padding-top: 5px;">
-            <p style="font-size: 45px !important; font-weight: 900; color: #FF4B4B; margin: 0px !important; padding: 0px !important; line-height: 0.7 !important; font-family: sans-serif;">
-                AIPSSS
-            </p>
-            <p style="font-size: 20px !important; color: #FFFFFF; font-weight: 600; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
-                AI Powered Student Support System
-            </p>
-            <p style="font-size: 18px !important; font-style: italic; color: #E0E0E0; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
-                "Everyone has the right to education"
-            </p>
-            <p style="font-size: 16px !important; color: #FFD700; font-weight: bold; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
-                Developed by Brammadevan
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
+img_base64 = get_base64(img_path)
+
+st.markdown(f"""
+<style>
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Logo */
+.header img {{
+    width: 110px;
+}}
+
+/* Text block */
+.text {{
+    line-height: 1.15;
+}}
+
+/* Title */
+.title {{
+    font-size: 34px;
+    font-weight: 900;
+    color: #FF4B4B;
+    margin: 0;
+}}
+
+/* Subtitle */
+.subtitle {{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 2px 0;
+    color: #FFFFFF;
+}}
+
+/* Highlight quote */
+.quote {{
+    background-color: yellow;
+    color: black;
+    font-size: 15px;
+    font-style: italic;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-top: 2px;
+}}
+
+/* Developer */
+.dev {{
+    font-size: 14px;
+    color: #FFD700;
+    font-weight: bold;
+    margin-top: 2px;
+}}
+</style>
+
+<div class="header">
+    {"<img src='data:image/jpeg;base64," + img_base64 + "'>" if img_base64 else "<div style='font-size:60px;'>🤖</div>"}
+    
+    <div class="text">
+        <div class="title">AIPSSS</div>
+        <div class="subtitle">AI Powered Student Support System</div>
+        <div class="quote">"Everyone has the right to education"</div>
+        <div class="dev">Developed by Brammadevan</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
