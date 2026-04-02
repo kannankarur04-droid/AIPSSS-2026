@@ -15,39 +15,41 @@ else:
     st.stop()
 
 # --- 🎨 2. Styling (CSS) ---
-# --- 🎨 2. Styling (CSS) ---
 st.set_page_config(page_title="AI Student Support System", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
     .stApp { background-color: #0E1117; }
     
-    /* Header Container - படத்தின் இடத்தை உறுதிப்படுத்த */
+    /* Header Container */
     .header-container {
         position: relative;
-        margin-top: 50px; /* படம் மேலே ஓவர்லேப் ஆக இடம் */
-        margin-bottom: 25px;
+        margin-top: 20px;
+        margin-bottom: 50px; /* கீழ் பக்கம் மிதித்து வருவதால் கூடுதல் இடம் */
         width: 100%;
     }
 
-    /* Logo Image - கருப்புப் பட்டையை மிதித்தது போல ஓவர்லேப் செய்தல் */
-    .logo-img {
-        position: absolute;
-        top: -70px; /* கருப்புப் பட்டைக்கு மேலே படம் ஏறுவதற்கு */
-        left: 20px; /* இடது பக்கம் அலைன்மென்ட் */
-        width: 130px; /* படத்தின் அளவு */
-        height: auto;
-        z-index: 10; /* படம் மேலே தெரிவதற்கு */
-    }
-
-    /* Black Header Banner - கருப்புப் பட்டை */
+    /* Black Header Banner - செவ்வகக் கட்டம் */
     .header-banner {
         display: flex;
         align-items: center;
         background-color: #000000;
-        padding: 15px 15px 15px 160px; /* படத்தின் அளவுக்குப் பிறகு எழுத்துக்கள் வர இடது பக்கம் கேப் (Padding) */
+        padding: 25px 25px 25px 180px; /* படத்தின் அளவுக்கு ஏற்ப இடது பக்கம் கேப் */
         border-radius: 12px;
-        min-height: 100px;
+        min-height: 120px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Logo Image - பெரிதாக்கப்பட்டு கீழ் விளிம்பை மிதிப்பது போல */
+    .logo-img {
+        position: absolute;
+        bottom: -25px; /* கட்டத்தின் கீழ் விளிம்பைத் தாண்டி மிதிக்க (Overlap) */
+        left: 15px; 
+        width: 150px; /* லோகோ பெரிதாக்கப்பட்டுள்ளது */
+        height: auto;
+        z-index: 10; /* கட்டத்திற்கு மேல் தெரிய */
+        filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.5));
     }
 
     /* Text Column */
@@ -69,7 +71,7 @@ st.markdown("""
         font-size: 16px !important;
         font-style: italic;
         color: #E0E0E0;
-        margin: 2px 0 !important;
+        margin: 5px 0 !important;
         line-height: 1.2 !important;
     }
 
@@ -78,30 +80,22 @@ st.markdown("""
         color: #FFD700; 
         font-weight: bold;
         margin: 0 !important;
-        line-height: 1.2 !important;
     }
 
     /* மொபைல் போன்களுக்கான Responsive மாற்றம் */
     @media only screen and (max-width: 768px) {
-        .header-container { margin-top: 40px; }
         .logo-img { 
-            width: 90px; 
-            top: -50px; 
+            width: 100px; 
+            bottom: -15px; 
             left: 10px;
         }
         .header-banner { 
-            padding: 10px 10px 10px 110px; /* மொபைலில் படத்தின் அளவுக்கு ஏற்ப கேப் */
-            min-height: 80px;
+            padding: 15px 15px 15px 120px;
+            min-height: 100px;
         }
-        .main-title { font-size: 20px !important; }
+        .main-title { font-size: 18px !important; }
         .main-tagline { font-size: 11px !important; }
         .developer-tag { font-size: 10px !important; }
-    }
-
-    /* மைக் மற்றும் பாக்ஸ் அலைன்மென்ட் */
-    [data-testid="stVerticalBlock"] > div:has(div.stMarkdown) {
-        margin-top: 10px !important;
-        margin-bottom: 0px !important;
     }
 
     .stButton > button {
@@ -114,7 +108,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 🖼️ 3. Header Logic ---
-# லோகோ படத்தைப் படித்து HTML-ல் இணைத்தல்
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -128,11 +121,10 @@ def get_base64_image(image_path):
 base64_img = get_base64_image(img_path)
 
 if base64_img:
-    # படம் மேலே ஓவர்லேப் ஆகும் வகையில் புதிய HTML அமைப்பு
     header_html = f'''
         <div class="header-container">
-            <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
             <div class="header-banner">
+                <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
                 <div class="header-text">
                     <p class="main-title">AI Student Support System</p>
                     <p class="main-tagline">"Everyone has the right to education"</p>
@@ -143,7 +135,6 @@ if base64_img:
     '''
     st.markdown(header_html, unsafe_allow_html=True)
 else:
-    # படம் இல்லையென்றால் சாதாரண தலைப்பு
     st.title("AI Student Support System")
 
 # --- 🎙️ 4. Interaction - Voice ---
