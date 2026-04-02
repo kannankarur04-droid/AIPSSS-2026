@@ -115,7 +115,7 @@ img_path = os.path.join(os.getcwd(), img_name)
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # லோகோ படம் - 200px அளவில்
+    # லோகோ படம் - 300px அளவில்
     if os.path.exists(img_path):
         st.image(img_path, width=200)
     else:
