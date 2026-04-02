@@ -124,11 +124,22 @@ voice_input = speech_to_text(
 # --- 🧠 5. AI Logic ---
 def ai_response(q, pdf_text=""):
     try:
-        context = f"PDF Context: {pdf_text[:1500]}" if pdf_text else ""
+        # PDF தகவல் இருந்தால் அதைச் சேர்க்கும் பகுதி
+        context = f"PDF Context: {pdf_text[:2000]}" if pdf_text else ""
+        
+        # மாணவர்களுக்கான விரிவான வழிகாட்டுதல் மற்றும் பாதுகாப்பு விதிகள்
+        system_instruction = (
+            "You are a 'Comprehensive Student Life Mentor'. Your mission is to guide students through their entire academic and career journey. "
+            "COVERAGE AREAS: 1. School Education (Subjects & Exam tips), 2. College/Higher Education guidance, 3. Competitive Exams (UPSC, TNPSC, NEET, JEE), 4. Skill Development & Career path. "
+            "STRICT RESTRICTIONS: 1. No Cinema, Celebrities, or Entertainment news. 2. No Adult, Explicit, or Illegal content. 3. No Mobile Gaming or E-sports. 4. Maintain zero bias and focus only on student welfare. "
+            "TONE: Professional, encouraging, and educational. "
+            "If a user asks about restricted topics, politely reply in Tamil: 'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. இது தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
+        )
+
         completion = client.chat.completions.create(
             model="llama-3.1-8b-instant", 
             messages=[
-                {"role": "system", "content": "You are AI Student Mentor. Help students with their education questions."},
+                {"role": "system", "content": system_instruction},
                 {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
             ],
             temperature=0.1
