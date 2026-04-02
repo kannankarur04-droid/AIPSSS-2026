@@ -107,12 +107,11 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header (Final Clean Concept) ---
+# --- 🖼️ 3. Header (Updated UI Fix) ---
 
 img_name = 'final logo.jpg'
 img_path = os.path.join(os.getcwd(), img_name)
 
-# Convert image to base64
 def get_base64(img_path):
     if os.path.exists(img_path):
         with open(img_path, "rb") as f:
@@ -121,50 +120,53 @@ def get_base64(img_path):
 
 img_base64 = get_base64(img_path)
 
-# CSS (NO f-string here → so no error)
 st.markdown("""
 <style>
 .header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-top: 10px;
+    gap: 20px;
+    margin-top: -10px; /* மேலே shift */
 }
 
+/* 🔥 Bigger Logo */
 .header img {
-    width: 110px;
+    width: 150px;
 }
 
+/* Text block மேலே shift */
 .text {
     line-height: 1.15;
+    margin-top: -8px;
 }
 
+/* Title */
 .title {
-    font-size: 34px;
+    font-size: 36px;
     font-weight: 900;
     color: #FF4B4B;
     margin: 0;
 }
 
+/* Subtitle */
 .subtitle {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     margin: 2px 0;
     color: #FFFFFF;
 }
 
+/* Quote (NO highlight now) */
 .quote {
-    background-color: yellow;
-    color: black;
-    font-size: 15px;
+    font-size: 16px;
     font-style: italic;
-    padding: 2px 6px;
-    display: inline-block;
+    color: #E0E0E0;
     margin-top: 2px;
 }
 
+/* Developer */
 .dev {
-    font-size: 14px;
+    font-size: 15px;
     color: #FFD700;
     font-weight: bold;
     margin-top: 2px;
@@ -172,11 +174,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# HTML content (separate → safe)
 if img_base64:
     img_html = f"<img src='data:image/jpeg;base64,{img_base64}'>"
 else:
-    img_html = "<div style='font-size:60px;'>🤖</div>"
+    img_html = "<div style='font-size:70px;'>🤖</div>"
 
 st.markdown(f"""
 <div class="header">
