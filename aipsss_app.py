@@ -107,7 +107,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic ---
+# --- 🖼️ 3. Header Logic (New Layout Based on Image) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -122,18 +122,25 @@ base64_img = get_base64_image(img_path)
 
 if base64_img:
     header_html = f"""
-        <div style="display: flex; align-items: center; justify-content: flex-start; padding: 10px 0px; margin-bottom: 30px; width: 100%;">
-            <div style="flex: 0 0 auto; margin-right: 25px;">
-                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" style="width: 150px; height: auto;">
+        <div style="display: flex; align-items: flex-start; justify-content: flex-start; padding: 20px 0px; margin-bottom: 30px; width: 100%;">
+            <div style="flex: 0 0 auto; margin-right: 35px; margin-top: 10px;">
+                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" style="width: 160px; height: auto;">
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                <p style="font-size: 34px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.1 !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                    AI Student Support System
+            
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
+                <p style="font-size: 38px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.0 !important;">
+                    AIPSSS
                 </p>
-                <p style="font-size: 18px !important; font-style: italic; color: #E0E0E0; margin: 5px 0 !important; line-height: 1.1 !important;">
+                
+                <p style="font-size: 19px !important; color: #FFFFFF; font-weight: 500; margin: 5px 0 !important; line-height: 1.2 !important;">
+                    AI Powered Student Support System
+                </p>
+                
+                <p style="font-size: 17px !important; font-style: italic; color: #E0E0E0; margin: 0 !important; line-height: 1.2 !important;">
                     "Everyone has the right to education"
                 </p>
-                <p style="font-size: 16px !important; color: #FFD700; font-weight: bold; margin: 0 !important; line-height: 1.1 !important;">
+                
+                <p style="font-size: 15px !important; color: #FFD700; font-weight: bold; margin: 10px 0 0 0 !important; line-height: 1.2 !important;">
                     Developed by Brammadevan
                 </p>
             </div>
