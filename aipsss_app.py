@@ -22,8 +22,10 @@ st.markdown("""
     .stApp { background-color: #0E1117; }
     
     /* Header Banner */
-    .header-banner {
+    header-banner {
         display: flex;
+        flex-direction: row-reverse; /* லோகோவை வலது பக்கம் தள்ளுகிறது */
+        justify-content: space-between;
         align-items: center;
         background-color: #000000;
         padding: 15px;
@@ -31,18 +33,18 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Logo - BIG SIZE & NO GAP */
+    /* Logo - கம்ப்யூட்டரில் பெரியதாகவும் மொபைலில் அளவாகவும் இருக்கும் */
     .logo-img {
-        width: 200px;
+        width: 180px; /* கம்ப்யூட்டர் அளவு */
         height: auto;
-        margin-right: 5px !important; /* இடைவெளி குறைக்கப்பட்டுள்ளது */
+        margin-left: 10px;
     }
 
-    /* Text Column - TIGHT LINE SPACING */
+    /* Text Column */
     .header-text {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        text-align: left; /* எழுத்துக்கள் இடது பக்கம் இருக்கும் */
     }
 
     .main-title { 
@@ -50,8 +52,7 @@ st.markdown("""
         font-weight: 900; 
         color: #FF4B4B; 
         margin: 0 !important;
-        line-height: 0.9 !important; /* நெருக்கமான இடைவெளி */
-        letter-spacing: -1px;
+        line-height: 1 !important;
     }
 
     .main-tagline {
@@ -70,12 +71,22 @@ st.markdown("""
         line-height: 1 !important;
     }
 
-    @media only screen and (max-width: 600px) {
-        .header-banner { flex-direction: row; padding: 10px; }
-        .logo-img { width: 100px; }
-        .main-title { font-size: 28px !important; }
-        .main-tagline { font-size: 12px !important; }
-        .developer-tag { font-size: 11px !important; }
+   @media only screen and (max-width: 600px) {
+        .header-banner { 
+            padding: 10px; 
+        }
+        .logo-img { 
+            width: 80px; /* மொபைலில் லோகோவின் அளவு */
+        }
+        .main-title { 
+            font-size: 20px !important; 
+        }
+        .main-tagline { 
+            font-size: 11px !important; 
+        }
+        .developer-tag { 
+            font-size: 10px !important; 
+        }
     }
 
     .stButton > button {
