@@ -107,11 +107,15 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header (Updated UI Fix) ---
+# --- 🖼️ 3. Header (Final Tall Logo Design) ---
+
+import base64
+import os
 
 img_name = 'final logo.jpg'
 img_path = os.path.join(os.getcwd(), img_name)
 
+# Convert image to base64
 def get_base64(img_path):
     if os.path.exists(img_path):
         with open(img_path, "rb") as f:
@@ -120,21 +124,23 @@ def get_base64(img_path):
 
 img_base64 = get_base64(img_path)
 
+# CSS
 st.markdown("""
 <style>
 .header {
     display: flex;
     align-items: center;
     gap: 20px;
-    margin-top: -10px; /* மேலே shift */
+    margin-top: -10px;
 }
 
-/* 🔥 Bigger Logo */
+/* 🔥 Tall Logo */
 .header img {
-    width: 180px;
+    height: 190px;   /* height increase */
+    width: auto;     /* ratio maintain */
 }
 
-/* Text block மேலே shift */
+/* Text block */
 .text {
     line-height: 1.15;
     margin-top: -8px;
@@ -156,7 +162,7 @@ st.markdown("""
     color: #FFFFFF;
 }
 
-/* Quote (NO highlight now) */
+/* Quote (no highlight) */
 .quote {
     font-size: 16px;
     font-style: italic;
@@ -174,11 +180,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Image HTML
 if img_base64:
     img_html = f"<img src='data:image/jpeg;base64,{img_base64}'>"
 else:
     img_html = "<div style='font-size:70px;'>🤖</div>"
 
+# Header Layout
 st.markdown(f"""
 <div class="header">
     {img_html}
