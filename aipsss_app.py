@@ -15,36 +15,46 @@ else:
     st.stop()
 
 # --- 🎨 2. Styling (CSS) ---
+# --- 🎨 2. Styling (CSS) ---
 st.set_page_config(page_title="AI Student Support System", layout="centered", page_icon="🤖")
 
 st.markdown("""
     <style>
     .stApp { background-color: #0E1117; }
     
-    /* Header Banner */
-    header-banner {
-        display: flex;
-        flex-direction: row-reverse; /* லோகோவை வலது பக்கம் தள்ளுகிறது */
-        justify-content: space-between;
-        align-items: center;
-        background-color: #000000;
-        padding: 15px;
-        border-radius: 12px;
+    /* Header Container - படத்தின் இடத்தை உறுதிப்படுத்த */
+    .header-container {
+        position: relative;
+        margin-top: 50px; /* படம் மேலே ஓவர்லேப் ஆக இடம் */
         margin-bottom: 25px;
+        width: 100%;
     }
 
-    /* Logo - கம்ப்யூட்டரில் பெரியதாகவும் மொபைலில் அளவாகவும் இருக்கும் */
+    /* Logo Image - கருப்புப் பட்டையை மிதித்தது போல ஓவர்லேப் செய்தல் */
     .logo-img {
-        width: 180px; /* கம்ப்யூட்டர் அளவு */
+        position: absolute;
+        top: -70px; /* கருப்புப் பட்டைக்கு மேலே படம் ஏறுவதற்கு */
+        left: 20px; /* இடது பக்கம் அலைன்மென்ட் */
+        width: 130px; /* படத்தின் அளவு */
         height: auto;
-        margin-left: 10px;
+        z-index: 10; /* படம் மேலே தெரிவதற்கு */
+    }
+
+    /* Black Header Banner - கருப்புப் பட்டை */
+    .header-banner {
+        display: flex;
+        align-items: center;
+        background-color: #000000;
+        padding: 15px 15px 15px 160px; /* படத்தின் அளவுக்குப் பிறகு எழுத்துக்கள் வர இடது பக்கம் கேப் (Padding) */
+        border-radius: 12px;
+        min-height: 100px;
     }
 
     /* Text Column */
     .header-text {
         display: flex;
         flex-direction: column;
-        text-align: left; /* எழுத்துக்கள் இடது பக்கம் இருக்கும் */
+        justify-content: center;
     }
 
     .main-title { 
@@ -56,37 +66,42 @@ st.markdown("""
     }
 
     .main-tagline {
-        font-size: 18px !important;
+        font-size: 16px !important;
         font-style: italic;
         color: #E0E0E0;
-        margin: 2px 0 !important; /* மிகக் குறைந்த இடைவெளி */
-        line-height: 1 !important;
+        margin: 2px 0 !important;
+        line-height: 1.2 !important;
     }
 
     .developer-tag {
-        font-size: 16px !important;
+        font-size: 14px !important;
         color: #FFD700; 
         font-weight: bold;
-        margin: 18x !important;
-        line-height: 1 !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
     }
 
-   @media only screen and (max-width: 600px) {
-        .header-banner { 
-            padding: 10px; 
-        }
+    /* மொபைல் போன்களுக்கான Responsive மாற்றம் */
+    @media only screen and (max-width: 768px) {
+        .header-container { margin-top: 40px; }
         .logo-img { 
-            width: 80px; /* மொபைலில் லோகோவின் அளவு */
+            width: 90px; 
+            top: -50px; 
+            left: 10px;
         }
-        .main-title { 
-            font-size: 20px !important; 
+        .header-banner { 
+            padding: 10px 10px 10px 110px; /* மொபைலில் படத்தின் அளவுக்கு ஏற்ப கேப் */
+            min-height: 80px;
         }
-        .main-tagline { 
-            font-size: 11px !important; 
-        }
-        .developer-tag { 
-            font-size: 10px !important; 
-        }
+        .main-title { font-size: 20px !important; }
+        .main-tagline { font-size: 11px !important; }
+        .developer-tag { font-size: 10px !important; }
+    }
+
+    /* மைக் மற்றும் பாக்ஸ் அலைன்மென்ட் */
+    [data-testid="stVerticalBlock"] > div:has(div.stMarkdown) {
+        margin-top: 10px !important;
+        margin-bottom: 0px !important;
     }
 
     .stButton > button {
@@ -99,28 +114,36 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 🖼️ 3. Header Logic ---
+# லோகோ படத்தைப் படித்து HTML-ல் இணைத்தல்
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
 def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except FileNotFoundError:
+        return None
 
-try:
-    if os.path.exists(img_path):
-        base64_img = get_base64_image(img_path)
-        header_html = f'''
+base64_img = get_base64_image(img_path)
+
+if base64_img:
+    # படம் மேலே ஓவர்லேப் ஆகும் வகையில் புதிய HTML அமைப்பு
+    header_html = f'''
+        <div class="header-container">
+            <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
             <div class="header-banner">
-                <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
                 <div class="header-text">
                     <p class="main-title">AI Student Support System</p>
                     <p class="main-tagline">"Everyone has the right to education"</p>
                     <p class="developer-tag">Developed by Brammadevan</p>
                 </div>
             </div>
-        '''
-        st.markdown(header_html, unsafe_allow_html=True)
-except:
+        </div>
+    '''
+    st.markdown(header_html, unsafe_allow_html=True)
+else:
+    # படம் இல்லையென்றால் சாதாரண தலைப்பு
     st.title("AI Student Support System")
 
 # --- 🎙️ 4. Interaction - Voice ---
