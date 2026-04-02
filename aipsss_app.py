@@ -121,15 +121,25 @@ def get_base64_image(image_path):
 base64_img = get_base64_image(img_path)
 
 if base64_img:
+    # லோகோ மற்றும் மூன்று வரிகளும் ஒரே உயரத்தில், கீழே கேப் விட்டு அலைன் செய்யப்பட்டுள்ளது
     header_html = f'''
-        <div class="header-container">
-            <div class="header-banner">
-                <img src="data:image/jpeg;base64,{base64_img}" class="logo-img">
-                <div class="header-text">
-                    <p class="main-title">AI Student Support System</p>
-                    <p class="main-tagline">"Everyone has the right to education"</p>
-                    <p class="developer-tag">Developed by Brammadevan</p>
-                </div>
+        <div style="display: flex; align-items: center; background-color: #000000; padding: 20px; border-radius: 12px; margin-top: 20px; margin-bottom: 25px; min-height: 140px;">
+            
+            <div style="flex: 0 0 auto; margin-top: -40px; margin-bottom: 10px;">
+                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" 
+                     style="width: 150px; height: auto; z-index: 10;">
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-left: 20px; margin-bottom: 10px;">
+                <p style="font-size: 28px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.1 !important;">
+                    AI Student Support System
+                </p>
+                <p style="font-size: 16px !important; font-style: italic; color: #E0E0E0; margin: 5px 0 !important; line-height: 1.1 !important;">
+                    "Everyone has the right to education"
+                </p>
+                <p style="font-size: 14px !important; color: #FFD700; font-weight: bold; margin: 0 !important; line-height: 1.1 !important;">
+                    Developed by Brammadevan
+                </p>
             </div>
         </div>
     '''
