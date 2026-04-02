@@ -133,7 +133,7 @@ def ai_response(q, pdf_text=""):
             "COVERAGE AREAS: 1. School Education, 2. College/Higher Education, 3. Competitive Exams (UPSC, TNPSC, NEET, JEE), 4. Skill Development & Career path. "
             "STRICT RESTRICTIONS: 1. No Cinema/Entertainment. 2. No Adult/Illegal content. 3. No Mobile Gaming. 4. Maintain zero bias. "
             "If a user asks about restricted topics, ONLY reply with this exact Tamil sentence: "
-            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. இது தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
+            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
         )
 
         completion = client.chat.completions.create(
