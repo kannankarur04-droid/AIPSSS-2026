@@ -112,7 +112,7 @@ st.markdown("""
 import base64
 import os
 
-img_name = 'final logo.jpg'
+img_name = 'logo.png'
 img_path = os.path.join(os.getcwd(), img_name)
 
 # Convert image to base64
