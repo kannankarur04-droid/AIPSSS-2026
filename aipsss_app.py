@@ -107,7 +107,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header (Concept Style - Clean & Tight) ---
+# --- 🖼️ 3. Header (Final Clean Concept) ---
 
 img_name = 'final logo.jpg'
 img_path = os.path.join(os.getcwd(), img_name)
@@ -121,7 +121,8 @@ def get_base64(img_path):
 
 img_base64 = get_base64(img_path)
 
-st.markdown(f"""
+# CSS (NO f-string here → so no error)
+st.markdown("""
 <style>
 .header {
     display: flex;
@@ -130,34 +131,29 @@ st.markdown(f"""
     margin-top: 10px;
 }
 
-/* Logo */
-.header img {{
+.header img {
     width: 110px;
-}}
+}
 
-/* Text block */
-.text {{
+.text {
     line-height: 1.15;
-}}
+}
 
-/* Title */
-.title {{
+.title {
     font-size: 34px;
     font-weight: 900;
     color: #FF4B4B;
     margin: 0;
-}}
+}
 
-/* Subtitle */
-.subtitle {{
+.subtitle {
     font-size: 18px;
     font-weight: 600;
     margin: 2px 0;
     color: #FFFFFF;
-}}
+}
 
-/* Highlight quote */
-.quote {{
+.quote {
     background-color: yellow;
     color: black;
     font-size: 15px;
@@ -165,20 +161,26 @@ st.markdown(f"""
     padding: 2px 6px;
     display: inline-block;
     margin-top: 2px;
-}}
+}
 
-/* Developer */
-.dev {{
+.dev {
     font-size: 14px;
     color: #FFD700;
     font-weight: bold;
     margin-top: 2px;
-}}
+}
 </style>
+""", unsafe_allow_html=True)
 
+# HTML content (separate → safe)
+if img_base64:
+    img_html = f"<img src='data:image/jpeg;base64,{img_base64}'>"
+else:
+    img_html = "<div style='font-size:60px;'>🤖</div>"
+
+st.markdown(f"""
 <div class="header">
-    {"<img src='data:image/jpeg;base64," + img_base64 + "'>" if img_base64 else "<div style='font-size:60px;'>🤖</div>"}
-    
+    {img_html}
     <div class="text">
         <div class="title">AIPSSS</div>
         <div class="subtitle">AI Powered Student Support System</div>
