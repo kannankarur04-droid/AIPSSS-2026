@@ -125,8 +125,8 @@ with col2:
     # வலது பக்கம் உள்ள பெயர்கள்
     st.markdown(f"""
         <div style="margin-top: 10px;">
-            <h1 style="color: #FF4B4B; margin-bottom: 0; font-size: 45px; font-weight: 900;">AIPSSS</h1>
-            <p style="color: #FFFFFF; font-size: 20px; font-weight: 500; margin-bottom: 5px;">
+            <h1 style="color: #FF4B4B; margin-bottom: 0; font-size: 45px; font-weight: 900; line-height: 1.0;">AIPSSS</h1>
+            <p style="color: #FFFFFF; font-size: 20px; font-weight: 500; margin: 5px 0;">
                 AI Powered Student Support System
             </p>
             <p style="color: #E0E0E0; font-size: 18px; font-style: italic; margin-bottom: 10px;">
