@@ -107,7 +107,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Streamlit Columns Method) ---
+# --- 🖼️ 3. Header Logic (Streamlit Columns Method - COMPLETE FIX) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -116,10 +116,11 @@ col1, col2 = st.columns([1, 3])
 
 with col1:
     # லோகோ படம் - 200px அளவில்
-    try:
+    if os.path.exists(img_path):
         st.image(img_path, width=200)
-    except:
-        st.write("🤖 Logo")
+    else:
+        # படம் இல்லை என்றால் மட்டும் இந்த டெக்ஸ்ட் வரும்
+        st.markdown("<h1 style='font-size: 50px;'>🤖</h1>", unsafe_allow_html=True)
 
 with col2:
     # வலது பக்கம் உள்ள பெயர்கள்
