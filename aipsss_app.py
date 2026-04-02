@@ -107,46 +107,38 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Based on image_6.png) ---
+# --- 🖼️ 3. Header Logic (Final Optimized Version) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except:
-        return None
+# லோகோ மற்றும் உரையை பிரிக்க இரு காலம்கள்
+col1, col2 = st.columns([1, 3])
 
-base64_img = get_base64_image(img_path)
+with col1:
+    # லோகோ படம் - 200px அளவில்
+    if os.path.exists(img_path):
+        st.image(img_path, width=200)
+    else:
+        st.markdown("<h1 style='font-size: 60px; margin:0;'>🤖</h1>", unsafe_allow_html=True)
 
-if base64_img:
-    header_html = f"""
-        <div style="display: flex; align-items: flex-start; justify-content: flex-start; padding: 25px 0px; margin-bottom: 30px; width: 100%;">
-            <div style="flex: 0 0 auto; margin-right: 30px; margin-top: -10px;">
-                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" style="width: 200px; height: auto;">
-            </div>
-            
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; margin-top: 5px;">
-                <p style="font-size: 34px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.1 !important; text-transform: uppercase;">
-                    AI POWERED STUDENT SUPPORT SYSTEM
-                </p>
-                
-                <p style="font-size: 19px !important; color: #FFFFFF; font-weight: 500; margin: 8px 0 !important; line-height: 1.2 !important;">
-                    "Everyone has the right to education"
-                </p>
-                
-                <p style="font-size: 17px !important; color: #FFD700; font-weight: bold; margin: 0 !important; line-height: 1.2 !important;">
-                    Developed by Brammadevan
-                </p>
-            </div>
+with col2:
+    # வலது பக்கம் உள்ள பெயர்கள் - மிக நெருக்கமான இடைவெளியுடன்
+    st.markdown(f"""
+        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 0px; padding-top: 10px;">
+            <p style="font-size: 45px !important; font-weight: 900; color: #FF4B4B; margin: 0px 0px -15px 0px !important; line-height: 0.8 !important; font-family: sans-serif;">
+                AIPSSS
+            </p>
+            <p style="font-size: 20px !important; color: #FFFFFF; font-weight: 600; margin: 0px 0px 2px 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+                AI Powered Student Support System
+            </p>
+            <p style="font-size: 18px !important; font-style: italic; color: #E0E0E0; margin: 0px 0px 8px 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+                "Everyone has the right to education"
+            </p>
+            <p style="font-size: 16px !important; color: #FFD700; font-weight: bold; margin: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+                Developed by Brammadevan
+            </p>
         </div>
-        <hr style="border: 1px solid #333; margin-top: -10px; margin-bottom: 30px;">
-    """
-    st.markdown(header_html, unsafe_allow_html=True)
-else:
-    st.title("AI Student Support System")
-
+    """, unsafe_allow_html=True)
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
