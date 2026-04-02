@@ -107,7 +107,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Final Line Spacing Fix) ---
 # --- 🖼️ 3. Header (Concept Style - Clean & Tight) ---
 
 img_name = 'final logo.jpg'
@@ -188,7 +187,6 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
     start_prompt="🎤 பேச இங்கே அழுத்தவும்",
