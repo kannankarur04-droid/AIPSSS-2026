@@ -131,7 +131,7 @@ st.markdown("""
 
 /* 🔥 Bigger Logo */
 .header img {
-    width: 150px;
+    width: 180px;
 }
 
 /* Text block மேலே shift */
