@@ -115,21 +115,17 @@ def get_base64_image(image_path):
     try:
         with open(image_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
-    except FileNotFoundError:
+    except:
         return None
 
 base64_img = get_base64_image(img_path)
 
 if base64_img:
-    # லோகோ மற்றும் மூன்று வரிகளும் ஒரே உயரத்தில், கீழே கேப் விட்டு அலைன் செய்யப்பட்டுள்ளது
-    header_html = f'''
+    header_html = f"""
         <div style="display: flex; align-items: center; background-color: #000000; padding: 20px; border-radius: 12px; margin-top: 20px; margin-bottom: 25px; min-height: 140px;">
-            
             <div style="flex: 0 0 auto; margin-top: -40px; margin-bottom: 10px;">
-                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" 
-                     style="width: 150px; height: auto; z-index: 10;">
+                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" style="width: 150px; height: auto; z-index: 10;">
             </div>
-            
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-left: 20px; margin-bottom: 10px;">
                 <p style="font-size: 28px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.1 !important;">
                     AI Student Support System
@@ -142,7 +138,7 @@ if base64_img:
                 </p>
             </div>
         </div>
-    '''
+    """
     st.markdown(header_html, unsafe_allow_html=True)
 else:
     st.title("AI Student Support System")
