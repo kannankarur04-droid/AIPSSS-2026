@@ -107,7 +107,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Streamlit Columns Method - COMPLETE FIX) ---
+# --- 🖼️ 3. Header Logic ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -115,15 +115,12 @@ img_path = os.path.join(os.getcwd(), img_name)
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # லோகோ படம் - 200px அளவில்
     if os.path.exists(img_path):
         st.image(img_path, width=200)
     else:
-        # படம் இல்லை என்றால் மட்டும் இந்த டெக்ஸ்ட் வரும்
         st.markdown("<h1 style='font-size: 50px;'>🤖</h1>", unsafe_allow_html=True)
 
 with col2:
-    # வலது பக்கம் உள்ள பெயர்கள்
     st.markdown(f"""
         <div style="margin-top: 10px;">
             <h1 style="color: #FF4B4B; margin-bottom: 0; font-size: 45px; font-weight: 900; line-height: 1.0;">AIPSSS</h1>
@@ -138,8 +135,8 @@ with col2:
             </p>
         </div>
     """, unsafe_allow_html=True)
-else:
-    st.title("AI Student Support System")
+
+# இங்கிருந்த பழைய else: மற்றும் st.title வரிகள் அனைத்தும் நீக்கப்பட வேண்டும்.
 
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
