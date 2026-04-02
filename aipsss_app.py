@@ -107,7 +107,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic (Final Optimized Version) ---
+# --- 🖼️ 3. Header Logic (Final Line Spacing Fix) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
@@ -115,26 +115,25 @@ img_path = os.path.join(os.getcwd(), img_name)
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # லோகோ படம் - 300px அளவில்
     if os.path.exists(img_path):
         st.image(img_path, width=200)
     else:
         st.markdown("<h1 style='font-size: 60px; margin:0;'>🤖</h1>", unsafe_allow_html=True)
 
 with col2:
-    # வலது பக்கம் உள்ள பெயர்கள் - மிக நெருக்கமான இடைவெளியுடன்
+    # வரிகளுக்கு இடையே இடைவெளியைக் குறைக்க line-height: 0.7 மற்றும் margin: 0px பயன்படுத்தப்பட்டுள்ளது
     st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 0px; padding-top: 10px;">
-            <p style="font-size: 45px !important; font-weight: 900; color: #FF4B4B; margin: 0px 0px -15px 0px !important; line-height: 0.8 !important; font-family: sans-serif;">
+        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 0px; padding-top: 5px;">
+            <p style="font-size: 45px !important; font-weight: 900; color: #FF4B4B; margin: 0px !important; padding: 0px !important; line-height: 0.7 !important; font-family: sans-serif;">
                 AIPSSS
             </p>
-            <p style="font-size: 20px !important; color: #FFFFFF; font-weight: 600; margin: 0px 0px 2px 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+            <p style="font-size: 20px !important; color: #FFFFFF; font-weight: 600; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
                 AI Powered Student Support System
             </p>
-            <p style="font-size: 18px !important; font-style: italic; color: #E0E0E0; margin: 0px 0px 8px 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+            <p style="font-size: 18px !important; font-style: italic; color: #E0E0E0; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
                 "Everyone has the right to education"
             </p>
-            <p style="font-size: 16px !important; color: #FFD700; font-weight: bold; margin: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
+            <p style="font-size: 16px !important; color: #FFD700; font-weight: bold; margin: 0px !important; padding: 0px !important; line-height: 1.0 !important; font-family: sans-serif;">
                 Developed by Brammadevan
             </p>
         </div>
