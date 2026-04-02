@@ -107,39 +107,45 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 🖼️ 3. Header Logic ---
+# --- 🖼️ 3. Header Logic (Based on image_6.png) ---
 img_name = 'final logo.jpg' 
 img_path = os.path.join(os.getcwd(), img_name)
 
-# ஸ்டிரீம்லிட் காலம்களைப் பயன்படுத்தி லோகோ மற்றும் பெயர்களைப் பிரித்தல்
-col1, col2 = st.columns([1, 3])
+def get_base64_image(image_path):
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except:
+        return None
 
-with col1:
-    if os.path.exists(img_path):
-        st.image(img_path, width=200)
-    else:
-        st.markdown("<h1 style='font-size: 50px;'>🤖</h1>", unsafe_allow_html=True)
+base64_img = get_base64_image(img_path)
 
-with col2:
-    # வரிகளுக்கு இடையே இடைவெளி (Line Spacing) குறைக்கப் பட்டுள்ளது
-    st.markdown(f"""
-        <div style="margin-top: 5px; display: flex; flex-direction: column; justify-content: center;">
-            <h1 style="color: #FF4B4B; margin: 0px 0px -5px 0px !important; font-size: 45px; font-weight: 900; line-height: 0.8 !important;">
-                AIPSSS
-            </h1>
-            <p style="color: #FFFFFF; font-size: 20px; font-weight: 500; margin: 0px 0px 2px 0px !important; line-height: 1.0 !important;">
-                AI Powered Student Support System
-            </p>
-            <p style="color: #E0E0E0; font-size: 18px; font-style: italic; margin: 0px 0px 5px 0px !important; line-height: 1.0 !important;">
-                "Everyone has the right to education"
-            </p>
-            <p style="color: #FFD700; font-size: 16px; font-weight: bold; margin: 0px !important; line-height: 1.0 !important;">
-                Developed by Brammadevan
-            </p>
+if base64_img:
+    header_html = f"""
+        <div style="display: flex; align-items: flex-start; justify-content: flex-start; padding: 25px 0px; margin-bottom: 30px; width: 100%;">
+            <div style="flex: 0 0 auto; margin-right: 30px; margin-top: -10px;">
+                <img src="data:image/jpeg;base64,{base64_img}" alt="Logo" style="width: 200px; height: auto;">
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; margin-top: 5px;">
+                <p style="font-size: 34px !important; font-weight: 900; color: #FF4B4B; margin: 0 !important; line-height: 1.1 !important; text-transform: uppercase;">
+                    AI POWERED STUDENT SUPPORT SYSTEM
+                </p>
+                
+                <p style="font-size: 19px !important; color: #FFFFFF; font-weight: 500; margin: 8px 0 !important; line-height: 1.2 !important;">
+                    "Everyone has the right to education"
+                </p>
+                
+                <p style="font-size: 17px !important; color: #FFD700; font-weight: bold; margin: 0 !important; line-height: 1.2 !important;">
+                    Developed by Brammadevan
+                </p>
+            </div>
         </div>
-    """, unsafe_allow_html=True)
-
-# இங்கிருந்த பழைய else: மற்றும் st.title வரிகள் அனைத்தும் நீக்கப்பட வேண்டும்.
+        <hr style="border: 1px solid #333; margin-top: -10px; margin-bottom: 30px;">
+    """
+    st.markdown(header_html, unsafe_allow_html=True)
+else:
+    st.title("AI Student Support System")
 
 # --- 🎙️ 4. Interaction - Voice ---
 voice_input = speech_to_text(
