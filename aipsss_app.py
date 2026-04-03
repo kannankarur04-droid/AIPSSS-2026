@@ -218,7 +218,7 @@ def ai_response(q, pdf_text=""):
             "STRICT LANGUAGE RULE: If the user types in English, you MUST reply in English ONLY. "
             "If the user types in Tamil, you MUST reply in Tamil ONLY. "
             "DO NOT translate English questions into Tamil". 
-           "Your mission is to assist students in the following areas: "
+           "Your mission is to assist students in the following areas:"
            "1. SCHOOL & COLLEGE: All subjects (Science, Maths, Social, etc.). "
            "2. LANGUAGES: Tamil and English proficiency. "
            "3. ARTS & DESIGN: Drawing, Painting, Fine Arts, and Graphic Design (CorelDraw, Photoshop). "
