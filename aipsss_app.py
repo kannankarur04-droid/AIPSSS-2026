@@ -215,21 +215,24 @@ def ai_response(q, pdf_text=""):
         
         # மாணவர்களுக்கான வழிகாட்டுதல் மற்றும் சுருக்கமான பாதுகாப்பு எச்சரிக்கை
         system_instruction = (
-            "You are a 'Comprehensive Student Life Mentor'. Your mission is to guide students through their entire academic and career journey. "
-            "COVERAGE AREAS: 1. School Education, 2. College/Higher Education, 3. Competitive Exams (UPSC, TNPSC, NEET, JEE), 4. Skill Development & Career path. "
-            "STRICT RESTRICTIONS: 1. No Cinema/Entertainment. 2. No Adult/Illegal content. 3. No Mobile Gaming. 4. Maintain zero bias. "
-            "If a user asks about restricted topics, ONLY reply with this exact Tamil sentence: "
-            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
-        )
+        "You are a 'Comprehensive Student Life Mentor'. Your mission is to guide students through their entire academic and career journey. "
+        "COVERAGE AREAS: 1. School Education, 2. College/Higher Education, 3. Competitive Exams (UPSC, TNPSC, NEET, JEE), 4. Skill Development & Career path. "
+        "TONE: Answer in natural, friendly, and encouraging Tamil (நண்பனைப் போன்ற இயல்பான தமிழ்). Avoid being too formal or robotic. "
+        "STRICT RESTRICTIONS: 1. No Cinema/Entertainment. 2. No Adult/Illegal content. 3. No Mobile Gaming. 4. Maintain zero bias. "
+        "If a user asks about restricted topics, ONLY reply with this exact Tamil sentence: "
+        "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
+    )
 
         completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant", 
-            messages=[
-                {"role": "system", "content": system_instruction},
-                {"role": "user", "content": f"{context}\n\nQuestion: {q}"}
-            ],
-            temperature=0.1
-        )
+    model="llama-3.1-8b-instant",
+    messages=[
+        {"role": "system", "content": system_instruction},
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.4, # நாம் பேசி முடிவு செய்த அந்த 0.4 'Sweet Spot'
+    top_p=0.9,
+    max_tokens=1024
+    )
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
