@@ -215,23 +215,23 @@ def ai_response(q, pdf_text=""):
         
         # மாணவர்களுக்கான வழிகாட்டுதல் மற்றும் சுருக்கமான பாதுகாப்பு எச்சரிக்கை
         system_instruction = (
-            "You are 'AIPSSS Mentor', a professional academic and career guide. "
-            Your mission is to assist students in School, College, Arts, Exams, and Skills. "
-            CORE RULE: Answer in the SAME LANGUAGE as the user's question. "
-            "STRICT RESTRICTIONS: No Cinema, No Games, No Adult content. "
-            "If restricted topics are asked, ONLY reply with: "
-            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
-                )
+    "You are 'AIPSSS Mentor', a professional academic and career guide. "
+    "Your mission is to assist students in School, College, Arts, Exams, and Skills. "
+    "CORE RULE: Answer in the SAME LANGUAGE as the user's question. "
+    "STRICT RESTRICTIONS: No Cinema, No Games, No Adult content. "
+    "If restricted topics are asked, ONLY reply with: "
+    "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
+)
 
-            completion = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=[
-                    {"role": "system", "content": system_instruction},
-                    {"role": "user", "content": prompt}
-            ],
-            temperature=0.3,
-            max_tokens=1024
-    )
+completion = client.chat.completions.create(
+    model="llama-3.1-8b-instant",
+    messages=[
+        {"role": "system", "content": system_instruction},
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.3,
+    max_tokens=1024
+)
     
         return completion.choices[0].message.content
     except Exception as e:
