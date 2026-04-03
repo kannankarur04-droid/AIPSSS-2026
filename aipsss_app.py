@@ -8,28 +8,8 @@ import fitz  # PyMuPDF
 import base64
 
 # --- 🔐 1. Setup ---
-if "GROQ_API_KEY" # மாணவர்களுக்கான வழிகாட்டுதல் மற்றும் மொழி விதிகள்
-        system_instruction = (
-            "STRICT LANGUAGE RULE: If the user types in English, you MUST reply in English ONLY. "
-            "If the user types in Tamil, you MUST reply in Tamil ONLY. "
-            "DO NOT translate English questions into Tamil. "
-            "You are 'AIPSSS Mentor', a professional academic and career guide. "
-            "Your mission is to assist students in School, College, Arts, Exams, and Skills. "
-            "STRICT RESTRICTIONS: No Cinema, No Games, No Adult content. "
-            "If restricted topics are asked, ONLY reply with: "
-            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
-        )
-
-        completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[
-                {"role": "system", "content": system_instruction},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3,
-            max_tokens=1024
-        )in st.secrets:
-    client = Groq(api_key=st.secrets:["GROQ_API_KEY"])
+if "GROQ_API_KEY" in st.secrets:
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 else:
     st.error("Missing GROQ_API_KEY!")
     st.stop()
@@ -232,6 +212,7 @@ def ai_response(q, pdf_text=""):
     try:
         # PDF தகவல் இருந்தால் அதைச் சேர்க்கும் பகுதி
         context = f"PDF Context: {pdf_text[:2000]}" if pdf_text else ""
+        
         # மாணவர்களுக்கான வழிகாட்டுதல் மற்றும் மொழி விதிகள்
         system_instruction = (
             "STRICT LANGUAGE RULE: If the user types in English, you MUST reply in English ONLY. "
@@ -241,7 +222,7 @@ def ai_response(q, pdf_text=""):
             "Your mission is to assist students in School, College, Arts, Exams, and Skills. "
             "STRICT RESTRICTIONS: No Cinema, No Games, No Adult content. "
             "If restricted topics are asked, ONLY reply with: "
-            "'மன்னிக்கவும், நான் மாணவர்களுக்கான வழிகாட்டி. என்னால் கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே பதிலளிக்க முடியும்.'"
+            "'மன்னிக்கவும், நான் மாணவர்களுக்கான கல்வி மற்றும் வாழ்க்கை வழிகாட்டி. கல்வி தொடர்பான கேள்விகளுக்கு மட்டுமே என்னால் பதிலளிக்க முடியும்.'"
         )
 
         completion = client.chat.completions.create(
@@ -253,7 +234,6 @@ def ai_response(q, pdf_text=""):
             temperature=0.3,
             max_tokens=1024
         )
-    
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
