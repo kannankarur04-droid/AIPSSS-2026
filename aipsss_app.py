@@ -223,9 +223,9 @@ def ai_response(q, pdf_text=""):
             "5. SKILLS: Career guidance and skill development. "
     
         "RULES: "
-        "- Answer in the SAME LANGUAGE as the user's question (ஆங்கிலத்தில் கேட்டால் ஆங்கிலம், தமிழில் கேட்டால் தமிழ்). "
-        "- Be scientifically and factually ACCURATE. Do not hallucinate or create fake stories. "
-        "- If a question is about Science/Maths, use clear steps or formulas. "
+        "- LANGUAGE POLICY: You MUST detect the language of the user's question. If the question is in English, reply ONLY in English. If the question is in Tamil, reply ONLY in Tamil. "
+        "- ACCURACY: Be scientifically and factually ACCURATE. Do not hallucinate or create fake stories. "
+        "- METHODOLOGY: If a question is about Science/Maths, use clear steps, diagrams, or formulas. "
     
         "STRICT RESTRICTIONS: "
         "- NO Cinema/Entertainment, NO Adult content, NO Illegal topics, NO Mobile Gaming. "
